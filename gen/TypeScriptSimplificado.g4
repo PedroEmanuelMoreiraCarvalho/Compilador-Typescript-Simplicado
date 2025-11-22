@@ -235,7 +235,7 @@ argumentList
 // Funções Math
 mathFunctionCall
     : MATH DOT SQRT LPAREN expression RPAREN    # mathSqrtCall
-    | MATH DOT POW LPAREN expression COMMA expression RPAREN  # mathPowCall
+    | MATH DOT POWFUNC LPAREN expression COMMA expression RPAREN  # mathPowCall
     ;
 
 // Funções de conversão
@@ -273,6 +273,7 @@ CONSOLE     : 'console';
 LOG         : 'log';
 MATH        : 'Math';
 SQRT        : 'sqrt';
+POWFUNC     : 'pow';
 PARSEINT    : 'parseInt';
 PARSEFLOAT  : 'parseFloat';
 

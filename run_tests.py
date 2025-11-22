@@ -19,10 +19,11 @@ def run_test(file_path, expected_success=True):
     
     try:
         result = subprocess.run(
-            ["python", "main.py", str(file_path)],
+            [sys.executable, "main.py", str(file_path)],
             capture_output=True,
             text=True,
-            encoding='utf-8'
+            encoding='utf-8',
+            errors='replace'  # Substitui caracteres inválidos em vez de falhar
         )
         
         success = (result.returncode == 0)

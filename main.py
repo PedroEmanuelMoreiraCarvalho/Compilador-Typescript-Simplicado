@@ -10,8 +10,10 @@ Uso: python main.py <arquivo.ts>
 import sys
 from antlr4 import *
 from antlr4.error.ErrorListener import ErrorListener
+from antlr4.tree.Tree import TerminalNode
 from gen.TypeScriptSimplificadoLexer import TypeScriptSimplificadoLexer
 from gen.TypeScriptSimplificadoParser import TypeScriptSimplificadoParser
+from semantic_analyzer import SemanticAnalyzer
 
 
 class CustomErrorListener(ErrorListener):
@@ -97,11 +99,11 @@ def compile_file(file_path):
         
         # Verifica erros léxicos
         if lexer_error_listener.has_errors():
-            print("\n❌ ERRO LÉXICO detectado!")
+            print("\n[ERRO] ERRO LEXICO detectado!")
             return False
         
         # Imprime tokens encontrados
-        print("✓ Análise Léxica: SUCESSO")
+        print("[OK] Analise Lexica: SUCESSO")
         print(f"  Total de tokens: {len(token_stream.tokens)}\n")
         
         # === ANÁLISE SINTÁTICA ===
@@ -117,27 +119,46 @@ def compile_file(file_path):
         
         # Verifica erros sintáticos
         if parser_error_listener.has_errors():
-            print("\n❌ ERRO SINTÁTICO detectado!")
+            print("\n[ERRO] ERRO SINTATICO detectado!")
             return False
         
-        print("✓ Análise Sintática: SUCESSO")
+        print("[OK] Analise Sintatica: SUCESSO")
         print(f"  Árvore sintática gerada com sucesso!\n")
         
-        # Opcional: Imprime a árvore sintática
-        print("=== Árvore Sintática ===")
-        TreePrinter.print_tree(tree, parser)
+        # === ANÁLISE SEMÂNTICA ===
+        print("=== Análise Semântica ===")
+        semantic_analyzer = SemanticAnalyzer()
+        
+        # Percorre a árvore com o Walker
+        walker = ParseTreeWalker()
+        walker.walk(semantic_analyzer, tree)
+        
+        # Verifica erros semânticos
+        if semantic_analyzer.has_errors():
+            print("\n[ERRO] ERRO SEMANTICO detectado!")
+            semantic_analyzer.print_errors()
+            return False
+        
+        print("[OK] Analise Semantica: SUCESSO")
+        print(f"  Todas as verificações semânticas passaram!\n")
+        
+        # Opcional: Imprime a tabela de símbolos
+        if "--debug" in sys.argv or "-d" in sys.argv:
+            print(semantic_analyzer.get_symbol_table_dump())
+            print("\n=== Árvore Sintática ===")
+            TreePrinter.print_tree(tree, parser)
         
         print("\n" + "="*50)
-        print("✅ COMPILAÇÃO CONCLUÍDA COM SUCESSO!")
+        print("[SUCESSO] COMPILACAO CONCLUIDA COM SUCESSO!")
         print("="*50)
         
         return True
         
     except FileNotFoundError:
-        print(f"❌ ERRO: Arquivo '{file_path}' não encontrado!", file=sys.stderr)
+        print(f"[ERRO] Arquivo '{file_path}' nao encontrado!", file=sys.stderr)
         return False
     except Exception as e:
-        print(f"❌ ERRO INESPERADO: {str(e)}", file=sys.stderr)
+        print(f"[ERRO] ERRO INESPERADO: {str(e)}", file=sys.stderr)
         import traceback
         traceback.print_exc()
         return False
@@ -148,13 +169,18 @@ def main():
     Função principal - processa argumentos e inicia compilação
     """
     # Verifica argumentos
-    if len(sys.argv) != 2:
-        print("Uso: python main.py <arquivo.ts>", file=sys.stderr)
+    args = [arg for arg in sys.argv[1:] if not arg.startswith("-")]
+    
+    if len(args) != 1:
+        print("Uso: python main.py <arquivo.ts> [opções]", file=sys.stderr)
+        print("\nOpções:", file=sys.stderr)
+        print("  --debug, -d    Mostra informações detalhadas (tabela de símbolos e árvore)", file=sys.stderr)
         print("\nExemplo:", file=sys.stderr)
         print("  python main.py testes/valid/hello.ts", file=sys.stderr)
+        print("  python main.py testes/valid/hello.ts --debug", file=sys.stderr)
         sys.exit(1)
     
-    file_path = sys.argv[1]
+    file_path = args[0]
     
     # Compila o arquivo
     success = compile_file(file_path)

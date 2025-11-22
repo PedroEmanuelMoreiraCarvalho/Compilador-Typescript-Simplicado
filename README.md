@@ -1,217 +1,309 @@
-# Compilador TypeScript Simplificado
+# Compilador TypeScript Simplificado 🚀
 
-Implementação do front-end de um compilador para a linguagem **TypeScript Simplificado**, incluindo análise léxica e sintática.
+Compilador completo para a linguagem TypeScript Simplificado, desenvolvido com ANTLR4 e Python. Implementa as três fases principais de um front-end de compilador: análise léxica, sintática e semântica.
 
-## 📋 Requisitos
+## 📋 Características
 
-- Python 3.7 ou superior
-- ANTLR4 Runtime para Python
+### ✅ Análise Léxica
+- Tokenização completa da linguagem
+- Identificação de palavras-chave, operadores e literais
+- Detecção de caracteres inválidos com número de linha
+
+### ✅ Análise Sintática  
+- Parser gerado pelo ANTLR4
+- Verificação de estrutura gramatical
+- Detecção de erros sintáticos com número de linha e coluna
+
+### ✅ Análise Semântica
+- **Verificação de tipos**: Compatibilidade em atribuições, operações e chamadas de função
+- **Gerenciamento de escopos**: Escopo global e de bloco hierárquico
+- **Regras de let/const**: 
+  - `let`: Inicialização opcional, mas uso requer atribuição prévia
+  - `const`: Inicialização obrigatória e imutabilidade
+- **Declarações duplicadas**: Detecção de redeclaração no mesmo escopo
+- **Uso antes de inicialização**: Análise estática de fluxo de dados
+- **Verificação de funções**: 
+  - Tipos de parâmetros e retorno
+  - Número correto de argumentos
+  - Compatibilidade de tipos em chamadas
+- **Operadores tipados**: Verificação de tipos em operações aritméticas, lógicas e de comparação
+- **Estruturas de controle**: Verificação de tipos em condições (`if`, `while`)
+
+## 🛠️ Tipos e Recursos Suportados
+
+- **Tipos básicos**: `number`, `string`, `boolean`, `void`
+- **Arrays**: `number[]`, `string[]`
+- **Declarações**: `let` e `const` com tipagem explícita
+- **Estruturas de controle**: `if/else`, `while`, `for`
+- **Funções**: Declaração com tipos de parâmetros e retorno
+- **Funções nativas**: 
+  - `console.log()` (múltiplos argumentos)
+  - `Math.sqrt()`, `Math.pow()`
+  - `parseInt()`, `parseFloat()`
+  - Propriedade `.length`
+- **Operadores**: 
+  - Aritméticos: `+`, `-`, `*`, `/`, `%`, `**`
+  - Lógicos: `&&`, `||`, `!`
+  - Comparação: `==`, `!=`, `<`, `>`, `<=`, `>=`
 
 ## 🔧 Instalação
 
-### 1. Instalar dependências Python
+### Pré-requisitos
 
 ```bash
+# Python 3.7 ou superior
+python --version
+
+# Instalar ANTLR4 runtime para Python
 pip install antlr4-python3-runtime
 ```
 
-### 2. Verificar instalação
+### Verificar instalação
 
 ```bash
-python --version
-python -c "import antlr4; print('ANTLR4 instalado com sucesso!')"
+python -c "import antlr4; print('✓ ANTLR4 instalado com sucesso!')"
 ```
 
-## 🚀 Uso
+## 🚀 Como Usar
 
-### Executar o compilador em um arquivo
+### Executando o Compilador
 
+**Sintaxe básica:**
 ```bash
 python main.py <arquivo.ts>
 ```
 
-**Exemplo:**
+**Com modo debug (mostra tabela de símbolos e árvore sintática):**
 ```bash
-python main.py testes/valid/01_hello_world.ts
+python main.py <arquivo.ts> --debug
+# ou
+python main.py <arquivo.ts> -d
 ```
 
-### Executar todos os testes
+### Exemplos de Uso
+
+```bash
+# Compilar programa válido
+python main.py testes/valid/01_hello_world.ts
+
+# Compilar programa com erro semântico
+python main.py testes/invalid/semantic_01_use_before_init.ts
+
+# Compilar com informações de debug
+python main.py testes/valid/08_function.ts --debug
+```
+
+### Executando Todos os Testes
 
 ```bash
 python run_tests.py
 ```
 
+Este script executa automaticamente todos os casos de teste (válidos e inválidos) e gera um relatório completo de resultados.
+
 ## 📁 Estrutura do Projeto
 
 ```
 .
-├── main.py                          # Script principal do compilador
-├── run_tests.py                     # Script para executar todos os testes
-├── gen/                             # Arquivos gerados pelo ANTLR4
-│   ├── TypeScriptSimplificado.g4    # Gramática ANTLR4
+├── gen/                          # Arquivos gerados pelo ANTLR
+│   ├── TypeScriptSimplificado.g4
 │   ├── TypeScriptSimplificadoLexer.py
 │   ├── TypeScriptSimplificadoParser.py
-│   └── ...
-└── testes/                          # Casos de teste
-    ├── valid/                       # Programas válidos (devem compilar)
-    │   ├── 01_hello_world.ts
-    │   ├── 02_declarations.ts
-    │   └── ...
-    └── invalid/                     # Programas com erros
-        ├── 01_lexical_error_char.ts
-        ├── 02_lexical_error_string.ts
-        └── ...
+│   └── TypeScriptSimplificadoListener.py
+├── testes/
+│   ├── valid/                    # 16 programas válidos
+│   │   ├── 01_hello_world.ts
+│   │   ├── 08_function.ts
+│   │   ├── 14_scope_blocks.ts
+│   │   └── ...
+│   └── invalid/                  # 24 programas com erros
+│       ├── 01_lexical_error_char.ts         # Erro léxico
+│       ├── 03_syntax_error_semicolon.ts     # Erro sintático
+│       ├── semantic_01_use_before_init.ts   # Erro semântico
+│       └── ...
+├── main.py                       # Compilador principal
+├── semantic_analyzer.py          # Analisador semântico
+├── run_tests.py                  # Script de testes automatizado
+├── README.md                     # Esta documentação
+└── docs/
+    └── typescript-simplificado-spec.md  # Especificação da linguagem
 ```
 
-## ✅ Exemplos de Uso
+## 🔍 Arquitetura do Analisador Semântico
 
-### Exemplo 1: Programa Válido (Sucesso)
+### Tabela de Símbolos Hierárquica
 
-**Arquivo:** `testes/valid/01_hello_world.ts`
-```typescript
-let mensagem: string = "Hello, TypeScript Simplificado!";
-console.log(mensagem);
+O analisador semântico utiliza uma estrutura de **Tabela de Símbolos Hierárquica** para gerenciar escopos:
+
+```python
+class SymbolTable:
+    """
+    Tabela de símbolos com suporte a escopos hierárquicos
+    """
+    symbols: dict       # {nome: Symbol} - símbolos do escopo atual
+    parent: SymbolTable # Referência ao escopo pai (None para global)
+    scope_name: str     # Nome do escopo (para debug)
 ```
 
-**Execução:**
-```bash
-python main.py testes/valid/01_hello_world.ts
+### Classe Symbol
+
+Cada símbolo na tabela armazena informações completas:
+
+```python
+class Symbol:
+    name: str           # Nome do identificador
+    symbol_type: str    # Tipo: 'number', 'string', 'boolean', etc.
+    is_const: bool      # True para const, False para let
+    is_initialized: bool # Se já recebeu atribuição
+    is_function: bool   # Se é uma função
+    return_type: str    # Tipo de retorno (apenas funções)
+    params: list        # Lista de parâmetros (apenas funções)
+    line: int           # Linha de declaração (para mensagens de erro)
 ```
 
-**Saída esperada:**
+### Gerenciamento de Escopos
+
+1. **Escopo Global**: Criado no início da análise, persiste durante toda a compilação
+2. **Escopo de Função**: Criado ao entrar em declaração de função
+3. **Escopo de Bloco**: Criado para blocos `{}`, `if`, `while`, `for`
+
+A busca de símbolos é **hierárquica**: 
+- Procura no escopo atual
+- Se não encontrar, procura no escopo pai
+- Continua recursivamente até o escopo global
+
+## 📊 Exemplos de Saída
+
+### ✅ Compilação com Sucesso
+
 ```
-=== Compilando: testes/valid/01_hello_world.ts ===
+=== Compilando: testes/valid/08_function.ts ===
 
 ✓ Análise Léxica: SUCESSO
-  Total de tokens: X
+  Total de tokens: 45
 
 ✓ Análise Sintática: SUCESSO
   Árvore sintática gerada com sucesso!
+
+=== Análise Semântica ===
+✓ Análise Semântica: SUCESSO
+  Todas as verificações semânticas passaram!
 
 ==================================================
 ✅ COMPILAÇÃO CONCLUÍDA COM SUCESSO!
 ==================================================
 ```
 
-### Exemplo 2: Programa com Erro Sintático
+### ❌ Erro Semântico Detectado
 
-**Arquivo:** `testes/invalid/03_syntax_error_semicolon.ts`
-```typescript
-let x: number = 10
-let y: number = 20;
 ```
-
-**Execução:**
-```bash
-python main.py testes/invalid/03_syntax_error_semicolon.ts
-```
-
-**Saída esperada:**
-```
-=== Compilando: testes/invalid/03_syntax_error_semicolon.ts ===
+=== Compilando: testes/invalid/semantic_01_use_before_init.ts ===
 
 ✓ Análise Léxica: SUCESSO
-  Total de tokens: X
+  Total de tokens: 21
 
-Erro sintático na linha 2, coluna 0: ...
+✓ Análise Sintática: SUCESSO
+  Árvore sintática gerada com sucesso!
 
-❌ ERRO SINTÁTICO detectado!
+=== Análise Semântica ===
+
+❌ ERRO SEMÂNTICO detectado!
+
+=== ERROS SEMÂNTICOS ===
+  Erro semântico na linha 5: Variável 'x' está sendo usada antes 
+  de ser inicializada (declarada na linha 4)
+==================================================
 ```
 
-## 📝 Casos de Teste
+### 🔍 Modo Debug
 
-### Programas Válidos (13 arquivos)
+```bash
+python main.py testes/valid/15_scope_functions.ts --debug
+```
 
-1. **01_hello_world.ts** - Hello World básico
-2. **02_declarations.ts** - Declarações let e const
-3. **03_arithmetic.ts** - Operações aritméticas
-4. **04_logical_ops.ts** - Operações lógicas e comparações
-5. **05_if_else.ts** - Estrutura if-else
-6. **06_while.ts** - Loop while
-7. **07_for.ts** - Loop for
-8. **08_function.ts** - Função simples com retorno
-9. **09_void_function.ts** - Função void
-10. **10_arrays.ts** - Manipulação de arrays
-11. **11_math_functions.ts** - Funções Math
-12. **12_type_conversion.ts** - Conversão de tipos
-13. **13_complete_program.ts** - Programa completo
+Mostra:
+- Tabela de símbolos completa
+- Estrutura de escopos
+- Árvore sintática detalhada
 
-### Programas com Erros (12 arquivos)
+## 🧪 Casos de Teste
 
-**Erros Léxicos:**
-- **01_lexical_error_char.ts** - Caractere inválido (@)
-- **02_lexical_error_string.ts** - String não fechada
+### Testes Válidos (16 arquivos)
 
-**Erros Sintáticos:**
-- **03_syntax_error_semicolon.ts** - Falta ponto e vírgula
-- **04_syntax_error_no_type.ts** - Declaração sem tipo
-- **05_syntax_error_paren.ts** - Parênteses não fechado
-- **06_syntax_error_if.ts** - If sem condição
-- **07_syntax_error_function.ts** - Função sem tipo de retorno
-- **08_syntax_error_array.ts** - Array sem fechar colchetes
-- **09_syntax_error_while.ts** - While sem condição
-- **10_syntax_error_for.ts** - For malformado
-- **11_syntax_error_const.ts** - Const sem inicialização
-- **12_syntax_error_brace.ts** - Chaves não fechadas
+| Arquivo | Descrição |
+|---------|-----------|
+| `01_hello_world.ts` | Hello World básico |
+| `02_declarations.ts` | Declarações let e const |
+| `03_arithmetic.ts` | Operações aritméticas |
+| `04_logical_ops.ts` | Operadores lógicos |
+| `05_if_else.ts` | Estrutura if/else |
+| `06_while.ts` | Loop while |
+| `07_for.ts` | Loop for |
+| `08_function.ts` | Funções com retorno |
+| `09_void_function.ts` | Funções void |
+| `10_arrays.ts` | Arrays e acesso |
+| `11_math_functions.ts` | Funções Math |
+| `12_type_conversion.ts` | parseInt/parseFloat |
+| `13_complete_program.ts` | Programa completo |
+| `14_scope_blocks.ts` | Escopos de bloco |
+| `15_scope_functions.ts` | Escopos de função |
+| `16_let_no_init_then_assign.ts` | let sem init |
 
-## 🎯 Funcionalidades Implementadas
+### Testes Inválidos (24 arquivos)
 
-### Análise Léxica
-- ✅ Reconhecimento de tokens (palavras-chave, identificadores, operadores, literais)
-- ✅ Detecção de erros léxicos (caracteres inválidos, strings malformadas)
-- ✅ Suporte a comentários de linha (`//`) e bloco (`/* */`)
+#### Erros Léxicos (2)
+- `01_lexical_error_char.ts` - Caractere inválido
+- `02_lexical_error_string.ts` - String malformada
 
-### Análise Sintática
-- ✅ Parsing completo da gramática TypeScript Simplificado
-- ✅ Detecção de erros sintáticos com número de linha
-- ✅ Geração de árvore sintática abstrata (AST)
-- ✅ Suporte a todas as estruturas da linguagem:
-  - Declarações (let, const)
-  - Funções (function, return)
-  - Estruturas de controle (if, while, for)
-  - Operadores (aritméticos, lógicos, comparação)
-  - Arrays e acesso por índice
-  - Funções nativas (console.log, Math, conversões)
+#### Erros Sintáticos (10)
+- `03_syntax_error_semicolon.ts` - Falta ponto-e-vírgula
+- `04_syntax_error_no_type.ts` - Declaração sem tipo
+- `05_syntax_error_paren.ts` - Parênteses desbalanceados
+- `06_syntax_error_if.ts` - Estrutura if incompleta
+- `07_syntax_error_function.ts` - Função malformada
+- `08_syntax_error_array.ts` - Array malformado
+- `09_syntax_error_while.ts` - While incompleto
+- `10_syntax_error_for.ts` - For malformado
+- `11_syntax_error_const.ts` - Const malformado
+- `12_syntax_error_brace.ts` - Chaves desbalanceadas
 
-## 🔍 Detalhes da Implementação
-
-### ErrorListener Customizado
-
-O compilador usa um `CustomErrorListener` que:
-- Captura erros léxicos e sintáticos
-- Reporta o número da linha e coluna do erro
-- Fornece mensagem descritiva do problema
-- Impede a execução em caso de erros
-
-### Saídas do Compilador
-
-- **Sucesso:** Código de saída 0, mensagem de sucesso
-- **Erro Léxico:** Código de saída 1, mensagem indicando linha do erro
-- **Erro Sintático:** Código de saída 1, mensagem indicando linha e coluna do erro
+#### Erros Semânticos (12)
+- `semantic_01_use_before_init.ts` - Uso antes de inicialização
+- `semantic_02_const_reassignment.ts` - Reatribuição de const
+- `semantic_03_type_mismatch.ts` - Tipos incompatíveis
+- `semantic_04_undeclared_variable.ts` - Variável não declarada
+- `semantic_05_redeclaration.ts` - Redeclaração de variável
+- `semantic_06_wrong_operator_type.ts` - Operador em tipo errado
+- `semantic_07_const_no_init.ts` - Const sem inicialização
+- `semantic_08_return_type_mismatch.ts` - Retorno incompatível
+- `semantic_09_wrong_arg_count.ts` - Número errado de argumentos
+- `semantic_10_wrong_arg_type.ts` - Tipo errado de argumento
+- `semantic_11_if_not_boolean.ts` - Condição não-booleana
+- `semantic_12_void_return_value.ts` - Void retornando valor
 
 ## 📚 Especificação da Linguagem
 
-Consulte o arquivo `docs/typescript-simplificado-spec.md` para detalhes completos sobre:
-- Tipos de dados (number, string, boolean, void, arrays)
-- Operadores e precedência
-- Estruturas de controle
-- Funções e escopo
-- Funções nativas
+Para detalhes completos sobre a sintaxe e semântica da linguagem, consulte:
 
-## 🛠️ Desenvolvimento
-
-### Regenerar arquivos ANTLR4 (se modificar a gramática)
-
-```bash
-cd gen
-antlr4 -Dlanguage=Python3 -visitor TypeScriptSimplificado.g4
 ```
+docs/typescript-simplificado-spec.md
+```
+
+## 🎓 Uso Didático
+
+Este compilador foi desenvolvido para fins educacionais na disciplina de **Compiladores**. A estrutura do código é **didática e bem comentada**, facilitando o entendimento de:
+
+- Como funcionam as três fases de compilação (léxica, sintática, semântica)
+- Implementação de tabelas de símbolos hierárquicas
+- Gerenciamento de escopos com estruturas de dados simples (dicionários)
+- Verificação de tipos estática
+- Uso do padrão Visitor/Listener do ANTLR4
+- Tratamento e reporte de erros em cada fase
 
 ## 👥 Autores
 
-Trabalho Final - Disciplina de Compiladores
-UFPI - 6º Período
+Desenvolvido como parte do Trabalho Final da disciplina de Compiladores - UFPI
 
 ## 📄 Licença
 
-Este projeto é parte de uma atividade acadêmica.
+Este projeto é de código aberto para fins educacionais.
