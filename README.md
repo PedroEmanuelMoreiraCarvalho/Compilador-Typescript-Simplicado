@@ -1,20 +1,20 @@
-# Compilador TypeScript Simplificado 🚀
+# Compilador TypeScript Simplificado
 
 Compilador completo para a linguagem TypeScript Simplificado, desenvolvido com ANTLR4 e Python. Implementa as três fases principais de um front-end de compilador: análise léxica, sintática e semântica.
 
-## 📋 Características
+## Características
 
-### ✅ Análise Léxica
+### Análise Léxica
 - Tokenização completa da linguagem
 - Identificação de palavras-chave, operadores e literais
 - Detecção de caracteres inválidos com número de linha
 
-### ✅ Análise Sintática  
+### Análise Sintática  
 - Parser gerado pelo ANTLR4
 - Verificação de estrutura gramatical
 - Detecção de erros sintáticos com número de linha e coluna
 
-### ✅ Análise Semântica
+### Análise Semântica
 - **Verificação de tipos**: Compatibilidade em atribuições, operações e chamadas de função
 - **Gerenciamento de escopos**: Escopo global e de bloco hierárquico
 - **Regras de let/const**: 
@@ -29,7 +29,7 @@ Compilador completo para a linguagem TypeScript Simplificado, desenvolvido com A
 - **Operadores tipados**: Verificação de tipos em operações aritméticas, lógicas e de comparação
 - **Estruturas de controle**: Verificação de tipos em condições (`if`, `while`)
 
-## 🛠️ Tipos e Recursos Suportados
+## Tipos e Recursos Suportados
 
 - **Tipos básicos**: `number`, `string`, `boolean`, `void`
 - **Arrays**: `number[]`, `string[]`
@@ -46,7 +46,7 @@ Compilador completo para a linguagem TypeScript Simplificado, desenvolvido com A
   - Lógicos: `&&`, `||`, `!`
   - Comparação: `==`, `!=`, `<`, `>`, `<=`, `>=`
 
-## 🔧 Instalação
+## Instalação
 
 ### Pré-requisitos
 
@@ -64,7 +64,7 @@ pip install antlr4-python3-runtime
 python -c "import antlr4; print('✓ ANTLR4 instalado com sucesso!')"
 ```
 
-## 🚀 Como Usar
+## Como Usar
 
 ### Executando o Compilador
 
@@ -101,7 +101,7 @@ python run_tests.py
 
 Este script executa automaticamente todos os casos de teste (válidos e inválidos) e gera um relatório completo de resultados.
 
-## 📁 Estrutura do Projeto
+## Estrutura do Projeto
 
 ```
 .
@@ -129,7 +129,7 @@ Este script executa automaticamente todos os casos de teste (válidos e inválid
     └── typescript-simplificado-spec.md  # Especificação da linguagem
 ```
 
-## 🔍 Arquitetura do Analisador Semântico
+## Arquitetura do Analisador Semântico
 
 ### Tabela de Símbolos Hierárquica
 
@@ -172,9 +172,9 @@ A busca de símbolos é **hierárquica**:
 - Se não encontrar, procura no escopo pai
 - Continua recursivamente até o escopo global
 
-## 📊 Exemplos de Saída
+## Exemplos de Saída
 
-### ✅ Compilação com Sucesso
+### Compilação com Sucesso
 
 ```
 === Compilando: testes/valid/08_function.ts ===
@@ -194,7 +194,7 @@ A busca de símbolos é **hierárquica**:
 ==================================================
 ```
 
-### ❌ Erro Semântico Detectado
+### Erro Semântico Detectado
 
 ```
 === Compilando: testes/invalid/semantic_01_use_before_init.ts ===
@@ -215,7 +215,7 @@ A busca de símbolos é **hierárquica**:
 ==================================================
 ```
 
-### 🔍 Modo Debug
+### Modo Debug
 
 ```bash
 python main.py testes/valid/15_scope_functions.ts --debug
@@ -226,7 +226,7 @@ Mostra:
 - Estrutura de escopos
 - Árvore sintática detalhada
 
-## 🧪 Casos de Teste
+## Casos de Teste
 
 ### Testes Válidos (16 arquivos)
 
@@ -281,7 +281,7 @@ Mostra:
 - `semantic_11_if_not_boolean.ts` - Condição não-booleana
 - `semantic_12_void_return_value.ts` - Void retornando valor
 
-## 📚 Especificação da Linguagem
+## Especificação da Linguagem
 
 Para detalhes completos sobre a sintaxe e semântica da linguagem, consulte:
 
@@ -289,7 +289,7 @@ Para detalhes completos sobre a sintaxe e semântica da linguagem, consulte:
 docs/typescript-simplificado-spec.md
 ```
 
-## 🎓 Uso Didático
+## Uso Didático
 
 Este compilador foi desenvolvido para fins educacionais na disciplina de **Compiladores**. A estrutura do código é **didática e bem comentada**, facilitando o entendimento de:
 
@@ -300,10 +300,10 @@ Este compilador foi desenvolvido para fins educacionais na disciplina de **Compi
 - Uso do padrão Visitor/Listener do ANTLR4
 - Tratamento e reporte de erros em cada fase
 
-## 👥 Autores
+## Autores
 
 Desenvolvido como parte do Trabalho Final da disciplina de Compiladores - UFPI
 
-## 📄 Licença
+## Licença
 
 Este projeto é de código aberto para fins educacionais.
