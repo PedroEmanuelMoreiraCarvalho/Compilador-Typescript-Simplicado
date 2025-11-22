@@ -2,6 +2,8 @@
 
 Compilador completo para a linguagem TypeScript Simplificado, desenvolvido com ANTLR4 e Python. Implementa as três fases principais de um front-end de compilador: análise léxica, sintática e semântica.
 
+O código está completo na plataforma GitHub: https://github.com/PedroEmanuelMoreiraCarvalho/Compilador-Typescript-Simplicado
+
 ## Características
 
 ### Análise Léxica
@@ -124,9 +126,7 @@ Este script executa automaticamente todos os casos de teste (válidos e inválid
 ├── main.py                       # Compilador principal
 ├── semantic_analyzer.py          # Analisador semântico
 ├── run_tests.py                  # Script de testes automatizado
-├── README.md                     # Esta documentação
-└── docs/
-    └── typescript-simplificado-spec.md  # Especificação da linguagem
+└── README.md                     # Esta documentação
 ```
 
 ## Arquitetura do Analisador Semântico
