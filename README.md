@@ -145,6 +145,8 @@ class SymbolTable:
     scope_name: str     # Nome do escopo (para debug)
 ```
 
+O analisador mantém uma lista `all_scopes` que rastreia todos os escopos criados durante a análise, permitindo a visualização completa da hierarquia de escopos no modo debug, mesmo após a saída dos escopos de função e bloco.
+
 ### Classe Symbol
 
 Cada símbolo na tabela armazena informações completas:
@@ -164,13 +166,18 @@ class Symbol:
 ### Gerenciamento de Escopos
 
 1. **Escopo Global**: Criado no início da análise, persiste durante toda a compilação
-2. **Escopo de Função**: Criado ao entrar em declaração de função
+2. **Escopo de Função**: Criado ao entrar em declaração de função (nomeado `function_<nome>`)
 3. **Escopo de Bloco**: Criado para blocos `{}`, `if`, `while`, `for`
 
 A busca de símbolos é **hierárquica**: 
 - Procura no escopo atual
 - Se não encontrar, procura no escopo pai
 - Continua recursivamente até o escopo global
+
+A visualização da tabela de símbolos no modo debug mostra a hierarquia completa com indentação:
+- Escopos filhos são indentados sob seus pais
+- Parâmetros de função são declarados no escopo da função
+- Variáveis locais permanecem isoladas em seus escopos
 
 ## Exemplos de Saída
 
@@ -179,18 +186,18 @@ A busca de símbolos é **hierárquica**:
 ```
 === Compilando: testes/valid/08_function.ts ===
 
-✓ Análise Léxica: SUCESSO
+[OK] Analise Lexica: SUCESSO
   Total de tokens: 45
 
-✓ Análise Sintática: SUCESSO
+[OK] Analise Sintatica: SUCESSO
   Árvore sintática gerada com sucesso!
 
 === Análise Semântica ===
-✓ Análise Semântica: SUCESSO
+[OK] Analise Semantica: SUCESSO
   Todas as verificações semânticas passaram!
 
 ==================================================
-✅ COMPILAÇÃO CONCLUÍDA COM SUCESSO!
+[SUCESSO] COMPILACAO CONCLUIDA COM SUCESSO!
 ==================================================
 ```
 
@@ -199,19 +206,40 @@ A busca de símbolos é **hierárquica**:
 ```
 === Compilando: testes/invalid/semantic_01_use_before_init.ts ===
 
-✓ Análise Léxica: SUCESSO
+[OK] Analise Lexica: SUCESSO
   Total de tokens: 21
 
-✓ Análise Sintática: SUCESSO
+[OK] Analise Sintatica: SUCESSO
   Árvore sintática gerada com sucesso!
 
 === Análise Semântica ===
 
-❌ ERRO SEMÂNTICO detectado!
+[ERRO] ERRO SEMANTICO detectado!
 
 === ERROS SEMÂNTICOS ===
   Erro semântico na linha 5: Variável 'x' está sendo usada antes 
   de ser inicializada (declarada na linha 4)
+==================================================
+```
+
+### Erro de Tipo em Operação
+
+```
+=== Compilando: testes/invalid/semantic_06_wrong_operator_type.ts ===
+
+[OK] Analise Lexica: SUCESSO
+  Total de tokens: 24
+
+[OK] Analise Sintatica: SUCESSO
+  Árvore sintática gerada com sucesso!
+
+=== Análise Semântica ===
+
+[ERRO] ERRO SEMANTICO detectado!
+
+=== ERROS SEMÂNTICOS ===
+  Erro semântico na linha 5: Operador '+' requer operandos do tipo 'number', 
+  mas o lado esquerdo é 'string'
 ==================================================
 ```
 
@@ -222,9 +250,32 @@ python main.py testes/valid/15_scope_functions.ts --debug
 ```
 
 Mostra:
-- Tabela de símbolos completa
-- Estrutura de escopos
-- Árvore sintática detalhada
+- Árvore sintática detalhada (impressão hierárquica da AST)
+- Tabela de símbolos completa com todos os escopos
+- Estrutura de escopos hierárquica (global, funções e blocos)
+- Símbolos declarados em cada escopo com seus tipos e estados
+
+Exemplo de saída com --debug:
+
+```
+=== Árvore Sintática ===
+REGRA: program
+  REGRA: statement
+    REGRA: variableDecl
+      TOKEN: let (tipo: LET)
+      TOKEN: global (tipo: ID)
+      ...
+
+=== TABELA DE SÍMBOLOS ===
+Escopo: global
+  let global: number (initialized)
+  Function teste(parametro: number): number
+  let valor: number (initialized)
+  Escopo: function_teste
+    let parametro: number (initialized)
+    let local: number (initialized)
+    let resultado: number (initialized)
+```
 
 ## Casos de Teste
 

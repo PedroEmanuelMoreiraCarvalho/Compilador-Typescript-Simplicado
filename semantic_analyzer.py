@@ -171,6 +171,7 @@ class SemanticAnalyzer(TypeScriptSimplificadoListener):
         self.current_function = None  # Função sendo analisada
         self.errors = []
         self.debug = False  # Ativa mensagens de debug
+        self.all_scopes = [self.symbol_table]  # Rastreia todos os escopos criados
     
     def add_error(self, message, ctx):
         """
@@ -189,6 +190,7 @@ class SemanticAnalyzer(TypeScriptSimplificadoListener):
         if self.debug:
             print(f"[DEBUG] Entrando no escopo: {scope_name}")
         self.symbol_table = SymbolTable(parent=self.symbol_table, scope_name=scope_name)
+        self.all_scopes.append(self.symbol_table)  # Rastreia o novo escopo
     
     def exit_scope(self):
         """
@@ -291,7 +293,76 @@ class SemanticAnalyzer(TypeScriptSimplificadoListener):
         elif isinstance(ctx, TypeScriptSimplificadoParser.ParenExprContext):
             return self.get_type(ctx.expression())
         
-        # Passar por contextos intermediários
+        # Contextos intermediários de expressões (pass-through)
+        # Expression context
+        elif isinstance(ctx, TypeScriptSimplificadoParser.ExpressionContext):
+            return self.get_type(ctx.logicalOrExpr())
+        
+        # LogicalOrExpr contexts
+        elif isinstance(ctx, TypeScriptSimplificadoParser.OrExprContext):
+            return "boolean"
+        elif isinstance(ctx, TypeScriptSimplificadoParser.OrPassContext):
+            return self.get_type(ctx.logicalAndExpr())
+        
+        # LogicalAndExpr contexts  
+        elif isinstance(ctx, TypeScriptSimplificadoParser.AndExprContext):
+            return "boolean"
+        elif isinstance(ctx, TypeScriptSimplificadoParser.AndPassContext):
+            return self.get_type(ctx.equalityExpr())
+        
+        # EqualityExpr contexts
+        elif isinstance(ctx, (TypeScriptSimplificadoParser.EqExprContext,
+                            TypeScriptSimplificadoParser.NeqExprContext)):
+            return "boolean"
+        elif isinstance(ctx, TypeScriptSimplificadoParser.EqPassContext):
+            return self.get_type(ctx.relationalExpr())
+        
+        # RelationalExpr contexts
+        elif isinstance(ctx, (TypeScriptSimplificadoParser.GtExprContext,
+                            TypeScriptSimplificadoParser.LtExprContext,
+                            TypeScriptSimplificadoParser.GeExprContext,
+                            TypeScriptSimplificadoParser.LeExprContext)):
+            return "boolean"
+        elif isinstance(ctx, TypeScriptSimplificadoParser.RelPassContext):
+            return self.get_type(ctx.additiveExpr())
+        
+        # AdditiveExpr contexts
+        elif isinstance(ctx, (TypeScriptSimplificadoParser.AddExprContext,
+                            TypeScriptSimplificadoParser.SubExprContext)):
+            return "number"
+        elif isinstance(ctx, TypeScriptSimplificadoParser.AddPassContext):
+            return self.get_type(ctx.multiplicativeExpr())
+        
+        # MultiplicativeExpr contexts
+        elif isinstance(ctx, (TypeScriptSimplificadoParser.MulExprContext,
+                            TypeScriptSimplificadoParser.DivExprContext,
+                            TypeScriptSimplificadoParser.ModExprContext)):
+            return "number"
+        elif isinstance(ctx, TypeScriptSimplificadoParser.MulPassContext):
+            return self.get_type(ctx.powerExpr())
+        
+        # PowerExpr contexts
+        elif isinstance(ctx, TypeScriptSimplificadoParser.PowExprContext):
+            return "number"
+        elif isinstance(ctx, TypeScriptSimplificadoParser.PowPassContext):
+            return self.get_type(ctx.unaryExpr())
+        
+        # UnaryExpr contexts
+        elif isinstance(ctx, TypeScriptSimplificadoParser.UnaryPassContext):
+            return self.get_type(ctx.primaryExpr())
+        
+        # PrimaryExpr contexts
+        elif isinstance(ctx, TypeScriptSimplificadoParser.LiteralExprContext):
+            return self.get_type(ctx.literal())
+        elif isinstance(ctx, TypeScriptSimplificadoParser.LiteralContext):
+            if ctx.NUMBER_LITERAL():
+                return "number"
+            elif ctx.STRING_LITERAL():
+                return "string"
+            elif ctx.TRUE() or ctx.FALSE():
+                return "boolean"
+        
+        # Passar por contextos intermediários genéricos
         elif hasattr(ctx, 'expression') and callable(ctx.expression):
             return self.get_type(ctx.expression())
         
@@ -692,8 +763,36 @@ class SemanticAnalyzer(TypeScriptSimplificadoListener):
         """
         Verifica operadores binários numéricos
         """
-        left_type = self.get_type(ctx.getChild(0))
-        right_type = self.get_type(ctx.getChild(2))
+        # Para expressões aditivas, multiplicativas e de potência
+        # o primeiro filho é o lado esquerdo e o último é o lado direito
+        left_expr = None
+        right_expr = None
+        
+        # Determina os operandos baseado no tipo de contexto
+        if isinstance(ctx, TypeScriptSimplificadoParser.AddExprContext):
+            left_expr = ctx.additiveExpr()
+            right_expr = ctx.multiplicativeExpr()
+        elif isinstance(ctx, TypeScriptSimplificadoParser.SubExprContext):
+            left_expr = ctx.additiveExpr()
+            right_expr = ctx.multiplicativeExpr()
+        elif isinstance(ctx, TypeScriptSimplificadoParser.MulExprContext):
+            left_expr = ctx.multiplicativeExpr()
+            right_expr = ctx.powerExpr()
+        elif isinstance(ctx, TypeScriptSimplificadoParser.DivExprContext):
+            left_expr = ctx.multiplicativeExpr()
+            right_expr = ctx.powerExpr()
+        elif isinstance(ctx, TypeScriptSimplificadoParser.ModExprContext):
+            left_expr = ctx.multiplicativeExpr()
+            right_expr = ctx.powerExpr()
+        elif isinstance(ctx, TypeScriptSimplificadoParser.PowExprContext):
+            left_expr = ctx.powerExpr()
+            right_expr = ctx.unaryExpr()
+        
+        if left_expr is None or right_expr is None:
+            return
+        
+        left_type = self.get_type(left_expr)
+        right_type = self.get_type(right_expr)
         
         if left_type != "number" and left_type != "unknown":
             self.add_error(
@@ -730,8 +829,22 @@ class SemanticAnalyzer(TypeScriptSimplificadoListener):
         """
         Verifica operadores binários booleanos
         """
-        left_type = self.get_type(ctx.getChild(0))
-        right_type = self.get_type(ctx.getChild(2))
+        left_expr = None
+        right_expr = None
+        
+        # Determina os operandos baseado no tipo de contexto
+        if isinstance(ctx, TypeScriptSimplificadoParser.AndExprContext):
+            left_expr = ctx.logicalAndExpr()
+            right_expr = ctx.equalityExpr()
+        elif isinstance(ctx, TypeScriptSimplificadoParser.OrExprContext):
+            left_expr = ctx.logicalOrExpr()
+            right_expr = ctx.logicalAndExpr()
+        
+        if left_expr is None or right_expr is None:
+            return
+        
+        left_type = self.get_type(left_expr)
+        right_type = self.get_type(right_expr)
         
         if left_type != "boolean" and left_type != "unknown":
             self.add_error(
@@ -779,15 +892,19 @@ class SemanticAnalyzer(TypeScriptSimplificadoListener):
                 res += "  " * (indent + 1) + f"{symbol}\n"
             return res
         
-        # Percorre até o escopo global
-        current = self.symbol_table
-        scopes = []
-        while current:
-            scopes.append(current)
-            current = current.parent
+        def dump_scope_tree(scope, indent=0):
+            """Recursivamente imprime o escopo e seus filhos"""
+            res = dump_scope(scope, indent)
+            
+            # Encontra escopos filhos deste escopo
+            for child_scope in self.all_scopes:
+                if child_scope.parent == scope:
+                    res += dump_scope_tree(child_scope, indent + 1)
+            
+            return res
         
-        # Imprime do global para o local
-        for scope in reversed(scopes):
-            result += dump_scope(scope)
+        # Começa pelo escopo global
+        global_scope = self.all_scopes[0]
+        result += dump_scope_tree(global_scope)
         
         return result
