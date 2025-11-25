@@ -16,7 +16,7 @@ O código está completo na plataforma GitHub: https://github.com/PedroEmanuelMo
 - Verificação de estrutura gramatical
 - Detecção de erros sintáticos com número de linha e coluna
 
-### Análise Semântica
+### Análise Semântica (Padrão Visitor)
 - **Verificação de tipos**: Compatibilidade em atribuições, operações e chamadas de função
 - **Gerenciamento de escopos**: Escopo global e de bloco hierárquico
 - **Regras de let/const**: 
@@ -28,6 +28,11 @@ O código está completo na plataforma GitHub: https://github.com/PedroEmanuelMo
   - Tipos de parâmetros e retorno
   - Número correto de argumentos
   - Compatibilidade de tipos em chamadas
+- **Verificação de arrays**:
+  - Compatibilidade de tipos em `number[]` vs `string[]`
+  - Verificação de tipo em atribuições a elementos
+  - Validação de índices (devem ser `number`)
+  - Propriedade `.length` apenas em arrays
 - **Operadores tipados**: Verificação de tipos em operações aritméticas, lógicas e de comparação
 - **Estruturas de controle**: Verificação de tipos em condições (`if`, `while`)
 
@@ -111,14 +116,14 @@ Este script executa automaticamente todos os casos de teste (válidos e inválid
 │   ├── TypeScriptSimplificado.g4
 │   ├── TypeScriptSimplificadoLexer.py
 │   ├── TypeScriptSimplificadoParser.py
-│   └── TypeScriptSimplificadoListener.py
+│   └── TypeScriptSimplificadoVisitor.py
 ├── testes/
-│   ├── valid/                    # 16 programas válidos
+│   ├── valid/                    # 20 programas válidos
 │   │   ├── 01_hello_world.ts
 │   │   ├── 08_function.ts
 │   │   ├── 14_scope_blocks.ts
 │   │   └── ...
-│   └── invalid/                  # 24 programas com erros
+│   └── invalid/                  # 32 programas com erros
 │       ├── 01_lexical_error_char.ts         # Erro léxico
 │       ├── 03_syntax_error_semicolon.ts     # Erro sintático
 │       ├── semantic_01_use_before_init.ts   # Erro semântico
@@ -279,7 +284,7 @@ Escopo: global
 
 ## Casos de Teste
 
-### Testes Válidos (16 arquivos)
+### Testes Válidos (20 arquivos)
 
 | Arquivo | Descrição |
 |---------|-----------|
@@ -299,8 +304,12 @@ Escopo: global
 | `14_scope_blocks.ts` | Escopos de bloco |
 | `15_scope_functions.ts` | Escopos de função |
 | `16_let_no_init_then_assign.ts` | let sem init |
+| `17_teste.ts` | Programa de teste |
+| `18_arrays_number.ts` | Arrays de números completo |
+| `19_arrays_string.ts` | Arrays de strings completo |
+| `20_arrays_functions.ts` | Arrays como parâmetros/retorno |
 
-### Testes Inválidos (24 arquivos)
+### Testes Inválidos (32 arquivos)
 
 #### Erros Léxicos (2)
 - `01_lexical_error_char.ts` - Caractere inválido
@@ -318,7 +327,9 @@ Escopo: global
 - `11_syntax_error_const.ts` - Const malformado
 - `12_syntax_error_brace.ts` - Chaves desbalanceadas
 
-#### Erros Semânticos (12)
+#### Erros Semânticos (20)
+
+**Erros gerais:**
 - `semantic_01_use_before_init.ts` - Uso antes de inicialização
 - `semantic_02_const_reassignment.ts` - Reatribuição de const
 - `semantic_03_type_mismatch.ts` - Tipos incompatíveis
@@ -331,6 +342,16 @@ Escopo: global
 - `semantic_10_wrong_arg_type.ts` - Tipo errado de argumento
 - `semantic_11_if_not_boolean.ts` - Condição não-booleana
 - `semantic_12_void_return_value.ts` - Void retornando valor
+
+**Erros específicos de arrays:**
+- `semantic_13_array_type_mismatch.ts` - Atribuir array de tipo incompatível
+- `semantic_14_array_element_type.ts` - Tipo errado em elemento de array
+- `semantic_15_array_index_not_number.ts` - Índice de array não numérico
+- `semantic_16_array_wrong_init_type.ts` - Inicializar array com tipo errado
+- `semantic_17_array_function_param_mismatch.ts` - Array de tipo errado como parâmetro
+- `semantic_18_length_on_non_array.ts` - Usar .length em não-array
+- `semantic_19_array_access_on_non_array.ts` - Acessar índice em não-array
+- `semantic_20_array_return_type_mismatch.ts` - Retornar array de tipo errado
 
 ## Especificação da Linguagem
 
@@ -348,8 +369,9 @@ Este compilador foi desenvolvido para fins educacionais na disciplina de **Compi
 - Implementação de tabelas de símbolos hierárquicas
 - Gerenciamento de escopos com estruturas de dados simples (dicionários)
 - Verificação de tipos estática
-- Uso do padrão Visitor/Listener do ANTLR4
+- Uso do padrão **Visitor** do ANTLR4 para análise semântica
 - Tratamento e reporte de erros em cada fase
+- Inferência e propagação de tipos através da árvore sintática
 
 ## Autores
 
