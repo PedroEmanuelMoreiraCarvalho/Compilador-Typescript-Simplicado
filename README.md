@@ -1,20 +1,22 @@
-# Compilador TypeScript Simplificado 🚀
+# Compilador TypeScript Simplificado
 
 Compilador completo para a linguagem TypeScript Simplificado, desenvolvido com ANTLR4 e Python. Implementa as três fases principais de um front-end de compilador: análise léxica, sintática e semântica.
 
-## 📋 Características
+O código está completo na plataforma GitHub: https://github.com/PedroEmanuelMoreiraCarvalho/Compilador-Typescript-Simplicado
 
-### ✅ Análise Léxica
+## Características
+
+### Análise Léxica
 - Tokenização completa da linguagem
 - Identificação de palavras-chave, operadores e literais
 - Detecção de caracteres inválidos com número de linha
 
-### ✅ Análise Sintática  
+### Análise Sintática  
 - Parser gerado pelo ANTLR4
 - Verificação de estrutura gramatical
 - Detecção de erros sintáticos com número de linha e coluna
 
-### ✅ Análise Semântica
+### Análise Semântica
 - **Verificação de tipos**: Compatibilidade em atribuições, operações e chamadas de função
 - **Gerenciamento de escopos**: Escopo global e de bloco hierárquico
 - **Regras de let/const**: 
@@ -29,7 +31,7 @@ Compilador completo para a linguagem TypeScript Simplificado, desenvolvido com A
 - **Operadores tipados**: Verificação de tipos em operações aritméticas, lógicas e de comparação
 - **Estruturas de controle**: Verificação de tipos em condições (`if`, `while`)
 
-## 🛠️ Tipos e Recursos Suportados
+## Tipos e Recursos Suportados
 
 - **Tipos básicos**: `number`, `string`, `boolean`, `void`
 - **Arrays**: `number[]`, `string[]`
@@ -46,7 +48,7 @@ Compilador completo para a linguagem TypeScript Simplificado, desenvolvido com A
   - Lógicos: `&&`, `||`, `!`
   - Comparação: `==`, `!=`, `<`, `>`, `<=`, `>=`
 
-## 🔧 Instalação
+## Instalação
 
 ### Pré-requisitos
 
@@ -64,7 +66,7 @@ pip install antlr4-python3-runtime
 python -c "import antlr4; print('✓ ANTLR4 instalado com sucesso!')"
 ```
 
-## 🚀 Como Usar
+## Como Usar
 
 ### Executando o Compilador
 
@@ -101,7 +103,7 @@ python run_tests.py
 
 Este script executa automaticamente todos os casos de teste (válidos e inválidos) e gera um relatório completo de resultados.
 
-## 📁 Estrutura do Projeto
+## Estrutura do Projeto
 
 ```
 .
@@ -124,12 +126,10 @@ Este script executa automaticamente todos os casos de teste (válidos e inválid
 ├── main.py                       # Compilador principal
 ├── semantic_analyzer.py          # Analisador semântico
 ├── run_tests.py                  # Script de testes automatizado
-├── README.md                     # Esta documentação
-└── docs/
-    └── typescript-simplificado-spec.md  # Especificação da linguagem
+└── README.md                     # Esta documentação
 ```
 
-## 🔍 Arquitetura do Analisador Semântico
+## Arquitetura do Analisador Semântico
 
 ### Tabela de Símbolos Hierárquica
 
@@ -144,6 +144,8 @@ class SymbolTable:
     parent: SymbolTable # Referência ao escopo pai (None para global)
     scope_name: str     # Nome do escopo (para debug)
 ```
+
+O analisador mantém uma lista `all_scopes` que rastreia todos os escopos criados durante a análise, permitindo a visualização completa da hierarquia de escopos no modo debug, mesmo após a saída dos escopos de função e bloco.
 
 ### Classe Symbol
 
@@ -164,7 +166,7 @@ class Symbol:
 ### Gerenciamento de Escopos
 
 1. **Escopo Global**: Criado no início da análise, persiste durante toda a compilação
-2. **Escopo de Função**: Criado ao entrar em declaração de função
+2. **Escopo de Função**: Criado ao entrar em declaração de função (nomeado `function_<nome>`)
 3. **Escopo de Bloco**: Criado para blocos `{}`, `if`, `while`, `for`
 
 A busca de símbolos é **hierárquica**: 
@@ -172,42 +174,47 @@ A busca de símbolos é **hierárquica**:
 - Se não encontrar, procura no escopo pai
 - Continua recursivamente até o escopo global
 
-## 📊 Exemplos de Saída
+A visualização da tabela de símbolos no modo debug mostra a hierarquia completa com indentação:
+- Escopos filhos são indentados sob seus pais
+- Parâmetros de função são declarados no escopo da função
+- Variáveis locais permanecem isoladas em seus escopos
 
-### ✅ Compilação com Sucesso
+## Exemplos de Saída
+
+### Compilação com Sucesso
 
 ```
 === Compilando: testes/valid/08_function.ts ===
 
-✓ Análise Léxica: SUCESSO
+[OK] Analise Lexica: SUCESSO
   Total de tokens: 45
 
-✓ Análise Sintática: SUCESSO
+[OK] Analise Sintatica: SUCESSO
   Árvore sintática gerada com sucesso!
 
 === Análise Semântica ===
-✓ Análise Semântica: SUCESSO
+[OK] Analise Semantica: SUCESSO
   Todas as verificações semânticas passaram!
 
 ==================================================
-✅ COMPILAÇÃO CONCLUÍDA COM SUCESSO!
+[SUCESSO] COMPILACAO CONCLUIDA COM SUCESSO!
 ==================================================
 ```
 
-### ❌ Erro Semântico Detectado
+### Erro Semântico Detectado
 
 ```
 === Compilando: testes/invalid/semantic_01_use_before_init.ts ===
 
-✓ Análise Léxica: SUCESSO
+[OK] Analise Lexica: SUCESSO
   Total de tokens: 21
 
-✓ Análise Sintática: SUCESSO
+[OK] Analise Sintatica: SUCESSO
   Árvore sintática gerada com sucesso!
 
 === Análise Semântica ===
 
-❌ ERRO SEMÂNTICO detectado!
+[ERRO] ERRO SEMANTICO detectado!
 
 === ERROS SEMÂNTICOS ===
   Erro semântico na linha 5: Variável 'x' está sendo usada antes 
@@ -215,18 +222,62 @@ A busca de símbolos é **hierárquica**:
 ==================================================
 ```
 
-### 🔍 Modo Debug
+### Erro de Tipo em Operação
+
+```
+=== Compilando: testes/invalid/semantic_06_wrong_operator_type.ts ===
+
+[OK] Analise Lexica: SUCESSO
+  Total de tokens: 24
+
+[OK] Analise Sintatica: SUCESSO
+  Árvore sintática gerada com sucesso!
+
+=== Análise Semântica ===
+
+[ERRO] ERRO SEMANTICO detectado!
+
+=== ERROS SEMÂNTICOS ===
+  Erro semântico na linha 5: Operador '+' requer operandos do tipo 'number', 
+  mas o lado esquerdo é 'string'
+==================================================
+```
+
+### Modo Debug
 
 ```bash
 python main.py testes/valid/15_scope_functions.ts --debug
 ```
 
 Mostra:
-- Tabela de símbolos completa
-- Estrutura de escopos
-- Árvore sintática detalhada
+- Árvore sintática detalhada (impressão hierárquica da AST)
+- Tabela de símbolos completa com todos os escopos
+- Estrutura de escopos hierárquica (global, funções e blocos)
+- Símbolos declarados em cada escopo com seus tipos e estados
 
-## 🧪 Casos de Teste
+Exemplo de saída com --debug:
+
+```
+=== Árvore Sintática ===
+REGRA: program
+  REGRA: statement
+    REGRA: variableDecl
+      TOKEN: let (tipo: LET)
+      TOKEN: global (tipo: ID)
+      ...
+
+=== TABELA DE SÍMBOLOS ===
+Escopo: global
+  let global: number (initialized)
+  Function teste(parametro: number): number
+  let valor: number (initialized)
+  Escopo: function_teste
+    let parametro: number (initialized)
+    let local: number (initialized)
+    let resultado: number (initialized)
+```
+
+## Casos de Teste
 
 ### Testes Válidos (16 arquivos)
 
@@ -281,7 +332,7 @@ Mostra:
 - `semantic_11_if_not_boolean.ts` - Condição não-booleana
 - `semantic_12_void_return_value.ts` - Void retornando valor
 
-## 📚 Especificação da Linguagem
+## Especificação da Linguagem
 
 Para detalhes completos sobre a sintaxe e semântica da linguagem, consulte:
 
@@ -289,7 +340,7 @@ Para detalhes completos sobre a sintaxe e semântica da linguagem, consulte:
 docs/typescript-simplificado-spec.md
 ```
 
-## 🎓 Uso Didático
+## Uso Didático
 
 Este compilador foi desenvolvido para fins educacionais na disciplina de **Compiladores**. A estrutura do código é **didática e bem comentada**, facilitando o entendimento de:
 
@@ -300,10 +351,10 @@ Este compilador foi desenvolvido para fins educacionais na disciplina de **Compi
 - Uso do padrão Visitor/Listener do ANTLR4
 - Tratamento e reporte de erros em cada fase
 
-## 👥 Autores
+## Autores
 
 Desenvolvido como parte do Trabalho Final da disciplina de Compiladores - UFPI
 
-## 📄 Licença
+## Licença
 
 Este projeto é de código aberto para fins educacionais.

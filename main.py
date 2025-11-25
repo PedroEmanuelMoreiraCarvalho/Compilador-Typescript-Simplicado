@@ -142,11 +142,11 @@ def compile_file(file_path):
         print("[OK] Analise Semantica: SUCESSO")
         print(f"  Todas as verificações semânticas passaram!\n")
         
-        # Opcional: Imprime a tabela de símbolos
+        # Opcional: Imprime a tabela de símbolos e árvore
         if "--debug" in sys.argv or "-d" in sys.argv:
-            print(semantic_analyzer.get_symbol_table_dump())
             print("\n=== Árvore Sintática ===")
             TreePrinter.print_tree(tree, parser)
+            print(semantic_analyzer.get_symbol_table_dump())
         
         print("\n" + "="*50)
         print("[SUCESSO] COMPILACAO CONCLUIDA COM SUCESSO!")
