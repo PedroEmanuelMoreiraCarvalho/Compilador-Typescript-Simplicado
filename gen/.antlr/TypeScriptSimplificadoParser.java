@@ -18,11 +18,11 @@ public class TypeScriptSimplificadoParser extends Parser {
 	public static final int
 		LET=1, CONST=2, FUNCTION=3, RETURN=4, IF=5, ELSE=6, WHILE=7, FOR=8, NUMBER=9, 
 		STRING=10, BOOLEAN=11, VOID=12, TRUE=13, FALSE=14, CONSOLE=15, LOG=16, 
-		MATH=17, SQRT=18, PARSEINT=19, PARSEFLOAT=20, LENGTH=21, ASSIGN=22, PLUS=23, 
-		MINUS=24, TIMES=25, DIV=26, MOD=27, POW=28, EQ=29, NEQ=30, GT=31, LT=32, 
-		GE=33, LE=34, AND=35, OR=36, NOT=37, LPAREN=38, RPAREN=39, LBRACK=40, 
-		RBRACK=41, LBRACE=42, RBRACE=43, SEMI=44, COMMA=45, DOT=46, COLON=47, 
-		ID=48, NUMBER_LITERAL=49, STRING_LITERAL=50, WS=51, LINE_COMMENT=52, BLOCK_COMMENT=53;
+		MATH=17, SQRT=18, POWFUNC=19, PARSEINT=20, PARSEFLOAT=21, LENGTH=22, ASSIGN=23, 
+		PLUS=24, MINUS=25, TIMES=26, DIV=27, MOD=28, POW=29, EQ=30, NEQ=31, GT=32, 
+		LT=33, GE=34, LE=35, AND=36, OR=37, NOT=38, LPAREN=39, RPAREN=40, LBRACK=41, 
+		RBRACK=42, LBRACE=43, RBRACE=44, SEMI=45, COMMA=46, DOT=47, COLON=48, 
+		ID=49, NUMBER_LITERAL=50, STRING_LITERAL=51, WS=52, LINE_COMMENT=53, BLOCK_COMMENT=54;
 	public static final int
 		RULE_program = 0, RULE_functionDecl = 1, RULE_returnType = 2, RULE_paramList = 3, 
 		RULE_param = 4, RULE_typeAnnotation = 5, RULE_statement = 6, RULE_block = 7, 
@@ -52,10 +52,11 @@ public class TypeScriptSimplificadoParser extends Parser {
 		return new String[] {
 			null, "'let'", "'const'", "'function'", "'return'", "'if'", "'else'", 
 			"'while'", "'for'", "'number'", "'string'", "'boolean'", "'void'", "'true'", 
-			"'false'", "'console'", "'log'", "'Math'", "'sqrt'", "'parseInt'", "'parseFloat'", 
-			"'length'", "'='", "'+'", "'-'", "'*'", "'/'", "'%'", "'**'", "'=='", 
-			"'!='", "'>'", "'<'", "'>='", "'<='", "'&&'", "'||'", "'!'", "'('", "')'", 
-			"'['", "']'", "'{'", "'}'", "';'", "','", "'.'", "':'"
+			"'false'", "'console'", "'log'", "'Math'", "'sqrt'", "'pow'", "'parseInt'", 
+			"'parseFloat'", "'length'", "'='", "'+'", "'-'", "'*'", "'/'", "'%'", 
+			"'**'", "'=='", "'!='", "'>'", "'<'", "'>='", "'<='", "'&&'", "'||'", 
+			"'!'", "'('", "')'", "'['", "']'", "'{'", "'}'", "';'", "','", "'.'", 
+			"':'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
@@ -63,11 +64,11 @@ public class TypeScriptSimplificadoParser extends Parser {
 		return new String[] {
 			null, "LET", "CONST", "FUNCTION", "RETURN", "IF", "ELSE", "WHILE", "FOR", 
 			"NUMBER", "STRING", "BOOLEAN", "VOID", "TRUE", "FALSE", "CONSOLE", "LOG", 
-			"MATH", "SQRT", "PARSEINT", "PARSEFLOAT", "LENGTH", "ASSIGN", "PLUS", 
-			"MINUS", "TIMES", "DIV", "MOD", "POW", "EQ", "NEQ", "GT", "LT", "GE", 
-			"LE", "AND", "OR", "NOT", "LPAREN", "RPAREN", "LBRACK", "RBRACK", "LBRACE", 
-			"RBRACE", "SEMI", "COMMA", "DOT", "COLON", "ID", "NUMBER_LITERAL", "STRING_LITERAL", 
-			"WS", "LINE_COMMENT", "BLOCK_COMMENT"
+			"MATH", "SQRT", "POWFUNC", "PARSEINT", "PARSEFLOAT", "LENGTH", "ASSIGN", 
+			"PLUS", "MINUS", "TIMES", "DIV", "MOD", "POW", "EQ", "NEQ", "GT", "LT", 
+			"GE", "LE", "AND", "OR", "NOT", "LPAREN", "RPAREN", "LBRACK", "RBRACK", 
+			"LBRACE", "RBRACE", "SEMI", "COMMA", "DOT", "COLON", "ID", "NUMBER_LITERAL", 
+			"STRING_LITERAL", "WS", "LINE_COMMENT", "BLOCK_COMMENT"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -140,14 +141,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_program; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterProgram(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitProgram(this);
-		}
 	}
 
 	public final ProgramContext program() throws RecognitionException {
@@ -160,7 +153,7 @@ public class TypeScriptSimplificadoParser extends Parser {
 			setState(76);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 1976234730512830L) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 3952469460836798L) != 0)) {
 				{
 				setState(74);
 				_errHandler.sync(this);
@@ -239,14 +232,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_functionDecl; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterFunctionDecl(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitFunctionDecl(this);
-		}
 	}
 
 	public final FunctionDeclContext functionDecl() throws RecognitionException {
@@ -303,14 +288,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_returnType; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterReturnType(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitReturnType(this);
-		}
 	}
 
 	public final ReturnTypeContext returnType() throws RecognitionException {
@@ -367,14 +344,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_paramList; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterParamList(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitParamList(this);
-		}
 	}
 
 	public final ParamListContext paramList() throws RecognitionException {
@@ -426,14 +395,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_param; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterParam(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitParam(this);
-		}
 	}
 
 	public final ParamContext param() throws RecognitionException {
@@ -477,40 +438,16 @@ public class TypeScriptSimplificadoParser extends Parser {
 	public static class NumberTypeContext extends TypeAnnotationContext {
 		public TerminalNode NUMBER() { return getToken(TypeScriptSimplificadoParser.NUMBER, 0); }
 		public NumberTypeContext(TypeAnnotationContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterNumberType(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitNumberType(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class BooleanTypeContext extends TypeAnnotationContext {
 		public TerminalNode BOOLEAN() { return getToken(TypeScriptSimplificadoParser.BOOLEAN, 0); }
 		public BooleanTypeContext(TypeAnnotationContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterBooleanType(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitBooleanType(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class StringTypeContext extends TypeAnnotationContext {
 		public TerminalNode STRING() { return getToken(TypeScriptSimplificadoParser.STRING, 0); }
 		public StringTypeContext(TypeAnnotationContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterStringType(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitStringType(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class NumberArrayTypeContext extends TypeAnnotationContext {
@@ -518,14 +455,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 		public TerminalNode LBRACK() { return getToken(TypeScriptSimplificadoParser.LBRACK, 0); }
 		public TerminalNode RBRACK() { return getToken(TypeScriptSimplificadoParser.RBRACK, 0); }
 		public NumberArrayTypeContext(TypeAnnotationContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterNumberArrayType(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitNumberArrayType(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class StringArrayTypeContext extends TypeAnnotationContext {
@@ -533,14 +462,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 		public TerminalNode LBRACK() { return getToken(TypeScriptSimplificadoParser.LBRACK, 0); }
 		public TerminalNode RBRACK() { return getToken(TypeScriptSimplificadoParser.RBRACK, 0); }
 		public StringArrayTypeContext(TypeAnnotationContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterStringArrayType(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitStringArrayType(this);
-		}
 	}
 
 	public final TypeAnnotationContext typeAnnotation() throws RecognitionException {
@@ -630,14 +551,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 		}
 		public TerminalNode SEMI() { return getToken(TypeScriptSimplificadoParser.SEMI, 0); }
 		public RetStmtContext(StatementContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterRetStmt(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitRetStmt(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class ForStmtContext extends StatementContext {
@@ -645,14 +558,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			return getRuleContext(ForStatementContext.class,0);
 		}
 		public ForStmtContext(StatementContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterForStmt(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitForStmt(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class ConsoleStmtContext extends StatementContext {
@@ -661,14 +566,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 		}
 		public TerminalNode SEMI() { return getToken(TypeScriptSimplificadoParser.SEMI, 0); }
 		public ConsoleStmtContext(StatementContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterConsoleStmt(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitConsoleStmt(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class ExprStmtContext extends StatementContext {
@@ -677,14 +574,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 		}
 		public TerminalNode SEMI() { return getToken(TypeScriptSimplificadoParser.SEMI, 0); }
 		public ExprStmtContext(StatementContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterExprStmt(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitExprStmt(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class WhileStmtContext extends StatementContext {
@@ -692,14 +581,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			return getRuleContext(WhileStatementContext.class,0);
 		}
 		public WhileStmtContext(StatementContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterWhileStmt(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitWhileStmt(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class IfStmtContext extends StatementContext {
@@ -707,14 +588,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			return getRuleContext(IfStatementContext.class,0);
 		}
 		public IfStmtContext(StatementContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterIfStmt(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitIfStmt(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class BlockStmtContext extends StatementContext {
@@ -722,14 +595,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			return getRuleContext(BlockContext.class,0);
 		}
 		public BlockStmtContext(StatementContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterBlockStmt(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitBlockStmt(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class AssignStmtContext extends StatementContext {
@@ -738,14 +603,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 		}
 		public TerminalNode SEMI() { return getToken(TypeScriptSimplificadoParser.SEMI, 0); }
 		public AssignStmtContext(StatementContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterAssignStmt(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitAssignStmt(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class VarDeclStmtContext extends StatementContext {
@@ -754,14 +611,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 		}
 		public TerminalNode SEMI() { return getToken(TypeScriptSimplificadoParser.SEMI, 0); }
 		public VarDeclStmtContext(StatementContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterVarDeclStmt(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitVarDeclStmt(this);
-		}
 	}
 
 	public final StatementContext statement() throws RecognitionException {
@@ -880,14 +729,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_block; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterBlock(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitBlock(this);
-		}
 	}
 
 	public final BlockContext block() throws RecognitionException {
@@ -902,7 +743,7 @@ public class TypeScriptSimplificadoParser extends Parser {
 			setState(144);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 1976234730512822L) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 3952469460836790L) != 0)) {
 				{
 				{
 				setState(141);
@@ -953,14 +794,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			return getRuleContext(ExpressionContext.class,0);
 		}
 		public LetDeclContext(VariableDeclContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterLetDecl(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitLetDecl(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class ConstDeclContext extends VariableDeclContext {
@@ -975,14 +808,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			return getRuleContext(ExpressionContext.class,0);
 		}
 		public ConstDeclContext(VariableDeclContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterConstDecl(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitConstDecl(this);
-		}
 	}
 
 	public final VariableDeclContext variableDecl() throws RecognitionException {
@@ -1065,14 +890,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_assignmentStmt; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterAssignmentStmt(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitAssignmentStmt(this);
-		}
 	}
 
 	public final AssignmentStmtContext assignmentStmt() throws RecognitionException {
@@ -1121,27 +938,11 @@ public class TypeScriptSimplificadoParser extends Parser {
 		}
 		public TerminalNode RBRACK() { return getToken(TypeScriptSimplificadoParser.RBRACK, 0); }
 		public ArrayAccessLvalueContext(LvalueContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterArrayAccessLvalue(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitArrayAccessLvalue(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class IdLvalueContext extends LvalueContext {
 		public TerminalNode ID() { return getToken(TypeScriptSimplificadoParser.ID, 0); }
 		public IdLvalueContext(LvalueContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterIdLvalue(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitIdLvalue(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class LengthAccessLvalueContext extends LvalueContext {
@@ -1149,14 +950,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 		public TerminalNode DOT() { return getToken(TypeScriptSimplificadoParser.DOT, 0); }
 		public TerminalNode LENGTH() { return getToken(TypeScriptSimplificadoParser.LENGTH, 0); }
 		public LengthAccessLvalueContext(LvalueContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterLengthAccessLvalue(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitLengthAccessLvalue(this);
-		}
 	}
 
 	public final LvalueContext lvalue() throws RecognitionException {
@@ -1232,14 +1025,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_ifStatement; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterIfStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitIfStatement(this);
-		}
 	}
 
 	public final IfStatementContext ifStatement() throws RecognitionException {
@@ -1298,14 +1083,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_whileStatement; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterWhileStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitWhileStatement(this);
-		}
 	}
 
 	public final WhileStatementContext whileStatement() throws RecognitionException {
@@ -1362,14 +1139,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_forStatement; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterForStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitForStatement(this);
-		}
 	}
 
 	public final ForStatementContext forStatement() throws RecognitionException {
@@ -1386,7 +1155,7 @@ public class TypeScriptSimplificadoParser extends Parser {
 			setState(199);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 281474976710662L) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 562949953421318L) != 0)) {
 				{
 				setState(198);
 				forInit();
@@ -1398,7 +1167,7 @@ public class TypeScriptSimplificadoParser extends Parser {
 			setState(203);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 1971836683968512L) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 3943673367781376L) != 0)) {
 				{
 				setState(202);
 				expression();
@@ -1446,14 +1215,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_forInit; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterForInit(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitForInit(this);
-		}
 	}
 
 	public final ForInitContext forInit() throws RecognitionException {
@@ -1502,14 +1263,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_forUpdate; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterForUpdate(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitForUpdate(this);
-		}
 	}
 
 	public final ForUpdateContext forUpdate() throws RecognitionException {
@@ -1543,14 +1296,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_returnStatement; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterReturnStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitReturnStatement(this);
-		}
 	}
 
 	public final ReturnStatementContext returnStatement() throws RecognitionException {
@@ -1565,7 +1310,7 @@ public class TypeScriptSimplificadoParser extends Parser {
 			setState(220);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 1971836683968512L) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 3943673367781376L) != 0)) {
 				{
 				setState(219);
 				expression();
@@ -1599,14 +1344,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_consoleLogStmt; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterConsoleLogStmt(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitConsoleLogStmt(this);
-		}
 	}
 
 	public final ConsoleLogStmtContext consoleLogStmt() throws RecognitionException {
@@ -1627,7 +1364,7 @@ public class TypeScriptSimplificadoParser extends Parser {
 			setState(227);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 1971836683968512L) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 3943673367781376L) != 0)) {
 				{
 				setState(226);
 				expressionList();
@@ -1658,14 +1395,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_expressionStmt; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterExpressionStmt(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitExpressionStmt(this);
-		}
 	}
 
 	public final ExpressionStmtContext expressionStmt() throws RecognitionException {
@@ -1705,14 +1434,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_expressionList; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterExpressionList(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitExpressionList(this);
-		}
 	}
 
 	public final ExpressionListContext expressionList() throws RecognitionException {
@@ -1762,14 +1483,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_expression; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitExpression(this);
-		}
 	}
 
 	public final ExpressionContext expression() throws RecognitionException {
@@ -1811,14 +1524,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			return getRuleContext(LogicalAndExprContext.class,0);
 		}
 		public OrPassContext(LogicalOrExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterOrPass(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitOrPass(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class OrExprContext extends LogicalOrExprContext {
@@ -1830,14 +1535,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			return getRuleContext(LogicalAndExprContext.class,0);
 		}
 		public OrExprContext(LogicalOrExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterOrExpr(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitOrExpr(this);
-		}
 	}
 
 	public final LogicalOrExprContext logicalOrExpr() throws RecognitionException {
@@ -1919,14 +1616,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			return getRuleContext(EqualityExprContext.class,0);
 		}
 		public AndPassContext(LogicalAndExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterAndPass(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitAndPass(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class AndExprContext extends LogicalAndExprContext {
@@ -1938,14 +1627,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			return getRuleContext(EqualityExprContext.class,0);
 		}
 		public AndExprContext(LogicalAndExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterAndExpr(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitAndExpr(this);
-		}
 	}
 
 	public final LogicalAndExprContext logicalAndExpr() throws RecognitionException {
@@ -2031,14 +1712,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			return getRuleContext(RelationalExprContext.class,0);
 		}
 		public EqExprContext(EqualityExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterEqExpr(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitEqExpr(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class EqPassContext extends EqualityExprContext {
@@ -2046,14 +1719,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			return getRuleContext(RelationalExprContext.class,0);
 		}
 		public EqPassContext(EqualityExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterEqPass(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitEqPass(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class NeqExprContext extends EqualityExprContext {
@@ -2065,14 +1730,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			return getRuleContext(RelationalExprContext.class,0);
 		}
 		public NeqExprContext(EqualityExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterNeqExpr(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitNeqExpr(this);
-		}
 	}
 
 	public final EqualityExprContext equalityExpr() throws RecognitionException {
@@ -2176,14 +1833,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			return getRuleContext(AdditiveExprContext.class,0);
 		}
 		public GeExprContext(RelationalExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterGeExpr(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitGeExpr(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class LtExprContext extends RelationalExprContext {
@@ -2195,14 +1844,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			return getRuleContext(AdditiveExprContext.class,0);
 		}
 		public LtExprContext(RelationalExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterLtExpr(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitLtExpr(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class GtExprContext extends RelationalExprContext {
@@ -2214,14 +1855,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			return getRuleContext(AdditiveExprContext.class,0);
 		}
 		public GtExprContext(RelationalExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterGtExpr(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitGtExpr(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class LeExprContext extends RelationalExprContext {
@@ -2233,14 +1866,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			return getRuleContext(AdditiveExprContext.class,0);
 		}
 		public LeExprContext(RelationalExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterLeExpr(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitLeExpr(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class RelPassContext extends RelationalExprContext {
@@ -2248,14 +1873,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			return getRuleContext(AdditiveExprContext.class,0);
 		}
 		public RelPassContext(RelationalExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterRelPass(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitRelPass(this);
-		}
 	}
 
 	public final RelationalExprContext relationalExpr() throws RecognitionException {
@@ -2383,14 +2000,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			return getRuleContext(MultiplicativeExprContext.class,0);
 		}
 		public AddExprContext(AdditiveExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterAddExpr(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitAddExpr(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class AddPassContext extends AdditiveExprContext {
@@ -2398,14 +2007,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			return getRuleContext(MultiplicativeExprContext.class,0);
 		}
 		public AddPassContext(AdditiveExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterAddPass(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitAddPass(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class SubExprContext extends AdditiveExprContext {
@@ -2417,14 +2018,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			return getRuleContext(MultiplicativeExprContext.class,0);
 		}
 		public SubExprContext(AdditiveExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterSubExpr(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitSubExpr(this);
-		}
 	}
 
 	public final AdditiveExprContext additiveExpr() throws RecognitionException {
@@ -2524,14 +2117,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			return getRuleContext(PowerExprContext.class,0);
 		}
 		public MulPassContext(MultiplicativeExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterMulPass(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitMulPass(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class ModExprContext extends MultiplicativeExprContext {
@@ -2543,14 +2128,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			return getRuleContext(PowerExprContext.class,0);
 		}
 		public ModExprContext(MultiplicativeExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterModExpr(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitModExpr(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class MulExprContext extends MultiplicativeExprContext {
@@ -2562,14 +2139,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			return getRuleContext(PowerExprContext.class,0);
 		}
 		public MulExprContext(MultiplicativeExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterMulExpr(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitMulExpr(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class DivExprContext extends MultiplicativeExprContext {
@@ -2581,14 +2150,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			return getRuleContext(PowerExprContext.class,0);
 		}
 		public DivExprContext(MultiplicativeExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterDivExpr(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitDivExpr(this);
-		}
 	}
 
 	public final MultiplicativeExprContext multiplicativeExpr() throws RecognitionException {
@@ -2704,14 +2265,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			return getRuleContext(PowerExprContext.class,0);
 		}
 		public PowExprContext(PowerExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterPowExpr(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitPowExpr(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class PowPassContext extends PowerExprContext {
@@ -2719,14 +2272,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			return getRuleContext(UnaryExprContext.class,0);
 		}
 		public PowPassContext(PowerExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterPowPass(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitPowPass(this);
-		}
 	}
 
 	public final PowerExprContext powerExpr() throws RecognitionException {
@@ -2788,14 +2333,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			return getRuleContext(UnaryExprContext.class,0);
 		}
 		public NotExprContext(UnaryExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterNotExpr(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitNotExpr(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class NegExprContext extends UnaryExprContext {
@@ -2804,14 +2341,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			return getRuleContext(UnaryExprContext.class,0);
 		}
 		public NegExprContext(UnaryExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterNegExpr(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitNegExpr(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class UnaryPassContext extends UnaryExprContext {
@@ -2819,14 +2348,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			return getRuleContext(PrimaryExprContext.class,0);
 		}
 		public UnaryPassContext(UnaryExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterUnaryPass(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitUnaryPass(this);
-		}
 	}
 
 	public final UnaryExprContext unaryExpr() throws RecognitionException {
@@ -2906,14 +2427,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 		public TerminalNode DOT() { return getToken(TypeScriptSimplificadoParser.DOT, 0); }
 		public TerminalNode LENGTH() { return getToken(TypeScriptSimplificadoParser.LENGTH, 0); }
 		public LengthExprContext(PrimaryExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterLengthExpr(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitLengthExpr(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class ArrayLitExprContext extends PrimaryExprContext {
@@ -2921,14 +2434,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			return getRuleContext(ArrayLiteralContext.class,0);
 		}
 		public ArrayLitExprContext(PrimaryExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterArrayLitExpr(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitArrayLitExpr(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class ArrayAccessExprContext extends PrimaryExprContext {
@@ -2939,14 +2444,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 		}
 		public TerminalNode RBRACK() { return getToken(TypeScriptSimplificadoParser.RBRACK, 0); }
 		public ArrayAccessExprContext(PrimaryExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterArrayAccessExpr(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitArrayAccessExpr(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class LiteralExprContext extends PrimaryExprContext {
@@ -2954,14 +2451,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			return getRuleContext(LiteralContext.class,0);
 		}
 		public LiteralExprContext(PrimaryExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterLiteralExpr(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitLiteralExpr(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class FuncCallExprContext extends PrimaryExprContext {
@@ -2969,14 +2458,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			return getRuleContext(FunctionCallContext.class,0);
 		}
 		public FuncCallExprContext(PrimaryExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterFuncCallExpr(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitFuncCallExpr(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class ConvFuncCallExprContext extends PrimaryExprContext {
@@ -2984,14 +2465,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			return getRuleContext(ConversionFunctionCallContext.class,0);
 		}
 		public ConvFuncCallExprContext(PrimaryExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterConvFuncCallExpr(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitConvFuncCallExpr(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class ParenExprContext extends PrimaryExprContext {
@@ -3001,27 +2474,11 @@ public class TypeScriptSimplificadoParser extends Parser {
 		}
 		public TerminalNode RPAREN() { return getToken(TypeScriptSimplificadoParser.RPAREN, 0); }
 		public ParenExprContext(PrimaryExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterParenExpr(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitParenExpr(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class IdExprContext extends PrimaryExprContext {
 		public TerminalNode ID() { return getToken(TypeScriptSimplificadoParser.ID, 0); }
 		public IdExprContext(PrimaryExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterIdExpr(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitIdExpr(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class MathFuncCallExprContext extends PrimaryExprContext {
@@ -3029,14 +2486,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			return getRuleContext(MathFunctionCallContext.class,0);
 		}
 		public MathFuncCallExprContext(PrimaryExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterMathFuncCallExpr(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitMathFuncCallExpr(this);
-		}
 	}
 
 	public final PrimaryExprContext primaryExpr() throws RecognitionException {
@@ -3161,53 +2610,21 @@ public class TypeScriptSimplificadoParser extends Parser {
 	public static class FalseLiteralContext extends LiteralContext {
 		public TerminalNode FALSE() { return getToken(TypeScriptSimplificadoParser.FALSE, 0); }
 		public FalseLiteralContext(LiteralContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterFalseLiteral(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitFalseLiteral(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class StringLiteralContext extends LiteralContext {
 		public TerminalNode STRING_LITERAL() { return getToken(TypeScriptSimplificadoParser.STRING_LITERAL, 0); }
 		public StringLiteralContext(LiteralContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterStringLiteral(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitStringLiteral(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class TrueLiteralContext extends LiteralContext {
 		public TerminalNode TRUE() { return getToken(TypeScriptSimplificadoParser.TRUE, 0); }
 		public TrueLiteralContext(LiteralContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterTrueLiteral(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitTrueLiteral(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class NumberLiteralContext extends LiteralContext {
 		public TerminalNode NUMBER_LITERAL() { return getToken(TypeScriptSimplificadoParser.NUMBER_LITERAL, 0); }
 		public NumberLiteralContext(LiteralContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterNumberLiteral(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitNumberLiteral(this);
-		}
 	}
 
 	public final LiteralContext literal() throws RecognitionException {
@@ -3275,14 +2692,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_arrayLiteral; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterArrayLiteral(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitArrayLiteral(this);
-		}
 	}
 
 	public final ArrayLiteralContext arrayLiteral() throws RecognitionException {
@@ -3297,7 +2706,7 @@ public class TypeScriptSimplificadoParser extends Parser {
 			setState(372);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 1971836683968512L) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 3943673367781376L) != 0)) {
 				{
 				setState(371);
 				expressionList();
@@ -3331,14 +2740,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_functionCall; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterFunctionCall(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitFunctionCall(this);
-		}
 	}
 
 	public final FunctionCallContext functionCall() throws RecognitionException {
@@ -3355,7 +2756,7 @@ public class TypeScriptSimplificadoParser extends Parser {
 			setState(379);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 1971836683968512L) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 3943673367781376L) != 0)) {
 				{
 				setState(378);
 				argumentList();
@@ -3393,14 +2794,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_argumentList; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterArgumentList(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitArgumentList(this);
-		}
 	}
 
 	public final ArgumentListContext argumentList() throws RecognitionException {
@@ -3457,7 +2850,7 @@ public class TypeScriptSimplificadoParser extends Parser {
 	public static class MathPowCallContext extends MathFunctionCallContext {
 		public TerminalNode MATH() { return getToken(TypeScriptSimplificadoParser.MATH, 0); }
 		public TerminalNode DOT() { return getToken(TypeScriptSimplificadoParser.DOT, 0); }
-		public TerminalNode POW() { return getToken(TypeScriptSimplificadoParser.POW, 0); }
+		public TerminalNode POWFUNC() { return getToken(TypeScriptSimplificadoParser.POWFUNC, 0); }
 		public TerminalNode LPAREN() { return getToken(TypeScriptSimplificadoParser.LPAREN, 0); }
 		public List<ExpressionContext> expression() {
 			return getRuleContexts(ExpressionContext.class);
@@ -3468,14 +2861,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 		public TerminalNode COMMA() { return getToken(TypeScriptSimplificadoParser.COMMA, 0); }
 		public TerminalNode RPAREN() { return getToken(TypeScriptSimplificadoParser.RPAREN, 0); }
 		public MathPowCallContext(MathFunctionCallContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterMathPowCall(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitMathPowCall(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class MathSqrtCallContext extends MathFunctionCallContext {
@@ -3488,14 +2873,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 		}
 		public TerminalNode RPAREN() { return getToken(TypeScriptSimplificadoParser.RPAREN, 0); }
 		public MathSqrtCallContext(MathFunctionCallContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterMathSqrtCall(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitMathSqrtCall(this);
-		}
 	}
 
 	public final MathFunctionCallContext mathFunctionCall() throws RecognitionException {
@@ -3532,7 +2909,7 @@ public class TypeScriptSimplificadoParser extends Parser {
 				setState(399);
 				match(DOT);
 				setState(400);
-				match(POW);
+				match(POWFUNC);
 				setState(401);
 				match(LPAREN);
 				setState(402);
@@ -3579,14 +2956,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 		}
 		public TerminalNode RPAREN() { return getToken(TypeScriptSimplificadoParser.RPAREN, 0); }
 		public ParseFloatCallContext(ConversionFunctionCallContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterParseFloatCall(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitParseFloatCall(this);
-		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class ParseIntCallContext extends ConversionFunctionCallContext {
@@ -3597,14 +2966,6 @@ public class TypeScriptSimplificadoParser extends Parser {
 		}
 		public TerminalNode RPAREN() { return getToken(TypeScriptSimplificadoParser.RPAREN, 0); }
 		public ParseIntCallContext(ConversionFunctionCallContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).enterParseIntCall(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TypeScriptSimplificadoListener ) ((TypeScriptSimplificadoListener)listener).exitParseIntCall(this);
-		}
 	}
 
 	public final ConversionFunctionCallContext conversionFunctionCall() throws RecognitionException {
@@ -3732,7 +3093,7 @@ public class TypeScriptSimplificadoParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u00015\u01a6\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
+		"\u0004\u00016\u01a6\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
 		"\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004\u0007\u0004\u0002"+
 		"\u0005\u0007\u0005\u0002\u0006\u0007\u0006\u0002\u0007\u0007\u0007\u0002"+
 		"\b\u0007\b\u0002\t\u0007\t\u0002\n\u0007\n\u0002\u000b\u0007\u000b\u0002"+
@@ -3817,189 +3178,190 @@ public class TypeScriptSimplificadoParser extends Parser {
 		"\u0000\u0000JI\u0001\u0000\u0000\u0000KN\u0001\u0000\u0000\u0000LJ\u0001"+
 		"\u0000\u0000\u0000LM\u0001\u0000\u0000\u0000MO\u0001\u0000\u0000\u0000"+
 		"NL\u0001\u0000\u0000\u0000OP\u0005\u0000\u0000\u0001P\u0001\u0001\u0000"+
-		"\u0000\u0000QR\u0005\u0003\u0000\u0000RS\u00050\u0000\u0000SU\u0005&\u0000"+
-		"\u0000TV\u0003\u0006\u0003\u0000UT\u0001\u0000\u0000\u0000UV\u0001\u0000"+
-		"\u0000\u0000VW\u0001\u0000\u0000\u0000WX\u0005\'\u0000\u0000XY\u0005/"+
-		"\u0000\u0000YZ\u0003\u0004\u0002\u0000Z[\u0003\u000e\u0007\u0000[\u0003"+
+		"\u0000\u0000QR\u0005\u0003\u0000\u0000RS\u00051\u0000\u0000SU\u0005\'"+
+		"\u0000\u0000TV\u0003\u0006\u0003\u0000UT\u0001\u0000\u0000\u0000UV\u0001"+
+		"\u0000\u0000\u0000VW\u0001\u0000\u0000\u0000WX\u0005(\u0000\u0000XY\u0005"+
+		"0\u0000\u0000YZ\u0003\u0004\u0002\u0000Z[\u0003\u000e\u0007\u0000[\u0003"+
 		"\u0001\u0000\u0000\u0000\\_\u0003\n\u0005\u0000]_\u0005\f\u0000\u0000"+
 		"^\\\u0001\u0000\u0000\u0000^]\u0001\u0000\u0000\u0000_\u0005\u0001\u0000"+
-		"\u0000\u0000`e\u0003\b\u0004\u0000ab\u0005-\u0000\u0000bd\u0003\b\u0004"+
+		"\u0000\u0000`e\u0003\b\u0004\u0000ab\u0005.\u0000\u0000bd\u0003\b\u0004"+
 		"\u0000ca\u0001\u0000\u0000\u0000dg\u0001\u0000\u0000\u0000ec\u0001\u0000"+
 		"\u0000\u0000ef\u0001\u0000\u0000\u0000f\u0007\u0001\u0000\u0000\u0000"+
-		"ge\u0001\u0000\u0000\u0000hi\u00050\u0000\u0000ij\u0005/\u0000\u0000j"+
+		"ge\u0001\u0000\u0000\u0000hi\u00051\u0000\u0000ij\u00050\u0000\u0000j"+
 		"k\u0003\n\u0005\u0000k\t\u0001\u0000\u0000\u0000lv\u0005\t\u0000\u0000"+
 		"mv\u0005\n\u0000\u0000nv\u0005\u000b\u0000\u0000op\u0005\t\u0000\u0000"+
-		"pq\u0005(\u0000\u0000qv\u0005)\u0000\u0000rs\u0005\n\u0000\u0000st\u0005"+
-		"(\u0000\u0000tv\u0005)\u0000\u0000ul\u0001\u0000\u0000\u0000um\u0001\u0000"+
+		"pq\u0005)\u0000\u0000qv\u0005*\u0000\u0000rs\u0005\n\u0000\u0000st\u0005"+
+		")\u0000\u0000tv\u0005*\u0000\u0000ul\u0001\u0000\u0000\u0000um\u0001\u0000"+
 		"\u0000\u0000un\u0001\u0000\u0000\u0000uo\u0001\u0000\u0000\u0000ur\u0001"+
 		"\u0000\u0000\u0000v\u000b\u0001\u0000\u0000\u0000wx\u0003\u0010\b\u0000"+
-		"xy\u0005,\u0000\u0000y\u008b\u0001\u0000\u0000\u0000z{\u0003\u0012\t\u0000"+
-		"{|\u0005,\u0000\u0000|\u008b\u0001\u0000\u0000\u0000}\u008b\u0003\u0016"+
+		"xy\u0005-\u0000\u0000y\u008b\u0001\u0000\u0000\u0000z{\u0003\u0012\t\u0000"+
+		"{|\u0005-\u0000\u0000|\u008b\u0001\u0000\u0000\u0000}\u008b\u0003\u0016"+
 		"\u000b\u0000~\u008b\u0003\u0018\f\u0000\u007f\u008b\u0003\u001a\r\u0000"+
-		"\u0080\u0081\u0003 \u0010\u0000\u0081\u0082\u0005,\u0000\u0000\u0082\u008b"+
+		"\u0080\u0081\u0003 \u0010\u0000\u0081\u0082\u0005-\u0000\u0000\u0082\u008b"+
 		"\u0001\u0000\u0000\u0000\u0083\u0084\u0003\"\u0011\u0000\u0084\u0085\u0005"+
-		",\u0000\u0000\u0085\u008b\u0001\u0000\u0000\u0000\u0086\u0087\u0003$\u0012"+
-		"\u0000\u0087\u0088\u0005,\u0000\u0000\u0088\u008b\u0001\u0000\u0000\u0000"+
+		"-\u0000\u0000\u0085\u008b\u0001\u0000\u0000\u0000\u0086\u0087\u0003$\u0012"+
+		"\u0000\u0087\u0088\u0005-\u0000\u0000\u0088\u008b\u0001\u0000\u0000\u0000"+
 		"\u0089\u008b\u0003\u000e\u0007\u0000\u008aw\u0001\u0000\u0000\u0000\u008a"+
 		"z\u0001\u0000\u0000\u0000\u008a}\u0001\u0000\u0000\u0000\u008a~\u0001"+
 		"\u0000\u0000\u0000\u008a\u007f\u0001\u0000\u0000\u0000\u008a\u0080\u0001"+
 		"\u0000\u0000\u0000\u008a\u0083\u0001\u0000\u0000\u0000\u008a\u0086\u0001"+
 		"\u0000\u0000\u0000\u008a\u0089\u0001\u0000\u0000\u0000\u008b\r\u0001\u0000"+
-		"\u0000\u0000\u008c\u0090\u0005*\u0000\u0000\u008d\u008f\u0003\f\u0006"+
+		"\u0000\u0000\u008c\u0090\u0005+\u0000\u0000\u008d\u008f\u0003\f\u0006"+
 		"\u0000\u008e\u008d\u0001\u0000\u0000\u0000\u008f\u0092\u0001\u0000\u0000"+
 		"\u0000\u0090\u008e\u0001\u0000\u0000\u0000\u0090\u0091\u0001\u0000\u0000"+
 		"\u0000\u0091\u0093\u0001\u0000\u0000\u0000\u0092\u0090\u0001\u0000\u0000"+
-		"\u0000\u0093\u0094\u0005+\u0000\u0000\u0094\u000f\u0001\u0000\u0000\u0000"+
-		"\u0095\u0096\u0005\u0001\u0000\u0000\u0096\u0097\u00050\u0000\u0000\u0097"+
-		"\u0098\u0005/\u0000\u0000\u0098\u009b\u0003\n\u0005\u0000\u0099\u009a"+
-		"\u0005\u0016\u0000\u0000\u009a\u009c\u0003(\u0014\u0000\u009b\u0099\u0001"+
+		"\u0000\u0093\u0094\u0005,\u0000\u0000\u0094\u000f\u0001\u0000\u0000\u0000"+
+		"\u0095\u0096\u0005\u0001\u0000\u0000\u0096\u0097\u00051\u0000\u0000\u0097"+
+		"\u0098\u00050\u0000\u0000\u0098\u009b\u0003\n\u0005\u0000\u0099\u009a"+
+		"\u0005\u0017\u0000\u0000\u009a\u009c\u0003(\u0014\u0000\u009b\u0099\u0001"+
 		"\u0000\u0000\u0000\u009b\u009c\u0001\u0000\u0000\u0000\u009c\u00a5\u0001"+
 		"\u0000\u0000\u0000\u009d\u009e\u0005\u0002\u0000\u0000\u009e\u009f\u0005"+
-		"0\u0000\u0000\u009f\u00a0\u0005/\u0000\u0000\u00a0\u00a1\u0003\n\u0005"+
-		"\u0000\u00a1\u00a2\u0005\u0016\u0000\u0000\u00a2\u00a3\u0003(\u0014\u0000"+
+		"1\u0000\u0000\u009f\u00a0\u00050\u0000\u0000\u00a0\u00a1\u0003\n\u0005"+
+		"\u0000\u00a1\u00a2\u0005\u0017\u0000\u0000\u00a2\u00a3\u0003(\u0014\u0000"+
 		"\u00a3\u00a5\u0001\u0000\u0000\u0000\u00a4\u0095\u0001\u0000\u0000\u0000"+
 		"\u00a4\u009d\u0001\u0000\u0000\u0000\u00a5\u0011\u0001\u0000\u0000\u0000"+
-		"\u00a6\u00a7\u0003\u0014\n\u0000\u00a7\u00a8\u0005\u0016\u0000\u0000\u00a8"+
+		"\u00a6\u00a7\u0003\u0014\n\u0000\u00a7\u00a8\u0005\u0017\u0000\u0000\u00a8"+
 		"\u00a9\u0003(\u0014\u0000\u00a9\u0013\u0001\u0000\u0000\u0000\u00aa\u00b4"+
-		"\u00050\u0000\u0000\u00ab\u00ac\u00050\u0000\u0000\u00ac\u00ad\u0005("+
-		"\u0000\u0000\u00ad\u00ae\u0003(\u0014\u0000\u00ae\u00af\u0005)\u0000\u0000"+
-		"\u00af\u00b4\u0001\u0000\u0000\u0000\u00b0\u00b1\u00050\u0000\u0000\u00b1"+
-		"\u00b2\u0005.\u0000\u0000\u00b2\u00b4\u0005\u0015\u0000\u0000\u00b3\u00aa"+
+		"\u00051\u0000\u0000\u00ab\u00ac\u00051\u0000\u0000\u00ac\u00ad\u0005)"+
+		"\u0000\u0000\u00ad\u00ae\u0003(\u0014\u0000\u00ae\u00af\u0005*\u0000\u0000"+
+		"\u00af\u00b4\u0001\u0000\u0000\u0000\u00b0\u00b1\u00051\u0000\u0000\u00b1"+
+		"\u00b2\u0005/\u0000\u0000\u00b2\u00b4\u0005\u0016\u0000\u0000\u00b3\u00aa"+
 		"\u0001\u0000\u0000\u0000\u00b3\u00ab\u0001\u0000\u0000\u0000\u00b3\u00b0"+
 		"\u0001\u0000\u0000\u0000\u00b4\u0015\u0001\u0000\u0000\u0000\u00b5\u00b6"+
-		"\u0005\u0005\u0000\u0000\u00b6\u00b7\u0005&\u0000\u0000\u00b7\u00b8\u0003"+
-		"(\u0014\u0000\u00b8\u00b9\u0005\'\u0000\u0000\u00b9\u00bc\u0003\f\u0006"+
+		"\u0005\u0005\u0000\u0000\u00b6\u00b7\u0005\'\u0000\u0000\u00b7\u00b8\u0003"+
+		"(\u0014\u0000\u00b8\u00b9\u0005(\u0000\u0000\u00b9\u00bc\u0003\f\u0006"+
 		"\u0000\u00ba\u00bb\u0005\u0006\u0000\u0000\u00bb\u00bd\u0003\f\u0006\u0000"+
 		"\u00bc\u00ba\u0001\u0000\u0000\u0000\u00bc\u00bd\u0001\u0000\u0000\u0000"+
 		"\u00bd\u0017\u0001\u0000\u0000\u0000\u00be\u00bf\u0005\u0007\u0000\u0000"+
-		"\u00bf\u00c0\u0005&\u0000\u0000\u00c0\u00c1\u0003(\u0014\u0000\u00c1\u00c2"+
-		"\u0005\'\u0000\u0000\u00c2\u00c3\u0003\f\u0006\u0000\u00c3\u0019\u0001"+
-		"\u0000\u0000\u0000\u00c4\u00c5\u0005\b\u0000\u0000\u00c5\u00c7\u0005&"+
-		"\u0000\u0000\u00c6\u00c8\u0003\u001c\u000e\u0000\u00c7\u00c6\u0001\u0000"+
+		"\u00bf\u00c0\u0005\'\u0000\u0000\u00c0\u00c1\u0003(\u0014\u0000\u00c1"+
+		"\u00c2\u0005(\u0000\u0000\u00c2\u00c3\u0003\f\u0006\u0000\u00c3\u0019"+
+		"\u0001\u0000\u0000\u0000\u00c4\u00c5\u0005\b\u0000\u0000\u00c5\u00c7\u0005"+
+		"\'\u0000\u0000\u00c6\u00c8\u0003\u001c\u000e\u0000\u00c7\u00c6\u0001\u0000"+
 		"\u0000\u0000\u00c7\u00c8\u0001\u0000\u0000\u0000\u00c8\u00c9\u0001\u0000"+
-		"\u0000\u0000\u00c9\u00cb\u0005,\u0000\u0000\u00ca\u00cc\u0003(\u0014\u0000"+
+		"\u0000\u0000\u00c9\u00cb\u0005-\u0000\u0000\u00ca\u00cc\u0003(\u0014\u0000"+
 		"\u00cb\u00ca\u0001\u0000\u0000\u0000\u00cb\u00cc\u0001\u0000\u0000\u0000"+
-		"\u00cc\u00cd\u0001\u0000\u0000\u0000\u00cd\u00cf\u0005,\u0000\u0000\u00ce"+
+		"\u00cc\u00cd\u0001\u0000\u0000\u0000\u00cd\u00cf\u0005-\u0000\u0000\u00ce"+
 		"\u00d0\u0003\u001e\u000f\u0000\u00cf\u00ce\u0001\u0000\u0000\u0000\u00cf"+
 		"\u00d0\u0001\u0000\u0000\u0000\u00d0\u00d1\u0001\u0000\u0000\u0000\u00d1"+
-		"\u00d2\u0005\'\u0000\u0000\u00d2\u00d3\u0003\f\u0006\u0000\u00d3\u001b"+
+		"\u00d2\u0005(\u0000\u0000\u00d2\u00d3\u0003\f\u0006\u0000\u00d3\u001b"+
 		"\u0001\u0000\u0000\u0000\u00d4\u00d7\u0003\u0010\b\u0000\u00d5\u00d7\u0003"+
 		"\u0012\t\u0000\u00d6\u00d4\u0001\u0000\u0000\u0000\u00d6\u00d5\u0001\u0000"+
 		"\u0000\u0000\u00d7\u001d\u0001\u0000\u0000\u0000\u00d8\u00d9\u0003\u0012"+
 		"\t\u0000\u00d9\u001f\u0001\u0000\u0000\u0000\u00da\u00dc\u0005\u0004\u0000"+
 		"\u0000\u00db\u00dd\u0003(\u0014\u0000\u00dc\u00db\u0001\u0000\u0000\u0000"+
 		"\u00dc\u00dd\u0001\u0000\u0000\u0000\u00dd!\u0001\u0000\u0000\u0000\u00de"+
-		"\u00df\u0005\u000f\u0000\u0000\u00df\u00e0\u0005.\u0000\u0000\u00e0\u00e1"+
-		"\u0005\u0010\u0000\u0000\u00e1\u00e3\u0005&\u0000\u0000\u00e2\u00e4\u0003"+
+		"\u00df\u0005\u000f\u0000\u0000\u00df\u00e0\u0005/\u0000\u0000\u00e0\u00e1"+
+		"\u0005\u0010\u0000\u0000\u00e1\u00e3\u0005\'\u0000\u0000\u00e2\u00e4\u0003"+
 		"&\u0013\u0000\u00e3\u00e2\u0001\u0000\u0000\u0000\u00e3\u00e4\u0001\u0000"+
-		"\u0000\u0000\u00e4\u00e5\u0001\u0000\u0000\u0000\u00e5\u00e6\u0005\'\u0000"+
+		"\u0000\u0000\u00e4\u00e5\u0001\u0000\u0000\u0000\u00e5\u00e6\u0005(\u0000"+
 		"\u0000\u00e6#\u0001\u0000\u0000\u0000\u00e7\u00e8\u0003(\u0014\u0000\u00e8"+
 		"%\u0001\u0000\u0000\u0000\u00e9\u00ee\u0003(\u0014\u0000\u00ea\u00eb\u0005"+
-		"-\u0000\u0000\u00eb\u00ed\u0003(\u0014\u0000\u00ec\u00ea\u0001\u0000\u0000"+
+		".\u0000\u0000\u00eb\u00ed\u0003(\u0014\u0000\u00ec\u00ea\u0001\u0000\u0000"+
 		"\u0000\u00ed\u00f0\u0001\u0000\u0000\u0000\u00ee\u00ec\u0001\u0000\u0000"+
 		"\u0000\u00ee\u00ef\u0001\u0000\u0000\u0000\u00ef\'\u0001\u0000\u0000\u0000"+
 		"\u00f0\u00ee\u0001\u0000\u0000\u0000\u00f1\u00f2\u0003*\u0015\u0000\u00f2"+
 		")\u0001\u0000\u0000\u0000\u00f3\u00f4\u0006\u0015\uffff\uffff\u0000\u00f4"+
 		"\u00f5\u0003,\u0016\u0000\u00f5\u00fb\u0001\u0000\u0000\u0000\u00f6\u00f7"+
-		"\n\u0002\u0000\u0000\u00f7\u00f8\u0005$\u0000\u0000\u00f8\u00fa\u0003"+
+		"\n\u0002\u0000\u0000\u00f7\u00f8\u0005%\u0000\u0000\u00f8\u00fa\u0003"+
 		",\u0016\u0000\u00f9\u00f6\u0001\u0000\u0000\u0000\u00fa\u00fd\u0001\u0000"+
 		"\u0000\u0000\u00fb\u00f9\u0001\u0000\u0000\u0000\u00fb\u00fc\u0001\u0000"+
 		"\u0000\u0000\u00fc+\u0001\u0000\u0000\u0000\u00fd\u00fb\u0001\u0000\u0000"+
 		"\u0000\u00fe\u00ff\u0006\u0016\uffff\uffff\u0000\u00ff\u0100\u0003.\u0017"+
 		"\u0000\u0100\u0106\u0001\u0000\u0000\u0000\u0101\u0102\n\u0002\u0000\u0000"+
-		"\u0102\u0103\u0005#\u0000\u0000\u0103\u0105\u0003.\u0017\u0000\u0104\u0101"+
+		"\u0102\u0103\u0005$\u0000\u0000\u0103\u0105\u0003.\u0017\u0000\u0104\u0101"+
 		"\u0001\u0000\u0000\u0000\u0105\u0108\u0001\u0000\u0000\u0000\u0106\u0104"+
 		"\u0001\u0000\u0000\u0000\u0106\u0107\u0001\u0000\u0000\u0000\u0107-\u0001"+
 		"\u0000\u0000\u0000\u0108\u0106\u0001\u0000\u0000\u0000\u0109\u010a\u0006"+
 		"\u0017\uffff\uffff\u0000\u010a\u010b\u00030\u0018\u0000\u010b\u0114\u0001"+
-		"\u0000\u0000\u0000\u010c\u010d\n\u0003\u0000\u0000\u010d\u010e\u0005\u001d"+
+		"\u0000\u0000\u0000\u010c\u010d\n\u0003\u0000\u0000\u010d\u010e\u0005\u001e"+
 		"\u0000\u0000\u010e\u0113\u00030\u0018\u0000\u010f\u0110\n\u0002\u0000"+
-		"\u0000\u0110\u0111\u0005\u001e\u0000\u0000\u0111\u0113\u00030\u0018\u0000"+
+		"\u0000\u0110\u0111\u0005\u001f\u0000\u0000\u0111\u0113\u00030\u0018\u0000"+
 		"\u0112\u010c\u0001\u0000\u0000\u0000\u0112\u010f\u0001\u0000\u0000\u0000"+
 		"\u0113\u0116\u0001\u0000\u0000\u0000\u0114\u0112\u0001\u0000\u0000\u0000"+
 		"\u0114\u0115\u0001\u0000\u0000\u0000\u0115/\u0001\u0000\u0000\u0000\u0116"+
 		"\u0114\u0001\u0000\u0000\u0000\u0117\u0118\u0006\u0018\uffff\uffff\u0000"+
 		"\u0118\u0119\u00032\u0019\u0000\u0119\u0128\u0001\u0000\u0000\u0000\u011a"+
-		"\u011b\n\u0005\u0000\u0000\u011b\u011c\u0005\u001f\u0000\u0000\u011c\u0127"+
+		"\u011b\n\u0005\u0000\u0000\u011b\u011c\u0005 \u0000\u0000\u011c\u0127"+
 		"\u00032\u0019\u0000\u011d\u011e\n\u0004\u0000\u0000\u011e\u011f\u0005"+
-		" \u0000\u0000\u011f\u0127\u00032\u0019\u0000\u0120\u0121\n\u0003\u0000"+
-		"\u0000\u0121\u0122\u0005!\u0000\u0000\u0122\u0127\u00032\u0019\u0000\u0123"+
-		"\u0124\n\u0002\u0000\u0000\u0124\u0125\u0005\"\u0000\u0000\u0125\u0127"+
-		"\u00032\u0019\u0000\u0126\u011a\u0001\u0000\u0000\u0000\u0126\u011d\u0001"+
-		"\u0000\u0000\u0000\u0126\u0120\u0001\u0000\u0000\u0000\u0126\u0123\u0001"+
-		"\u0000\u0000\u0000\u0127\u012a\u0001\u0000\u0000\u0000\u0128\u0126\u0001"+
-		"\u0000\u0000\u0000\u0128\u0129\u0001\u0000\u0000\u0000\u01291\u0001\u0000"+
-		"\u0000\u0000\u012a\u0128\u0001\u0000\u0000\u0000\u012b\u012c\u0006\u0019"+
-		"\uffff\uffff\u0000\u012c\u012d\u00034\u001a\u0000\u012d\u0136\u0001\u0000"+
-		"\u0000\u0000\u012e\u012f\n\u0003\u0000\u0000\u012f\u0130\u0005\u0017\u0000"+
-		"\u0000\u0130\u0135\u00034\u001a\u0000\u0131\u0132\n\u0002\u0000\u0000"+
-		"\u0132\u0133\u0005\u0018\u0000\u0000\u0133\u0135\u00034\u001a\u0000\u0134"+
-		"\u012e\u0001\u0000\u0000\u0000\u0134\u0131\u0001\u0000\u0000\u0000\u0135"+
-		"\u0138\u0001\u0000\u0000\u0000\u0136\u0134\u0001\u0000\u0000\u0000\u0136"+
-		"\u0137\u0001\u0000\u0000\u0000\u01373\u0001\u0000\u0000\u0000\u0138\u0136"+
-		"\u0001\u0000\u0000\u0000\u0139\u013a\u0006\u001a\uffff\uffff\u0000\u013a"+
-		"\u013b\u00036\u001b\u0000\u013b\u0147\u0001\u0000\u0000\u0000\u013c\u013d"+
-		"\n\u0004\u0000\u0000\u013d\u013e\u0005\u0019\u0000\u0000\u013e\u0146\u0003"+
-		"6\u001b\u0000\u013f\u0140\n\u0003\u0000\u0000\u0140\u0141\u0005\u001a"+
-		"\u0000\u0000\u0141\u0146\u00036\u001b\u0000\u0142\u0143\n\u0002\u0000"+
-		"\u0000\u0143\u0144\u0005\u001b\u0000\u0000\u0144\u0146\u00036\u001b\u0000"+
-		"\u0145\u013c\u0001\u0000\u0000\u0000\u0145\u013f\u0001\u0000\u0000\u0000"+
-		"\u0145\u0142\u0001\u0000\u0000\u0000\u0146\u0149\u0001\u0000\u0000\u0000"+
-		"\u0147\u0145\u0001\u0000\u0000\u0000\u0147\u0148\u0001\u0000\u0000\u0000"+
-		"\u01485\u0001\u0000\u0000\u0000\u0149\u0147\u0001\u0000\u0000\u0000\u014a"+
-		"\u014b\u00038\u001c\u0000\u014b\u014c\u0005\u001c\u0000\u0000\u014c\u014d"+
-		"\u00036\u001b\u0000\u014d\u0150\u0001\u0000\u0000\u0000\u014e\u0150\u0003"+
-		"8\u001c\u0000\u014f\u014a\u0001\u0000\u0000\u0000\u014f\u014e\u0001\u0000"+
-		"\u0000\u0000\u01507\u0001\u0000\u0000\u0000\u0151\u0152\u0005%\u0000\u0000"+
-		"\u0152\u0157\u00038\u001c\u0000\u0153\u0154\u0005\u0018\u0000\u0000\u0154"+
-		"\u0157\u00038\u001c\u0000\u0155\u0157\u0003:\u001d\u0000\u0156\u0151\u0001"+
-		"\u0000\u0000\u0000\u0156\u0153\u0001\u0000\u0000\u0000\u0156\u0155\u0001"+
-		"\u0000\u0000\u0000\u01579\u0001\u0000\u0000\u0000\u0158\u016b\u0003<\u001e"+
-		"\u0000\u0159\u016b\u00050\u0000\u0000\u015a\u015b\u00050\u0000\u0000\u015b"+
-		"\u015c\u0005(\u0000\u0000\u015c\u015d\u0003(\u0014\u0000\u015d\u015e\u0005"+
-		")\u0000\u0000\u015e\u016b\u0001\u0000\u0000\u0000\u015f\u0160\u00050\u0000"+
-		"\u0000\u0160\u0161\u0005.\u0000\u0000\u0161\u016b\u0005\u0015\u0000\u0000"+
-		"\u0162\u016b\u0003@ \u0000\u0163\u016b\u0003D\"\u0000\u0164\u016b\u0003"+
-		"F#\u0000\u0165\u016b\u0003>\u001f\u0000\u0166\u0167\u0005&\u0000\u0000"+
-		"\u0167\u0168\u0003(\u0014\u0000\u0168\u0169\u0005\'\u0000\u0000\u0169"+
-		"\u016b\u0001\u0000\u0000\u0000\u016a\u0158\u0001\u0000\u0000\u0000\u016a"+
-		"\u0159\u0001\u0000\u0000\u0000\u016a\u015a\u0001\u0000\u0000\u0000\u016a"+
-		"\u015f\u0001\u0000\u0000\u0000\u016a\u0162\u0001\u0000\u0000\u0000\u016a"+
-		"\u0163\u0001\u0000\u0000\u0000\u016a\u0164\u0001\u0000\u0000\u0000\u016a"+
-		"\u0165\u0001\u0000\u0000\u0000\u016a\u0166\u0001\u0000\u0000\u0000\u016b"+
-		";\u0001\u0000\u0000\u0000\u016c\u0171\u00051\u0000\u0000\u016d\u0171\u0005"+
-		"2\u0000\u0000\u016e\u0171\u0005\r\u0000\u0000\u016f\u0171\u0005\u000e"+
-		"\u0000\u0000\u0170\u016c\u0001\u0000\u0000\u0000\u0170\u016d\u0001\u0000"+
-		"\u0000\u0000\u0170\u016e\u0001\u0000\u0000\u0000\u0170\u016f\u0001\u0000"+
-		"\u0000\u0000\u0171=\u0001\u0000\u0000\u0000\u0172\u0174\u0005(\u0000\u0000"+
-		"\u0173\u0175\u0003&\u0013\u0000\u0174\u0173\u0001\u0000\u0000\u0000\u0174"+
-		"\u0175\u0001\u0000\u0000\u0000\u0175\u0176\u0001\u0000\u0000\u0000\u0176"+
-		"\u0177\u0005)\u0000\u0000\u0177?\u0001\u0000\u0000\u0000\u0178\u0179\u0005"+
-		"0\u0000\u0000\u0179\u017b\u0005&\u0000\u0000\u017a\u017c\u0003B!\u0000"+
-		"\u017b\u017a\u0001\u0000\u0000\u0000\u017b\u017c\u0001\u0000\u0000\u0000"+
-		"\u017c\u017d\u0001\u0000\u0000\u0000\u017d\u017e\u0005\'\u0000\u0000\u017e"+
-		"A\u0001\u0000\u0000\u0000\u017f\u0184\u0003(\u0014\u0000\u0180\u0181\u0005"+
-		"-\u0000\u0000\u0181\u0183\u0003(\u0014\u0000\u0182\u0180\u0001\u0000\u0000"+
-		"\u0000\u0183\u0186\u0001\u0000\u0000\u0000\u0184\u0182\u0001\u0000\u0000"+
-		"\u0000\u0184\u0185\u0001\u0000\u0000\u0000\u0185C\u0001\u0000\u0000\u0000"+
-		"\u0186\u0184\u0001\u0000\u0000\u0000\u0187\u0188\u0005\u0011\u0000\u0000"+
-		"\u0188\u0189\u0005.\u0000\u0000\u0189\u018a\u0005\u0012\u0000\u0000\u018a"+
-		"\u018b\u0005&\u0000\u0000\u018b\u018c\u0003(\u0014\u0000\u018c\u018d\u0005"+
-		"\'\u0000\u0000\u018d\u0198\u0001\u0000\u0000\u0000\u018e\u018f\u0005\u0011"+
-		"\u0000\u0000\u018f\u0190\u0005.\u0000\u0000\u0190\u0191\u0005\u001c\u0000"+
-		"\u0000\u0191\u0192\u0005&\u0000\u0000\u0192\u0193\u0003(\u0014\u0000\u0193"+
-		"\u0194\u0005-\u0000\u0000\u0194\u0195\u0003(\u0014\u0000\u0195\u0196\u0005"+
-		"\'\u0000\u0000\u0196\u0198\u0001\u0000\u0000\u0000\u0197\u0187\u0001\u0000"+
-		"\u0000\u0000\u0197\u018e\u0001\u0000\u0000\u0000\u0198E\u0001\u0000\u0000"+
-		"\u0000\u0199\u019a\u0005\u0013\u0000\u0000\u019a\u019b\u0005&\u0000\u0000"+
-		"\u019b\u019c\u0003(\u0014\u0000\u019c\u019d\u0005\'\u0000\u0000\u019d"+
-		"\u01a4\u0001\u0000\u0000\u0000\u019e\u019f\u0005\u0014\u0000\u0000\u019f"+
-		"\u01a0\u0005&\u0000\u0000\u01a0\u01a1\u0003(\u0014\u0000\u01a1\u01a2\u0005"+
-		"\'\u0000\u0000\u01a2\u01a4\u0001\u0000\u0000\u0000\u01a3\u0199\u0001\u0000"+
-		"\u0000\u0000\u01a3\u019e\u0001\u0000\u0000\u0000\u01a4G\u0001\u0000\u0000"+
-		"\u0000&JLU^eu\u008a\u0090\u009b\u00a4\u00b3\u00bc\u00c7\u00cb\u00cf\u00d6"+
-		"\u00dc\u00e3\u00ee\u00fb\u0106\u0112\u0114\u0126\u0128\u0134\u0136\u0145"+
-		"\u0147\u014f\u0156\u016a\u0170\u0174\u017b\u0184\u0197\u01a3";
+		"!\u0000\u0000\u011f\u0127\u00032\u0019\u0000\u0120\u0121\n\u0003\u0000"+
+		"\u0000\u0121\u0122\u0005\"\u0000\u0000\u0122\u0127\u00032\u0019\u0000"+
+		"\u0123\u0124\n\u0002\u0000\u0000\u0124\u0125\u0005#\u0000\u0000\u0125"+
+		"\u0127\u00032\u0019\u0000\u0126\u011a\u0001\u0000\u0000\u0000\u0126\u011d"+
+		"\u0001\u0000\u0000\u0000\u0126\u0120\u0001\u0000\u0000\u0000\u0126\u0123"+
+		"\u0001\u0000\u0000\u0000\u0127\u012a\u0001\u0000\u0000\u0000\u0128\u0126"+
+		"\u0001\u0000\u0000\u0000\u0128\u0129\u0001\u0000\u0000\u0000\u01291\u0001"+
+		"\u0000\u0000\u0000\u012a\u0128\u0001\u0000\u0000\u0000\u012b\u012c\u0006"+
+		"\u0019\uffff\uffff\u0000\u012c\u012d\u00034\u001a\u0000\u012d\u0136\u0001"+
+		"\u0000\u0000\u0000\u012e\u012f\n\u0003\u0000\u0000\u012f\u0130\u0005\u0018"+
+		"\u0000\u0000\u0130\u0135\u00034\u001a\u0000\u0131\u0132\n\u0002\u0000"+
+		"\u0000\u0132\u0133\u0005\u0019\u0000\u0000\u0133\u0135\u00034\u001a\u0000"+
+		"\u0134\u012e\u0001\u0000\u0000\u0000\u0134\u0131\u0001\u0000\u0000\u0000"+
+		"\u0135\u0138\u0001\u0000\u0000\u0000\u0136\u0134\u0001\u0000\u0000\u0000"+
+		"\u0136\u0137\u0001\u0000\u0000\u0000\u01373\u0001\u0000\u0000\u0000\u0138"+
+		"\u0136\u0001\u0000\u0000\u0000\u0139\u013a\u0006\u001a\uffff\uffff\u0000"+
+		"\u013a\u013b\u00036\u001b\u0000\u013b\u0147\u0001\u0000\u0000\u0000\u013c"+
+		"\u013d\n\u0004\u0000\u0000\u013d\u013e\u0005\u001a\u0000\u0000\u013e\u0146"+
+		"\u00036\u001b\u0000\u013f\u0140\n\u0003\u0000\u0000\u0140\u0141\u0005"+
+		"\u001b\u0000\u0000\u0141\u0146\u00036\u001b\u0000\u0142\u0143\n\u0002"+
+		"\u0000\u0000\u0143\u0144\u0005\u001c\u0000\u0000\u0144\u0146\u00036\u001b"+
+		"\u0000\u0145\u013c\u0001\u0000\u0000\u0000\u0145\u013f\u0001\u0000\u0000"+
+		"\u0000\u0145\u0142\u0001\u0000\u0000\u0000\u0146\u0149\u0001\u0000\u0000"+
+		"\u0000\u0147\u0145\u0001\u0000\u0000\u0000\u0147\u0148\u0001\u0000\u0000"+
+		"\u0000\u01485\u0001\u0000\u0000\u0000\u0149\u0147\u0001\u0000\u0000\u0000"+
+		"\u014a\u014b\u00038\u001c\u0000\u014b\u014c\u0005\u001d\u0000\u0000\u014c"+
+		"\u014d\u00036\u001b\u0000\u014d\u0150\u0001\u0000\u0000\u0000\u014e\u0150"+
+		"\u00038\u001c\u0000\u014f\u014a\u0001\u0000\u0000\u0000\u014f\u014e\u0001"+
+		"\u0000\u0000\u0000\u01507\u0001\u0000\u0000\u0000\u0151\u0152\u0005&\u0000"+
+		"\u0000\u0152\u0157\u00038\u001c\u0000\u0153\u0154\u0005\u0019\u0000\u0000"+
+		"\u0154\u0157\u00038\u001c\u0000\u0155\u0157\u0003:\u001d\u0000\u0156\u0151"+
+		"\u0001\u0000\u0000\u0000\u0156\u0153\u0001\u0000\u0000\u0000\u0156\u0155"+
+		"\u0001\u0000\u0000\u0000\u01579\u0001\u0000\u0000\u0000\u0158\u016b\u0003"+
+		"<\u001e\u0000\u0159\u016b\u00051\u0000\u0000\u015a\u015b\u00051\u0000"+
+		"\u0000\u015b\u015c\u0005)\u0000\u0000\u015c\u015d\u0003(\u0014\u0000\u015d"+
+		"\u015e\u0005*\u0000\u0000\u015e\u016b\u0001\u0000\u0000\u0000\u015f\u0160"+
+		"\u00051\u0000\u0000\u0160\u0161\u0005/\u0000\u0000\u0161\u016b\u0005\u0016"+
+		"\u0000\u0000\u0162\u016b\u0003@ \u0000\u0163\u016b\u0003D\"\u0000\u0164"+
+		"\u016b\u0003F#\u0000\u0165\u016b\u0003>\u001f\u0000\u0166\u0167\u0005"+
+		"\'\u0000\u0000\u0167\u0168\u0003(\u0014\u0000\u0168\u0169\u0005(\u0000"+
+		"\u0000\u0169\u016b\u0001\u0000\u0000\u0000\u016a\u0158\u0001\u0000\u0000"+
+		"\u0000\u016a\u0159\u0001\u0000\u0000\u0000\u016a\u015a\u0001\u0000\u0000"+
+		"\u0000\u016a\u015f\u0001\u0000\u0000\u0000\u016a\u0162\u0001\u0000\u0000"+
+		"\u0000\u016a\u0163\u0001\u0000\u0000\u0000\u016a\u0164\u0001\u0000\u0000"+
+		"\u0000\u016a\u0165\u0001\u0000\u0000\u0000\u016a\u0166\u0001\u0000\u0000"+
+		"\u0000\u016b;\u0001\u0000\u0000\u0000\u016c\u0171\u00052\u0000\u0000\u016d"+
+		"\u0171\u00053\u0000\u0000\u016e\u0171\u0005\r\u0000\u0000\u016f\u0171"+
+		"\u0005\u000e\u0000\u0000\u0170\u016c\u0001\u0000\u0000\u0000\u0170\u016d"+
+		"\u0001\u0000\u0000\u0000\u0170\u016e\u0001\u0000\u0000\u0000\u0170\u016f"+
+		"\u0001\u0000\u0000\u0000\u0171=\u0001\u0000\u0000\u0000\u0172\u0174\u0005"+
+		")\u0000\u0000\u0173\u0175\u0003&\u0013\u0000\u0174\u0173\u0001\u0000\u0000"+
+		"\u0000\u0174\u0175\u0001\u0000\u0000\u0000\u0175\u0176\u0001\u0000\u0000"+
+		"\u0000\u0176\u0177\u0005*\u0000\u0000\u0177?\u0001\u0000\u0000\u0000\u0178"+
+		"\u0179\u00051\u0000\u0000\u0179\u017b\u0005\'\u0000\u0000\u017a\u017c"+
+		"\u0003B!\u0000\u017b\u017a\u0001\u0000\u0000\u0000\u017b\u017c\u0001\u0000"+
+		"\u0000\u0000\u017c\u017d\u0001\u0000\u0000\u0000\u017d\u017e\u0005(\u0000"+
+		"\u0000\u017eA\u0001\u0000\u0000\u0000\u017f\u0184\u0003(\u0014\u0000\u0180"+
+		"\u0181\u0005.\u0000\u0000\u0181\u0183\u0003(\u0014\u0000\u0182\u0180\u0001"+
+		"\u0000\u0000\u0000\u0183\u0186\u0001\u0000\u0000\u0000\u0184\u0182\u0001"+
+		"\u0000\u0000\u0000\u0184\u0185\u0001\u0000\u0000\u0000\u0185C\u0001\u0000"+
+		"\u0000\u0000\u0186\u0184\u0001\u0000\u0000\u0000\u0187\u0188\u0005\u0011"+
+		"\u0000\u0000\u0188\u0189\u0005/\u0000\u0000\u0189\u018a\u0005\u0012\u0000"+
+		"\u0000\u018a\u018b\u0005\'\u0000\u0000\u018b\u018c\u0003(\u0014\u0000"+
+		"\u018c\u018d\u0005(\u0000\u0000\u018d\u0198\u0001\u0000\u0000\u0000\u018e"+
+		"\u018f\u0005\u0011\u0000\u0000\u018f\u0190\u0005/\u0000\u0000\u0190\u0191"+
+		"\u0005\u0013\u0000\u0000\u0191\u0192\u0005\'\u0000\u0000\u0192\u0193\u0003"+
+		"(\u0014\u0000\u0193\u0194\u0005.\u0000\u0000\u0194\u0195\u0003(\u0014"+
+		"\u0000\u0195\u0196\u0005(\u0000\u0000\u0196\u0198\u0001\u0000\u0000\u0000"+
+		"\u0197\u0187\u0001\u0000\u0000\u0000\u0197\u018e\u0001\u0000\u0000\u0000"+
+		"\u0198E\u0001\u0000\u0000\u0000\u0199\u019a\u0005\u0014\u0000\u0000\u019a"+
+		"\u019b\u0005\'\u0000\u0000\u019b\u019c\u0003(\u0014\u0000\u019c\u019d"+
+		"\u0005(\u0000\u0000\u019d\u01a4\u0001\u0000\u0000\u0000\u019e\u019f\u0005"+
+		"\u0015\u0000\u0000\u019f\u01a0\u0005\'\u0000\u0000\u01a0\u01a1\u0003("+
+		"\u0014\u0000\u01a1\u01a2\u0005(\u0000\u0000\u01a2\u01a4\u0001\u0000\u0000"+
+		"\u0000\u01a3\u0199\u0001\u0000\u0000\u0000\u01a3\u019e\u0001\u0000\u0000"+
+		"\u0000\u01a4G\u0001\u0000\u0000\u0000&JLU^eu\u008a\u0090\u009b\u00a4\u00b3"+
+		"\u00bc\u00c7\u00cb\u00cf\u00d6\u00dc\u00e3\u00ee\u00fb\u0106\u0112\u0114"+
+		"\u0126\u0128\u0134\u0136\u0145\u0147\u014f\u0156\u016a\u0170\u0174\u017b"+
+		"\u0184\u0197\u01a3";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

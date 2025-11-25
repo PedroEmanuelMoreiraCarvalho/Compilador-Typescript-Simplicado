@@ -340,6 +340,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitProgram" ):
                 listener.exitProgram(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitProgram" ):
+                return visitor.visitProgram(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -428,6 +434,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitFunctionDecl" ):
                 listener.exitFunctionDecl(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitFunctionDecl" ):
+                return visitor.visitFunctionDecl(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -494,6 +506,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitReturnType" ):
                 listener.exitReturnType(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitReturnType" ):
+                return visitor.visitReturnType(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -558,6 +576,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitParamList" ):
                 listener.exitParamList(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitParamList" ):
+                return visitor.visitParamList(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -619,6 +643,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitParam" ):
                 listener.exitParam(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitParam" ):
+                return visitor.visitParam(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -677,6 +707,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitNumberType" ):
                 listener.exitNumberType(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitNumberType" ):
+                return visitor.visitNumberType(self)
+            else:
+                return visitor.visitChildren(self)
+
 
     class BooleanTypeContext(TypeAnnotationContext):
 
@@ -695,6 +731,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitBooleanType" ):
                 listener.exitBooleanType(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitBooleanType" ):
+                return visitor.visitBooleanType(self)
+            else:
+                return visitor.visitChildren(self)
+
 
     class StringTypeContext(TypeAnnotationContext):
 
@@ -712,6 +754,12 @@ class TypeScriptSimplificadoParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitStringType" ):
                 listener.exitStringType(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitStringType" ):
+                return visitor.visitStringType(self)
+            else:
+                return visitor.visitChildren(self)
 
 
     class NumberArrayTypeContext(TypeAnnotationContext):
@@ -735,6 +783,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitNumberArrayType" ):
                 listener.exitNumberArrayType(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitNumberArrayType" ):
+                return visitor.visitNumberArrayType(self)
+            else:
+                return visitor.visitChildren(self)
+
 
     class StringArrayTypeContext(TypeAnnotationContext):
 
@@ -756,6 +810,12 @@ class TypeScriptSimplificadoParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitStringArrayType" ):
                 listener.exitStringArrayType(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitStringArrayType" ):
+                return visitor.visitStringArrayType(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -857,6 +917,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitRetStmt" ):
                 listener.exitRetStmt(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitRetStmt" ):
+                return visitor.visitRetStmt(self)
+            else:
+                return visitor.visitChildren(self)
+
 
     class ForStmtContext(StatementContext):
 
@@ -875,6 +941,12 @@ class TypeScriptSimplificadoParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitForStmt" ):
                 listener.exitForStmt(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitForStmt" ):
+                return visitor.visitForStmt(self)
+            else:
+                return visitor.visitChildren(self)
 
 
     class ConsoleStmtContext(StatementContext):
@@ -897,6 +969,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitConsoleStmt" ):
                 listener.exitConsoleStmt(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitConsoleStmt" ):
+                return visitor.visitConsoleStmt(self)
+            else:
+                return visitor.visitChildren(self)
+
 
     class ExprStmtContext(StatementContext):
 
@@ -918,6 +996,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitExprStmt" ):
                 listener.exitExprStmt(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitExprStmt" ):
+                return visitor.visitExprStmt(self)
+            else:
+                return visitor.visitChildren(self)
+
 
     class WhileStmtContext(StatementContext):
 
@@ -936,6 +1020,12 @@ class TypeScriptSimplificadoParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitWhileStmt" ):
                 listener.exitWhileStmt(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitWhileStmt" ):
+                return visitor.visitWhileStmt(self)
+            else:
+                return visitor.visitChildren(self)
 
 
     class IfStmtContext(StatementContext):
@@ -956,6 +1046,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitIfStmt" ):
                 listener.exitIfStmt(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitIfStmt" ):
+                return visitor.visitIfStmt(self)
+            else:
+                return visitor.visitChildren(self)
+
 
     class BlockStmtContext(StatementContext):
 
@@ -974,6 +1070,12 @@ class TypeScriptSimplificadoParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitBlockStmt" ):
                 listener.exitBlockStmt(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitBlockStmt" ):
+                return visitor.visitBlockStmt(self)
+            else:
+                return visitor.visitChildren(self)
 
 
     class AssignStmtContext(StatementContext):
@@ -996,6 +1098,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitAssignStmt" ):
                 listener.exitAssignStmt(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitAssignStmt" ):
+                return visitor.visitAssignStmt(self)
+            else:
+                return visitor.visitChildren(self)
+
 
     class VarDeclStmtContext(StatementContext):
 
@@ -1016,6 +1124,12 @@ class TypeScriptSimplificadoParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitVarDeclStmt" ):
                 listener.exitVarDeclStmt(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitVarDeclStmt" ):
+                return visitor.visitVarDeclStmt(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -1141,6 +1255,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitBlock" ):
                 listener.exitBlock(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitBlock" ):
+                return visitor.visitBlock(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -1220,6 +1340,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitLetDecl" ):
                 listener.exitLetDecl(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitLetDecl" ):
+                return visitor.visitLetDecl(self)
+            else:
+                return visitor.visitChildren(self)
+
 
     class ConstDeclContext(VariableDeclContext):
 
@@ -1249,6 +1375,12 @@ class TypeScriptSimplificadoParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitConstDecl" ):
                 listener.exitConstDecl(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitConstDecl" ):
+                return visitor.visitConstDecl(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -1340,6 +1472,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitAssignmentStmt" ):
                 listener.exitAssignmentStmt(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitAssignmentStmt" ):
+                return visitor.visitAssignmentStmt(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -1405,6 +1543,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitArrayAccessLvalue" ):
                 listener.exitArrayAccessLvalue(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitArrayAccessLvalue" ):
+                return visitor.visitArrayAccessLvalue(self)
+            else:
+                return visitor.visitChildren(self)
+
 
     class IdLvalueContext(LvalueContext):
 
@@ -1422,6 +1566,12 @@ class TypeScriptSimplificadoParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitIdLvalue" ):
                 listener.exitIdLvalue(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitIdLvalue" ):
+                return visitor.visitIdLvalue(self)
+            else:
+                return visitor.visitChildren(self)
 
 
     class LengthAccessLvalueContext(LvalueContext):
@@ -1444,6 +1594,12 @@ class TypeScriptSimplificadoParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitLengthAccessLvalue" ):
                 listener.exitLengthAccessLvalue(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitLengthAccessLvalue" ):
+                return visitor.visitLengthAccessLvalue(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -1537,6 +1693,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitIfStatement" ):
                 listener.exitIfStatement(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitIfStatement" ):
+                return visitor.visitIfStatement(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -1609,6 +1771,12 @@ class TypeScriptSimplificadoParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitWhileStatement" ):
                 listener.exitWhileStatement(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitWhileStatement" ):
+                return visitor.visitWhileStatement(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -1686,6 +1854,12 @@ class TypeScriptSimplificadoParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitForStatement" ):
                 listener.exitForStatement(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitForStatement" ):
+                return visitor.visitForStatement(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -1768,6 +1942,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitForInit" ):
                 listener.exitForInit(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitForInit" ):
+                return visitor.visitForInit(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -1823,6 +2003,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitForUpdate" ):
                 listener.exitForUpdate(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitForUpdate" ):
+                return visitor.visitForUpdate(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -1867,6 +2053,12 @@ class TypeScriptSimplificadoParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitReturnStatement" ):
                 listener.exitReturnStatement(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitReturnStatement" ):
+                return visitor.visitReturnStatement(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -1934,6 +2126,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitConsoleLogStmt" ):
                 listener.exitConsoleLogStmt(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitConsoleLogStmt" ):
+                return visitor.visitConsoleLogStmt(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -1993,6 +2191,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitExpressionStmt" ):
                 listener.exitExpressionStmt(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitExpressionStmt" ):
+                return visitor.visitExpressionStmt(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -2043,6 +2247,12 @@ class TypeScriptSimplificadoParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitExpressionList" ):
                 listener.exitExpressionList(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitExpressionList" ):
+                return visitor.visitExpressionList(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -2099,6 +2309,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitExpression" ):
                 listener.exitExpression(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitExpression" ):
+                return visitor.visitExpression(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -2153,6 +2369,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitOrPass" ):
                 listener.exitOrPass(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitOrPass" ):
+                return visitor.visitOrPass(self)
+            else:
+                return visitor.visitChildren(self)
+
 
     class OrExprContext(LogicalOrExprContext):
 
@@ -2176,6 +2398,12 @@ class TypeScriptSimplificadoParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitOrExpr" ):
                 listener.exitOrExpr(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitOrExpr" ):
+                return visitor.visitOrExpr(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -2260,6 +2488,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitAndPass" ):
                 listener.exitAndPass(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitAndPass" ):
+                return visitor.visitAndPass(self)
+            else:
+                return visitor.visitChildren(self)
+
 
     class AndExprContext(LogicalAndExprContext):
 
@@ -2283,6 +2517,12 @@ class TypeScriptSimplificadoParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitAndExpr" ):
                 listener.exitAndExpr(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitAndExpr" ):
+                return visitor.visitAndExpr(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -2372,6 +2612,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitEqExpr" ):
                 listener.exitEqExpr(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitEqExpr" ):
+                return visitor.visitEqExpr(self)
+            else:
+                return visitor.visitChildren(self)
+
 
     class EqPassContext(EqualityExprContext):
 
@@ -2390,6 +2636,12 @@ class TypeScriptSimplificadoParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitEqPass" ):
                 listener.exitEqPass(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitEqPass" ):
+                return visitor.visitEqPass(self)
+            else:
+                return visitor.visitChildren(self)
 
 
     class NeqExprContext(EqualityExprContext):
@@ -2414,6 +2666,12 @@ class TypeScriptSimplificadoParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitNeqExpr" ):
                 listener.exitNeqExpr(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitNeqExpr" ):
+                return visitor.visitNeqExpr(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -2523,6 +2781,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitGeExpr" ):
                 listener.exitGeExpr(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitGeExpr" ):
+                return visitor.visitGeExpr(self)
+            else:
+                return visitor.visitChildren(self)
+
 
     class LtExprContext(RelationalExprContext):
 
@@ -2546,6 +2810,12 @@ class TypeScriptSimplificadoParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitLtExpr" ):
                 listener.exitLtExpr(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitLtExpr" ):
+                return visitor.visitLtExpr(self)
+            else:
+                return visitor.visitChildren(self)
 
 
     class GtExprContext(RelationalExprContext):
@@ -2571,6 +2841,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitGtExpr" ):
                 listener.exitGtExpr(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitGtExpr" ):
+                return visitor.visitGtExpr(self)
+            else:
+                return visitor.visitChildren(self)
+
 
     class LeExprContext(RelationalExprContext):
 
@@ -2595,6 +2871,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitLeExpr" ):
                 listener.exitLeExpr(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitLeExpr" ):
+                return visitor.visitLeExpr(self)
+            else:
+                return visitor.visitChildren(self)
+
 
     class RelPassContext(RelationalExprContext):
 
@@ -2613,6 +2895,12 @@ class TypeScriptSimplificadoParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitRelPass" ):
                 listener.exitRelPass(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitRelPass" ):
+                return visitor.visitRelPass(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -2748,6 +3036,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitAddExpr" ):
                 listener.exitAddExpr(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitAddExpr" ):
+                return visitor.visitAddExpr(self)
+            else:
+                return visitor.visitChildren(self)
+
 
     class AddPassContext(AdditiveExprContext):
 
@@ -2766,6 +3060,12 @@ class TypeScriptSimplificadoParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitAddPass" ):
                 listener.exitAddPass(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitAddPass" ):
+                return visitor.visitAddPass(self)
+            else:
+                return visitor.visitChildren(self)
 
 
     class SubExprContext(AdditiveExprContext):
@@ -2790,6 +3090,12 @@ class TypeScriptSimplificadoParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitSubExpr" ):
                 listener.exitSubExpr(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitSubExpr" ):
+                return visitor.visitSubExpr(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -2894,6 +3200,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitMulPass" ):
                 listener.exitMulPass(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitMulPass" ):
+                return visitor.visitMulPass(self)
+            else:
+                return visitor.visitChildren(self)
+
 
     class ModExprContext(MultiplicativeExprContext):
 
@@ -2917,6 +3229,12 @@ class TypeScriptSimplificadoParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitModExpr" ):
                 listener.exitModExpr(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitModExpr" ):
+                return visitor.visitModExpr(self)
+            else:
+                return visitor.visitChildren(self)
 
 
     class MulExprContext(MultiplicativeExprContext):
@@ -2942,6 +3260,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitMulExpr" ):
                 listener.exitMulExpr(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitMulExpr" ):
+                return visitor.visitMulExpr(self)
+            else:
+                return visitor.visitChildren(self)
+
 
     class DivExprContext(MultiplicativeExprContext):
 
@@ -2965,6 +3289,12 @@ class TypeScriptSimplificadoParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitDivExpr" ):
                 listener.exitDivExpr(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitDivExpr" ):
+                return visitor.visitDivExpr(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -3088,6 +3418,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitPowExpr" ):
                 listener.exitPowExpr(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitPowExpr" ):
+                return visitor.visitPowExpr(self)
+            else:
+                return visitor.visitChildren(self)
+
 
     class PowPassContext(PowerExprContext):
 
@@ -3106,6 +3442,12 @@ class TypeScriptSimplificadoParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitPowPass" ):
                 listener.exitPowPass(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitPowPass" ):
+                return visitor.visitPowPass(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -3182,6 +3524,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitNotExpr" ):
                 listener.exitNotExpr(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitNotExpr" ):
+                return visitor.visitNotExpr(self)
+            else:
+                return visitor.visitChildren(self)
+
 
     class NegExprContext(UnaryExprContext):
 
@@ -3203,6 +3551,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitNegExpr" ):
                 listener.exitNegExpr(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitNegExpr" ):
+                return visitor.visitNegExpr(self)
+            else:
+                return visitor.visitChildren(self)
+
 
     class UnaryPassContext(UnaryExprContext):
 
@@ -3221,6 +3575,12 @@ class TypeScriptSimplificadoParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitUnaryPass" ):
                 listener.exitUnaryPass(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitUnaryPass" ):
+                return visitor.visitUnaryPass(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -3304,6 +3664,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitLengthExpr" ):
                 listener.exitLengthExpr(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitLengthExpr" ):
+                return visitor.visitLengthExpr(self)
+            else:
+                return visitor.visitChildren(self)
+
 
     class ArrayLitExprContext(PrimaryExprContext):
 
@@ -3322,6 +3688,12 @@ class TypeScriptSimplificadoParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitArrayLitExpr" ):
                 listener.exitArrayLitExpr(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitArrayLitExpr" ):
+                return visitor.visitArrayLitExpr(self)
+            else:
+                return visitor.visitChildren(self)
 
 
     class ArrayAccessExprContext(PrimaryExprContext):
@@ -3348,6 +3720,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitArrayAccessExpr" ):
                 listener.exitArrayAccessExpr(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitArrayAccessExpr" ):
+                return visitor.visitArrayAccessExpr(self)
+            else:
+                return visitor.visitChildren(self)
+
 
     class LiteralExprContext(PrimaryExprContext):
 
@@ -3366,6 +3744,12 @@ class TypeScriptSimplificadoParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitLiteralExpr" ):
                 listener.exitLiteralExpr(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitLiteralExpr" ):
+                return visitor.visitLiteralExpr(self)
+            else:
+                return visitor.visitChildren(self)
 
 
     class FuncCallExprContext(PrimaryExprContext):
@@ -3386,6 +3770,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitFuncCallExpr" ):
                 listener.exitFuncCallExpr(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitFuncCallExpr" ):
+                return visitor.visitFuncCallExpr(self)
+            else:
+                return visitor.visitChildren(self)
+
 
     class ConvFuncCallExprContext(PrimaryExprContext):
 
@@ -3404,6 +3794,12 @@ class TypeScriptSimplificadoParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitConvFuncCallExpr" ):
                 listener.exitConvFuncCallExpr(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitConvFuncCallExpr" ):
+                return visitor.visitConvFuncCallExpr(self)
+            else:
+                return visitor.visitChildren(self)
 
 
     class ParenExprContext(PrimaryExprContext):
@@ -3428,6 +3824,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitParenExpr" ):
                 listener.exitParenExpr(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitParenExpr" ):
+                return visitor.visitParenExpr(self)
+            else:
+                return visitor.visitChildren(self)
+
 
     class IdExprContext(PrimaryExprContext):
 
@@ -3445,6 +3847,12 @@ class TypeScriptSimplificadoParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitIdExpr" ):
                 listener.exitIdExpr(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitIdExpr" ):
+                return visitor.visitIdExpr(self)
+            else:
+                return visitor.visitChildren(self)
 
 
     class MathFuncCallExprContext(PrimaryExprContext):
@@ -3464,6 +3872,12 @@ class TypeScriptSimplificadoParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitMathFuncCallExpr" ):
                 listener.exitMathFuncCallExpr(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitMathFuncCallExpr" ):
+                return visitor.visitMathFuncCallExpr(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -3596,6 +4010,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitFalseLiteral" ):
                 listener.exitFalseLiteral(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitFalseLiteral" ):
+                return visitor.visitFalseLiteral(self)
+            else:
+                return visitor.visitChildren(self)
+
 
     class StringLiteralContext(LiteralContext):
 
@@ -3613,6 +4033,12 @@ class TypeScriptSimplificadoParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitStringLiteral" ):
                 listener.exitStringLiteral(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitStringLiteral" ):
+                return visitor.visitStringLiteral(self)
+            else:
+                return visitor.visitChildren(self)
 
 
     class TrueLiteralContext(LiteralContext):
@@ -3632,6 +4058,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitTrueLiteral" ):
                 listener.exitTrueLiteral(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitTrueLiteral" ):
+                return visitor.visitTrueLiteral(self)
+            else:
+                return visitor.visitChildren(self)
+
 
     class NumberLiteralContext(LiteralContext):
 
@@ -3649,6 +4081,12 @@ class TypeScriptSimplificadoParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitNumberLiteral" ):
                 listener.exitNumberLiteral(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitNumberLiteral" ):
+                return visitor.visitNumberLiteral(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -3724,6 +4162,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitArrayLiteral" ):
                 listener.exitArrayLiteral(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitArrayLiteral" ):
+                return visitor.visitArrayLiteral(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -3785,6 +4229,12 @@ class TypeScriptSimplificadoParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitFunctionCall" ):
                 listener.exitFunctionCall(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitFunctionCall" ):
+                return visitor.visitFunctionCall(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -3849,6 +4299,12 @@ class TypeScriptSimplificadoParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitArgumentList" ):
                 listener.exitArgumentList(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitArgumentList" ):
+                return visitor.visitArgumentList(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -3933,6 +4389,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitMathPowCall" ):
                 listener.exitMathPowCall(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitMathPowCall" ):
+                return visitor.visitMathPowCall(self)
+            else:
+                return visitor.visitChildren(self)
+
 
     class MathSqrtCallContext(MathFunctionCallContext):
 
@@ -3961,6 +4423,12 @@ class TypeScriptSimplificadoParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitMathSqrtCall" ):
                 listener.exitMathSqrtCall(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitMathSqrtCall" ):
+                return visitor.visitMathSqrtCall(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -4061,6 +4529,12 @@ class TypeScriptSimplificadoParser ( Parser ):
             if hasattr( listener, "exitParseFloatCall" ):
                 listener.exitParseFloatCall(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitParseFloatCall" ):
+                return visitor.visitParseFloatCall(self)
+            else:
+                return visitor.visitChildren(self)
+
 
     class ParseIntCallContext(ConversionFunctionCallContext):
 
@@ -4085,6 +4559,12 @@ class TypeScriptSimplificadoParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitParseIntCall" ):
                 listener.exitParseIntCall(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitParseIntCall" ):
+                return visitor.visitParseIntCall(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 

@@ -16,8 +16,7 @@ Este módulo implementa as verificações semânticas necessárias:
 
 import sys
 from gen.TypeScriptSimplificadoParser import TypeScriptSimplificadoParser
-from gen.TypeScriptSimplificadoListener import TypeScriptSimplificadoListener
-from antlr4 import *
+from gen.TypeScriptSimplificadoVisitor import TypeScriptSimplificadoVisitor
 
 
 class SemanticError(Exception):
@@ -154,9 +153,9 @@ class SymbolTable:
         return result
 
 
-class SemanticAnalyzer(TypeScriptSimplificadoListener):
+class SemanticAnalyzer(TypeScriptSimplificadoVisitor):
     """
-    Analisador Semântico usando padrão Listener do ANTLR4
+    Analisador Semântico usando padrão Visitor do ANTLR4
     
     Realiza verificações semânticas durante a travessia da AST:
     - Declaração e uso de variáveis
@@ -205,7 +204,7 @@ class SemanticAnalyzer(TypeScriptSimplificadoListener):
     
     def get_type(self, ctx):
         """
-        Obtém o tipo de uma expressão ou declaração
+        Obtém o tipo de uma expressão ou declaração através de visita
         
         Returns:
             String com o tipo ('number', 'string', 'boolean', 'number[]', 'string[]', 'void')
@@ -213,160 +212,8 @@ class SemanticAnalyzer(TypeScriptSimplificadoListener):
         if ctx is None:
             return "void"
         
-        # Tipos literais
-        if isinstance(ctx, TypeScriptSimplificadoParser.NumberLiteralContext):
-            return "number"
-        elif isinstance(ctx, TypeScriptSimplificadoParser.StringLiteralContext):
-            return "string"
-        elif isinstance(ctx, TypeScriptSimplificadoParser.TrueLiteralContext) or \
-             isinstance(ctx, TypeScriptSimplificadoParser.FalseLiteralContext):
-            return "boolean"
-        
-        # Array literal
-        elif isinstance(ctx, TypeScriptSimplificadoParser.ArrayLitExprContext):
-            # Inferir tipo baseado nos elementos (simplificado)
-            expr_list = ctx.arrayLiteral().expressionList()
-            if expr_list and expr_list.expression():
-                first_type = self.get_type(expr_list.expression(0))
-                if first_type in ["number", "string"]:
-                    return f"{first_type}[]"
-            return "number[]"  # Default
-        
-        # Identificador (variável)
-        elif isinstance(ctx, TypeScriptSimplificadoParser.IdExprContext):
-            var_name = ctx.ID().getText()
-            symbol = self.symbol_table.lookup(var_name)
-            if symbol:
-                return symbol.symbol_type
-            return "unknown"
-        
-        # Acesso a array
-        elif isinstance(ctx, TypeScriptSimplificadoParser.ArrayAccessExprContext):
-            array_type = self.get_type(ctx.getChild(0))
-            if array_type.endswith("[]"):
-                return array_type[:-2]  # Remove '[]'
-            return "unknown"
-        
-        # Propriedade .length
-        elif isinstance(ctx, TypeScriptSimplificadoParser.LengthExprContext):
-            return "number"
-        
-        # Operações aritméticas
-        elif isinstance(ctx, (TypeScriptSimplificadoParser.AddExprContext,
-                            TypeScriptSimplificadoParser.SubExprContext,
-                            TypeScriptSimplificadoParser.MulExprContext,
-                            TypeScriptSimplificadoParser.DivExprContext,
-                            TypeScriptSimplificadoParser.ModExprContext,
-                            TypeScriptSimplificadoParser.PowExprContext,
-                            TypeScriptSimplificadoParser.NegExprContext)):
-            return "number"
-        
-        # Operações de comparação e lógicas
-        elif isinstance(ctx, (TypeScriptSimplificadoParser.EqExprContext,
-                            TypeScriptSimplificadoParser.NeqExprContext,
-                            TypeScriptSimplificadoParser.GtExprContext,
-                            TypeScriptSimplificadoParser.LtExprContext,
-                            TypeScriptSimplificadoParser.GeExprContext,
-                            TypeScriptSimplificadoParser.LeExprContext,
-                            TypeScriptSimplificadoParser.AndExprContext,
-                            TypeScriptSimplificadoParser.OrExprContext,
-                            TypeScriptSimplificadoParser.NotExprContext)):
-            return "boolean"
-        
-        # Chamadas de função
-        elif isinstance(ctx, TypeScriptSimplificadoParser.FuncCallExprContext):
-            func_name = ctx.functionCall().ID().getText()
-            symbol = self.symbol_table.lookup(func_name)
-            if symbol and symbol.is_function:
-                return symbol.return_type
-            return "unknown"
-        
-        # Funções Math
-        elif isinstance(ctx, TypeScriptSimplificadoParser.MathFuncCallExprContext):
-            return "number"
-        
-        # Funções de conversão
-        elif isinstance(ctx, TypeScriptSimplificadoParser.ConvFuncCallExprContext):
-            return "number"
-        
-        # Expressão entre parênteses
-        elif isinstance(ctx, TypeScriptSimplificadoParser.ParenExprContext):
-            return self.get_type(ctx.expression())
-        
-        # Contextos intermediários de expressões (pass-through)
-        # Expression context
-        elif isinstance(ctx, TypeScriptSimplificadoParser.ExpressionContext):
-            return self.get_type(ctx.logicalOrExpr())
-        
-        # LogicalOrExpr contexts
-        elif isinstance(ctx, TypeScriptSimplificadoParser.OrExprContext):
-            return "boolean"
-        elif isinstance(ctx, TypeScriptSimplificadoParser.OrPassContext):
-            return self.get_type(ctx.logicalAndExpr())
-        
-        # LogicalAndExpr contexts  
-        elif isinstance(ctx, TypeScriptSimplificadoParser.AndExprContext):
-            return "boolean"
-        elif isinstance(ctx, TypeScriptSimplificadoParser.AndPassContext):
-            return self.get_type(ctx.equalityExpr())
-        
-        # EqualityExpr contexts
-        elif isinstance(ctx, (TypeScriptSimplificadoParser.EqExprContext,
-                            TypeScriptSimplificadoParser.NeqExprContext)):
-            return "boolean"
-        elif isinstance(ctx, TypeScriptSimplificadoParser.EqPassContext):
-            return self.get_type(ctx.relationalExpr())
-        
-        # RelationalExpr contexts
-        elif isinstance(ctx, (TypeScriptSimplificadoParser.GtExprContext,
-                            TypeScriptSimplificadoParser.LtExprContext,
-                            TypeScriptSimplificadoParser.GeExprContext,
-                            TypeScriptSimplificadoParser.LeExprContext)):
-            return "boolean"
-        elif isinstance(ctx, TypeScriptSimplificadoParser.RelPassContext):
-            return self.get_type(ctx.additiveExpr())
-        
-        # AdditiveExpr contexts
-        elif isinstance(ctx, (TypeScriptSimplificadoParser.AddExprContext,
-                            TypeScriptSimplificadoParser.SubExprContext)):
-            return "number"
-        elif isinstance(ctx, TypeScriptSimplificadoParser.AddPassContext):
-            return self.get_type(ctx.multiplicativeExpr())
-        
-        # MultiplicativeExpr contexts
-        elif isinstance(ctx, (TypeScriptSimplificadoParser.MulExprContext,
-                            TypeScriptSimplificadoParser.DivExprContext,
-                            TypeScriptSimplificadoParser.ModExprContext)):
-            return "number"
-        elif isinstance(ctx, TypeScriptSimplificadoParser.MulPassContext):
-            return self.get_type(ctx.powerExpr())
-        
-        # PowerExpr contexts
-        elif isinstance(ctx, TypeScriptSimplificadoParser.PowExprContext):
-            return "number"
-        elif isinstance(ctx, TypeScriptSimplificadoParser.PowPassContext):
-            return self.get_type(ctx.unaryExpr())
-        
-        # UnaryExpr contexts
-        elif isinstance(ctx, TypeScriptSimplificadoParser.UnaryPassContext):
-            return self.get_type(ctx.primaryExpr())
-        
-        # PrimaryExpr contexts
-        elif isinstance(ctx, TypeScriptSimplificadoParser.LiteralExprContext):
-            return self.get_type(ctx.literal())
-        elif isinstance(ctx, TypeScriptSimplificadoParser.LiteralContext):
-            if ctx.NUMBER_LITERAL():
-                return "number"
-            elif ctx.STRING_LITERAL():
-                return "string"
-            elif ctx.TRUE() or ctx.FALSE():
-                return "boolean"
-        
-        # Passar por contextos intermediários genéricos
-        elif hasattr(ctx, 'expression') and callable(ctx.expression):
-            return self.get_type(ctx.expression())
-        
-        return "unknown"
+        # Visita o contexto e retorna o tipo
+        return self.visit(ctx)
     
     def type_compatible(self, type1, type2):
         """
@@ -376,13 +223,41 @@ class SemanticAnalyzer(TypeScriptSimplificadoListener):
             return True  # Não verifica tipos desconhecidos
         return type1 == type2
     
+    def get_type_annotation(self, ctx):
+        """
+        Extrai o tipo de uma anotação de tipo
+        """
+        if isinstance(ctx, TypeScriptSimplificadoParser.NumberTypeContext):
+            return "number"
+        elif isinstance(ctx, TypeScriptSimplificadoParser.StringTypeContext):
+            return "string"
+        elif isinstance(ctx, TypeScriptSimplificadoParser.BooleanTypeContext):
+            return "boolean"
+        elif isinstance(ctx, TypeScriptSimplificadoParser.NumberArrayTypeContext):
+            return "number[]"
+        elif isinstance(ctx, TypeScriptSimplificadoParser.StringArrayTypeContext):
+            return "string[]"
+        return "unknown"
+    
     # ========================================================================
-    # LISTENERS - Declarações de Funções
+    # VISITOR - Programa
     # ========================================================================
     
-    def enterFunctionDecl(self, ctx: TypeScriptSimplificadoParser.FunctionDeclContext):
+    def visitProgram(self, ctx: TypeScriptSimplificadoParser.ProgramContext):
         """
-        Entrada em declaração de função
+        Visita o programa inteiro
+        """
+        # Primeira passagem: coleta assinaturas de funções
+        for child in ctx.children:
+            if isinstance(child, TypeScriptSimplificadoParser.FunctionDeclContext):
+                self._collect_func_signature(child)
+        
+        # Segunda passagem: visita todos os filhos (funções e statements)
+        return self.visitChildren(ctx)
+    
+    def _collect_func_signature(self, ctx: TypeScriptSimplificadoParser.FunctionDeclContext):
+        """
+        Coleta a assinatura de uma função sem processar o corpo
         """
         func_name = ctx.ID().getText()
         line = ctx.start.line
@@ -416,55 +291,55 @@ class SemanticAnalyzer(TypeScriptSimplificadoListener):
             self.symbol_table.declare(symbol)
         except SemanticError as e:
             self.add_error(str(e), ctx)
+    
+    # ========================================================================
+    # VISITOR - Declarações de Funções
+    # ========================================================================
+    
+    def visitFunctionDecl(self, ctx: TypeScriptSimplificadoParser.FunctionDeclContext):
+        """
+        Visita declaração de função
+        """
+        func_name = ctx.ID().getText()
+        line = ctx.start.line
+        
+        # Busca a função já declarada
+        symbol = self.symbol_table.lookup(func_name)
         
         # Entra no escopo da função
         self.enter_scope(f"function_{func_name}")
         self.current_function = symbol
         
         # Declara os parâmetros no escopo da função
-        for param in params:
-            param_symbol = Symbol(
-                name=param["name"],
-                symbol_type=param["type"],
-                is_initialized=True,  # Parâmetros já vêm inicializados
-                line=line
-            )
-            try:
-                self.symbol_table.declare(param_symbol)
-            except SemanticError as e:
-                self.add_error(str(e), ctx)
-    
-    def exitFunctionDecl(self, ctx: TypeScriptSimplificadoParser.FunctionDeclContext):
-        """
-        Saída de declaração de função
-        """
-        # TODO: Verificar se função com retorno tem return em todos os caminhos
+        if symbol and ctx.paramList():
+            for param in symbol.params:
+                param_symbol = Symbol(
+                    name=param["name"],
+                    symbol_type=param["type"],
+                    is_initialized=True,  # Parâmetros já vêm inicializados
+                    line=line
+                )
+                try:
+                    self.symbol_table.declare(param_symbol)
+                except SemanticError as e:
+                    self.add_error(str(e), ctx)
+        
+        # Visita o corpo da função
+        self.visit(ctx.block())
+        
+        # Sai do escopo da função
         self.exit_scope()
         self.current_function = None
-    
-    def get_type_annotation(self, ctx):
-        """
-        Extrai o tipo de uma anotação de tipo
-        """
-        if isinstance(ctx, TypeScriptSimplificadoParser.NumberTypeContext):
-            return "number"
-        elif isinstance(ctx, TypeScriptSimplificadoParser.StringTypeContext):
-            return "string"
-        elif isinstance(ctx, TypeScriptSimplificadoParser.BooleanTypeContext):
-            return "boolean"
-        elif isinstance(ctx, TypeScriptSimplificadoParser.NumberArrayTypeContext):
-            return "number[]"
-        elif isinstance(ctx, TypeScriptSimplificadoParser.StringArrayTypeContext):
-            return "string[]"
-        return "unknown"
+        
+        return None
     
     # ========================================================================
-    # LISTENERS - Declarações de Variáveis
+    # VISITOR - Declarações de Variáveis
     # ========================================================================
     
-    def enterLetDecl(self, ctx: TypeScriptSimplificadoParser.LetDeclContext):
+    def visitLetDecl(self, ctx: TypeScriptSimplificadoParser.LetDeclContext):
         """
-        Declaração de variável com let
+        Visita declaração de variável com let
         """
         var_name = ctx.ID().getText()
         var_type = self.get_type_annotation(ctx.typeAnnotation())
@@ -496,10 +371,12 @@ class SemanticAnalyzer(TypeScriptSimplificadoListener):
             self.symbol_table.declare(symbol)
         except SemanticError as e:
             self.add_error(str(e), ctx)
+        
+        return None
     
-    def enterConstDecl(self, ctx: TypeScriptSimplificadoParser.ConstDeclContext):
+    def visitConstDecl(self, ctx: TypeScriptSimplificadoParser.ConstDeclContext):
         """
-        Declaração de constante com const
+        Visita declaração de constante com const
         """
         const_name = ctx.ID().getText()
         const_type = self.get_type_annotation(ctx.typeAnnotation())
@@ -508,7 +385,7 @@ class SemanticAnalyzer(TypeScriptSimplificadoListener):
         # const DEVE ter inicialização
         if ctx.expression() is None:
             self.add_error(f"Constante '{const_name}' deve ser inicializada", ctx)
-            return
+            return None
         
         # Verifica tipo da inicialização
         init_type = self.get_type(ctx.expression())
@@ -532,19 +409,21 @@ class SemanticAnalyzer(TypeScriptSimplificadoListener):
             self.symbol_table.declare(symbol)
         except SemanticError as e:
             self.add_error(str(e), ctx)
+        
+        return None
     
     # ========================================================================
-    # LISTENERS - Atribuições
+    # VISITOR - Atribuições
     # ========================================================================
     
-    def enterAssignmentStmt(self, ctx: TypeScriptSimplificadoParser.AssignmentStmtContext):
+    def visitAssignmentStmt(self, ctx: TypeScriptSimplificadoParser.AssignmentStmtContext):
         """
-        Atribuição de valor a variável
+        Visita atribuição de valor a variável
         """
         lvalue = ctx.lvalue()
         line = ctx.start.line
         
-        # Pega o nome da variável (simplificado - apenas IDs simples por ora)
+        # Pega o nome da variável
         if isinstance(lvalue, TypeScriptSimplificadoParser.IdLvalueContext):
             var_name = lvalue.ID().getText()
             
@@ -552,7 +431,7 @@ class SemanticAnalyzer(TypeScriptSimplificadoListener):
             symbol = self.symbol_table.lookup(var_name)
             if not symbol:
                 self.add_error(f"Variável '{var_name}' não foi declarada", ctx)
-                return
+                return None
             
             # Verifica tipo da expressão
             expr_type = self.get_type(ctx.expression())
@@ -568,134 +447,119 @@ class SemanticAnalyzer(TypeScriptSimplificadoListener):
                 self.symbol_table.update_initialization(var_name, line)
             except SemanticError as e:
                 self.add_error(str(e), ctx)
+        
+        elif isinstance(lvalue, TypeScriptSimplificadoParser.ArrayAccessLvalueContext):
+            # Atribuição a elemento de array
+            var_name = lvalue.ID().getText()
+            symbol = self.symbol_table.lookup(var_name)
+            if not symbol:
+                self.add_error(f"Array '{var_name}' não foi declarado", ctx)
+                return None
+            
+            # Verifica se é um array
+            if not symbol.symbol_type.endswith("[]"):
+                self.add_error(f"'{var_name}' não é um array", ctx)
+                return None
+            
+            # Verifica tipo do elemento
+            element_type = symbol.symbol_type[:-2]  # Remove []
+            expr_type = self.get_type(ctx.expression())
+            if not self.type_compatible(element_type, expr_type):
+                self.add_error(
+                    f"Tipo incompatível na atribuição ao array '{var_name}': "
+                    f"esperado '{element_type}', mas recebeu '{expr_type}'",
+                    ctx
+                )
+        
+        return None
     
     # ========================================================================
-    # LISTENERS - Uso de Variáveis
+    # VISITOR - Estruturas de Controle
     # ========================================================================
     
-    def enterIdExpr(self, ctx: TypeScriptSimplificadoParser.IdExprContext):
+    def visitBlock(self, ctx: TypeScriptSimplificadoParser.BlockContext):
         """
-        Uso de uma variável/identificador em expressão
-        """
-        var_name = ctx.ID().getText()
-        line = ctx.start.line
-        
-        # Verifica se a variável foi declarada
-        symbol = self.symbol_table.lookup(var_name)
-        if not symbol:
-            self.add_error(f"Variável '{var_name}' não foi declarada", ctx)
-            return
-        
-        # Verifica se foi inicializada (apenas para variáveis, não funções)
-        if not symbol.is_function and not symbol.is_initialized:
-            self.add_error(
-                f"Variável '{var_name}' está sendo usada antes de ser inicializada "
-                f"(declarada na linha {symbol.line})",
-                ctx
-            )
-    
-    # ========================================================================
-    # LISTENERS - Chamadas de Função
-    # ========================================================================
-    
-    def enterFuncCallExpr(self, ctx: TypeScriptSimplificadoParser.FuncCallExprContext):
-        """
-        Chamada de função
-        """
-        func_name = ctx.functionCall().ID().getText()
-        line = ctx.start.line
-        
-        # Verifica se a função foi declarada
-        symbol = self.symbol_table.lookup(func_name)
-        if not symbol:
-            self.add_error(f"Função '{func_name}' não foi declarada", ctx)
-            return
-        
-        if not symbol.is_function:
-            self.add_error(f"'{func_name}' não é uma função", ctx)
-            return
-        
-        # Verifica número de argumentos
-        arg_list = ctx.functionCall().argumentList()
-        num_args = 0
-        if arg_list:
-            num_args = len(arg_list.expression())
-        
-        num_params = len(symbol.params)
-        if num_args != num_params:
-            self.add_error(
-                f"Função '{func_name}' espera {num_params} argumento(s), "
-                f"mas recebeu {num_args}",
-                ctx
-            )
-            return
-        
-        # Verifica tipos dos argumentos
-        if arg_list:
-            for i, arg_expr in enumerate(arg_list.expression()):
-                arg_type = self.get_type(arg_expr)
-                expected_type = symbol.params[i]["type"]
-                if not self.type_compatible(expected_type, arg_type):
-                    self.add_error(
-                        f"Argumento {i+1} de '{func_name}': "
-                        f"esperado '{expected_type}', mas recebeu '{arg_type}'",
-                        ctx
-                    )
-    
-    # ========================================================================
-    # LISTENERS - Estruturas de Controle (Escopos)
-    # ========================================================================
-    
-    def enterBlock(self, ctx: TypeScriptSimplificadoParser.BlockContext):
-        """
-        Entrada em bloco de código
+        Visita bloco de código
         """
         # Apenas cria novo escopo se não for bloco de função (que já criou)
         parent = ctx.parentCtx
         if not isinstance(parent, TypeScriptSimplificadoParser.FunctionDeclContext):
             self.enter_scope("block")
-    
-    def exitBlock(self, ctx: TypeScriptSimplificadoParser.BlockContext):
-        """
-        Saída de bloco de código
-        """
-        parent = ctx.parentCtx
+        
+        # Visita statements do bloco
+        self.visitChildren(ctx)
+        
         if not isinstance(parent, TypeScriptSimplificadoParser.FunctionDeclContext):
             self.exit_scope()
+        
+        return None
     
-    def enterIfStatement(self, ctx: TypeScriptSimplificadoParser.IfStatementContext):
+    def visitIfStatement(self, ctx: TypeScriptSimplificadoParser.IfStatementContext):
         """
-        Verifica condição do if
+        Visita statement if
         """
+        # Verifica condição
         condition_type = self.get_type(ctx.expression())
         if condition_type != "boolean" and condition_type != "unknown":
             self.add_error(
                 f"Condição do 'if' deve ser do tipo 'boolean', mas é '{condition_type}'",
                 ctx
             )
+        
+        # Visita statements
+        return self.visitChildren(ctx)
     
-    def enterWhileStatement(self, ctx: TypeScriptSimplificadoParser.WhileStatementContext):
+    def visitWhileStatement(self, ctx: TypeScriptSimplificadoParser.WhileStatementContext):
         """
-        Verifica condição do while
+        Visita statement while
         """
+        # Verifica condição
         condition_type = self.get_type(ctx.expression())
         if condition_type != "boolean" and condition_type != "unknown":
             self.add_error(
                 f"Condição do 'while' deve ser do tipo 'boolean', mas é '{condition_type}'",
                 ctx
             )
+        
+        # Visita statement do corpo
+        return self.visitChildren(ctx)
     
-    # ========================================================================
-    # LISTENERS - Return
-    # ========================================================================
-    
-    def enterReturnStatement(self, ctx: TypeScriptSimplificadoParser.ReturnStatementContext):
+    def visitForStatement(self, ctx: TypeScriptSimplificadoParser.ForStatementContext):
         """
-        Verifica statement return
+        Visita statement for
+        """
+        # Cria escopo para o for
+        self.enter_scope("for")
+        
+        # Visita componentes do for
+        if ctx.forInit():
+            self.visit(ctx.forInit())
+        
+        if ctx.expression():
+            condition_type = self.get_type(ctx.expression())
+            if condition_type != "boolean" and condition_type != "unknown":
+                self.add_error(
+                    f"Condição do 'for' deve ser do tipo 'boolean', mas é '{condition_type}'",
+                    ctx
+                )
+        
+        if ctx.forUpdate():
+            self.visit(ctx.forUpdate())
+        
+        # Visita corpo do for
+        if ctx.statement():
+            self.visit(ctx.statement())
+        
+        self.exit_scope()
+        return None
+    
+    def visitReturnStatement(self, ctx: TypeScriptSimplificadoParser.ReturnStatementContext):
+        """
+        Visita statement return
         """
         if not self.current_function:
             self.add_error("'return' fora de uma função", ctx)
-            return
+            return None
         
         # Verifica tipo de retorno
         has_expr = ctx.expression() is not None
@@ -721,144 +585,541 @@ class SemanticAnalyzer(TypeScriptSimplificadoListener):
                         f"mas recebeu '{return_type}'",
                         ctx
                     )
+        
+        return None
     
     # ========================================================================
-    # VERIFICAÇÃO DE OPERADORES
+    # VISITOR - Expressões - Literais
     # ========================================================================
     
-    def enterAddExpr(self, ctx: TypeScriptSimplificadoParser.AddExprContext):
-        """Verifica operador +"""
-        self.check_binary_numeric_op(ctx, "+")
+    def visitNumberLiteral(self, ctx: TypeScriptSimplificadoParser.NumberLiteralContext):
+        """Retorna tipo de literal numérico"""
+        return "number"
     
-    def enterSubExpr(self, ctx: TypeScriptSimplificadoParser.SubExprContext):
-        """Verifica operador -"""
-        self.check_binary_numeric_op(ctx, "-")
+    def visitStringLiteral(self, ctx: TypeScriptSimplificadoParser.StringLiteralContext):
+        """Retorna tipo de literal string"""
+        return "string"
     
-    def enterMulExpr(self, ctx: TypeScriptSimplificadoParser.MulExprContext):
-        """Verifica operador *"""
-        self.check_binary_numeric_op(ctx, "*")
+    def visitTrueLiteral(self, ctx: TypeScriptSimplificadoParser.TrueLiteralContext):
+        """Retorna tipo de literal true"""
+        return "boolean"
     
-    def enterDivExpr(self, ctx: TypeScriptSimplificadoParser.DivExprContext):
-        """Verifica operador /"""
-        self.check_binary_numeric_op(ctx, "/")
+    def visitFalseLiteral(self, ctx: TypeScriptSimplificadoParser.FalseLiteralContext):
+        """Retorna tipo de literal false"""
+        return "boolean"
     
-    def enterModExpr(self, ctx: TypeScriptSimplificadoParser.ModExprContext):
-        """Verifica operador %"""
-        self.check_binary_numeric_op(ctx, "%")
+    # ========================================================================
+    # VISITOR - Expressões - Identificadores
+    # ========================================================================
     
-    def enterPowExpr(self, ctx: TypeScriptSimplificadoParser.PowExprContext):
-        """Verifica operador **"""
-        self.check_binary_numeric_op(ctx, "**")
-    
-    def enterNegExpr(self, ctx: TypeScriptSimplificadoParser.NegExprContext):
-        """Verifica operador unário -"""
-        operand_type = self.get_type(ctx.unaryExpr())
-        if operand_type != "number" and operand_type != "unknown":
+    def visitIdExpr(self, ctx: TypeScriptSimplificadoParser.IdExprContext):
+        """
+        Visita uso de identificador em expressão
+        """
+        var_name = ctx.ID().getText()
+        line = ctx.start.line
+        
+        # Verifica se a variável foi declarada
+        symbol = self.symbol_table.lookup(var_name)
+        if not symbol:
+            self.add_error(f"Variável '{var_name}' não foi declarada", ctx)
+            return "unknown"
+        
+        # Verifica se foi inicializada (apenas para variáveis, não funções)
+        if not symbol.is_function and not symbol.is_initialized:
             self.add_error(
-                f"Operador unário '-' requer operando do tipo 'number', mas recebeu '{operand_type}'",
+                f"Variável '{var_name}' está sendo usada antes de ser inicializada "
+                f"(declarada na linha {symbol.line})",
                 ctx
             )
+        
+        return symbol.symbol_type
     
-    def check_binary_numeric_op(self, ctx, op):
+    # ========================================================================
+    # VISITOR - Expressões - Arrays
+    # ========================================================================
+    
+    def visitArrayLitExpr(self, ctx: TypeScriptSimplificadoParser.ArrayLitExprContext):
         """
-        Verifica operadores binários numéricos
+        Visita literal de array
         """
-        # Para expressões aditivas, multiplicativas e de potência
-        # o primeiro filho é o lado esquerdo e o último é o lado direito
-        left_expr = None
-        right_expr = None
+        expr_list = ctx.arrayLiteral().expressionList()
+        if expr_list and expr_list.expression():
+            first_type = self.get_type(expr_list.expression(0))
+            if first_type in ["number", "string"]:
+                return f"{first_type}[]"
+        return "number[]"  # Default
+    
+    def visitArrayAccessExpr(self, ctx: TypeScriptSimplificadoParser.ArrayAccessExprContext):
+        """
+        Visita acesso a elemento de array
+        """
+        var_name = ctx.ID().getText()
+        symbol = self.symbol_table.lookup(var_name)
         
-        # Determina os operandos baseado no tipo de contexto
-        if isinstance(ctx, TypeScriptSimplificadoParser.AddExprContext):
-            left_expr = ctx.additiveExpr()
-            right_expr = ctx.multiplicativeExpr()
-        elif isinstance(ctx, TypeScriptSimplificadoParser.SubExprContext):
-            left_expr = ctx.additiveExpr()
-            right_expr = ctx.multiplicativeExpr()
-        elif isinstance(ctx, TypeScriptSimplificadoParser.MulExprContext):
-            left_expr = ctx.multiplicativeExpr()
-            right_expr = ctx.powerExpr()
-        elif isinstance(ctx, TypeScriptSimplificadoParser.DivExprContext):
-            left_expr = ctx.multiplicativeExpr()
-            right_expr = ctx.powerExpr()
-        elif isinstance(ctx, TypeScriptSimplificadoParser.ModExprContext):
-            left_expr = ctx.multiplicativeExpr()
-            right_expr = ctx.powerExpr()
-        elif isinstance(ctx, TypeScriptSimplificadoParser.PowExprContext):
-            left_expr = ctx.powerExpr()
-            right_expr = ctx.unaryExpr()
+        if not symbol:
+            self.add_error(f"Array '{var_name}' não foi declarado", ctx)
+            return "unknown"
         
-        if left_expr is None or right_expr is None:
-            return
+        if not symbol.symbol_type.endswith("[]"):
+            self.add_error(f"'{var_name}' não é um array", ctx)
+            return "unknown"
         
-        left_type = self.get_type(left_expr)
-        right_type = self.get_type(right_expr)
+        # Verifica tipo do índice
+        index_type = self.get_type(ctx.expression())
+        if index_type != "number" and index_type != "unknown":
+            self.add_error(
+                f"Índice de array deve ser do tipo 'number', mas é '{index_type}'",
+                ctx
+            )
+        
+        # Retorna tipo do elemento
+        return symbol.symbol_type[:-2]  # Remove []
+    
+    def visitLengthExpr(self, ctx: TypeScriptSimplificadoParser.LengthExprContext):
+        """
+        Visita acesso à propriedade .length
+        """
+        var_name = ctx.ID().getText()
+        symbol = self.symbol_table.lookup(var_name)
+        
+        if not symbol:
+            self.add_error(f"Variável '{var_name}' não foi declarada", ctx)
+            return "unknown"
+        
+        if not symbol.symbol_type.endswith("[]"):
+            self.add_error(f"Propriedade 'length' só pode ser usada em arrays", ctx)
+            return "unknown"
+        
+        return "number"
+    
+    # ========================================================================
+    # VISITOR - Expressões - Chamadas de Função
+    # ========================================================================
+    
+    def visitFuncCallExpr(self, ctx: TypeScriptSimplificadoParser.FuncCallExprContext):
+        """
+        Visita chamada de função
+        """
+        func_name = ctx.functionCall().ID().getText()
+        line = ctx.start.line
+        
+        # Verifica se a função foi declarada
+        symbol = self.symbol_table.lookup(func_name)
+        if not symbol:
+            self.add_error(f"Função '{func_name}' não foi declarada", ctx)
+            return "unknown"
+        
+        if not symbol.is_function:
+            self.add_error(f"'{func_name}' não é uma função", ctx)
+            return "unknown"
+        
+        # Verifica número de argumentos
+        arg_list = ctx.functionCall().argumentList()
+        num_args = 0
+        if arg_list:
+            num_args = len(arg_list.expression())
+        
+        num_params = len(symbol.params)
+        if num_args != num_params:
+            self.add_error(
+                f"Função '{func_name}' espera {num_params} argumento(s), "
+                f"mas recebeu {num_args}",
+                ctx
+            )
+            return symbol.return_type
+        
+        # Verifica tipos dos argumentos
+        if arg_list:
+            for i, arg_expr in enumerate(arg_list.expression()):
+                arg_type = self.get_type(arg_expr)
+                expected_type = symbol.params[i]["type"]
+                if not self.type_compatible(expected_type, arg_type):
+                    self.add_error(
+                        f"Argumento {i+1} de '{func_name}': "
+                        f"esperado '{expected_type}', mas recebeu '{arg_type}'",
+                        ctx
+                    )
+        
+        return symbol.return_type
+    
+    def visitMathFuncCallExpr(self, ctx: TypeScriptSimplificadoParser.MathFuncCallExprContext):
+        """
+        Visita chamada de função Math
+        """
+        # Verifica tipos dos argumentos
+        math_call = ctx.mathFunctionCall()
+        
+        if isinstance(math_call, TypeScriptSimplificadoParser.MathSqrtCallContext):
+            arg_type = self.get_type(math_call.expression())
+            if arg_type != "number" and arg_type != "unknown":
+                self.add_error(
+                    f"Math.sqrt() espera argumento do tipo 'number', mas recebeu '{arg_type}'",
+                    ctx
+                )
+        elif isinstance(math_call, TypeScriptSimplificadoParser.MathPowCallContext):
+            base_type = self.get_type(math_call.expression(0))
+            exp_type = self.get_type(math_call.expression(1))
+            if base_type != "number" and base_type != "unknown":
+                self.add_error(
+                    f"Math.pow() espera primeiro argumento do tipo 'number', mas recebeu '{base_type}'",
+                    ctx
+                )
+            if exp_type != "number" and exp_type != "unknown":
+                self.add_error(
+                    f"Math.pow() espera segundo argumento do tipo 'number', mas recebeu '{exp_type}'",
+                    ctx
+                )
+        
+        return "number"
+    
+    def visitConvFuncCallExpr(self, ctx: TypeScriptSimplificadoParser.ConvFuncCallExprContext):
+        """
+        Visita chamada de função de conversão
+        """
+        # parseInt e parseFloat sempre retornam number
+        return "number"
+    
+    # ========================================================================
+    # VISITOR - Expressões - Operadores Aritméticos
+    # ========================================================================
+    
+    def visitAddExpr(self, ctx: TypeScriptSimplificadoParser.AddExprContext):
+        """Visita operador +"""
+        left_type = self.get_type(ctx.additiveExpr())
+        right_type = self.get_type(ctx.multiplicativeExpr())
         
         if left_type != "number" and left_type != "unknown":
             self.add_error(
-                f"Operador '{op}' requer operandos do tipo 'number', "
+                f"Operador '+' requer operandos do tipo 'number', "
                 f"mas o lado esquerdo é '{left_type}'",
                 ctx
             )
         
         if right_type != "number" and right_type != "unknown":
             self.add_error(
-                f"Operador '{op}' requer operandos do tipo 'number', "
+                f"Operador '+' requer operandos do tipo 'number', "
                 f"mas o lado direito é '{right_type}'",
                 ctx
             )
+        
+        return "number"
     
-    def enterAndExpr(self, ctx: TypeScriptSimplificadoParser.AndExprContext):
-        """Verifica operador &&"""
-        self.check_binary_boolean_op(ctx, "&&")
-    
-    def enterOrExpr(self, ctx: TypeScriptSimplificadoParser.OrExprContext):
-        """Verifica operador ||"""
-        self.check_binary_boolean_op(ctx, "||")
-    
-    def enterNotExpr(self, ctx: TypeScriptSimplificadoParser.NotExprContext):
-        """Verifica operador !"""
-        operand_type = self.get_type(ctx.unaryExpr())
-        if operand_type != "boolean" and operand_type != "unknown":
+    def visitSubExpr(self, ctx: TypeScriptSimplificadoParser.SubExprContext):
+        """Visita operador -"""
+        left_type = self.get_type(ctx.additiveExpr())
+        right_type = self.get_type(ctx.multiplicativeExpr())
+        
+        if left_type != "number" and left_type != "unknown":
             self.add_error(
-                f"Operador '!' requer operando do tipo 'boolean', mas recebeu '{operand_type}'",
+                f"Operador '-' requer operandos do tipo 'number', "
+                f"mas o lado esquerdo é '{left_type}'",
                 ctx
             )
+        
+        if right_type != "number" and right_type != "unknown":
+            self.add_error(
+                f"Operador '-' requer operandos do tipo 'number', "
+                f"mas o lado direito é '{right_type}'",
+                ctx
+            )
+        
+        return "number"
     
-    def check_binary_boolean_op(self, ctx, op):
-        """
-        Verifica operadores binários booleanos
-        """
-        left_expr = None
-        right_expr = None
+    def visitMulExpr(self, ctx: TypeScriptSimplificadoParser.MulExprContext):
+        """Visita operador *"""
+        left_type = self.get_type(ctx.multiplicativeExpr())
+        right_type = self.get_type(ctx.powerExpr())
         
-        # Determina os operandos baseado no tipo de contexto
-        if isinstance(ctx, TypeScriptSimplificadoParser.AndExprContext):
-            left_expr = ctx.logicalAndExpr()
-            right_expr = ctx.equalityExpr()
-        elif isinstance(ctx, TypeScriptSimplificadoParser.OrExprContext):
-            left_expr = ctx.logicalOrExpr()
-            right_expr = ctx.logicalAndExpr()
+        if left_type != "number" and left_type != "unknown":
+            self.add_error(
+                f"Operador '*' requer operandos do tipo 'number', "
+                f"mas o lado esquerdo é '{left_type}'",
+                ctx
+            )
         
-        if left_expr is None or right_expr is None:
-            return
+        if right_type != "number" and right_type != "unknown":
+            self.add_error(
+                f"Operador '*' requer operandos do tipo 'number', "
+                f"mas o lado direito é '{right_type}'",
+                ctx
+            )
         
-        left_type = self.get_type(left_expr)
-        right_type = self.get_type(right_expr)
+        return "number"
+    
+    def visitDivExpr(self, ctx: TypeScriptSimplificadoParser.DivExprContext):
+        """Visita operador /"""
+        left_type = self.get_type(ctx.multiplicativeExpr())
+        right_type = self.get_type(ctx.powerExpr())
+        
+        if left_type != "number" and left_type != "unknown":
+            self.add_error(
+                f"Operador '/' requer operandos do tipo 'number', "
+                f"mas o lado esquerdo é '{left_type}'",
+                ctx
+            )
+        
+        if right_type != "number" and right_type != "unknown":
+            self.add_error(
+                f"Operador '/' requer operandos do tipo 'number', "
+                f"mas o lado direito é '{right_type}'",
+                ctx
+            )
+        
+        return "number"
+    
+    def visitModExpr(self, ctx: TypeScriptSimplificadoParser.ModExprContext):
+        """Visita operador %"""
+        left_type = self.get_type(ctx.multiplicativeExpr())
+        right_type = self.get_type(ctx.powerExpr())
+        
+        if left_type != "number" and left_type != "unknown":
+            self.add_error(
+                f"Operador '%' requer operandos do tipo 'number', "
+                f"mas o lado esquerdo é '{left_type}'",
+                ctx
+            )
+        
+        if right_type != "number" and right_type != "unknown":
+            self.add_error(
+                f"Operador '%' requer operandos do tipo 'number', "
+                f"mas o lado direito é '{right_type}'",
+                ctx
+            )
+        
+        return "number"
+    
+    def visitPowExpr(self, ctx: TypeScriptSimplificadoParser.PowExprContext):
+        """Visita operador **"""
+        left_type = self.get_type(ctx.unaryExpr())
+        right_type = self.get_type(ctx.powerExpr())
+        
+        if left_type != "number" and left_type != "unknown":
+            self.add_error(
+                f"Operador '**' requer operandos do tipo 'number', "
+                f"mas o lado esquerdo é '{left_type}'",
+                ctx
+            )
+        
+        if right_type != "number" and right_type != "unknown":
+            self.add_error(
+                f"Operador '**' requer operandos do tipo 'number', "
+                f"mas o lado direito é '{right_type}'",
+                ctx
+            )
+        
+        return "number"
+    
+    def visitNegExpr(self, ctx: TypeScriptSimplificadoParser.NegExprContext):
+        """Visita operador unário -"""
+        operand_type = self.get_type(ctx.unaryExpr())
+        if operand_type != "number" and operand_type != "unknown":
+            self.add_error(
+                f"Operador unário '-' requer operando do tipo 'number', mas recebeu '{operand_type}'",
+                ctx
+            )
+        return "number"
+    
+    # ========================================================================
+    # VISITOR - Expressões - Operadores Lógicos
+    # ========================================================================
+    
+    def visitAndExpr(self, ctx: TypeScriptSimplificadoParser.AndExprContext):
+        """Visita operador &&"""
+        left_type = self.get_type(ctx.logicalAndExpr())
+        right_type = self.get_type(ctx.equalityExpr())
         
         if left_type != "boolean" and left_type != "unknown":
             self.add_error(
-                f"Operador '{op}' requer operandos do tipo 'boolean', "
+                f"Operador '&&' requer operandos do tipo 'boolean', "
                 f"mas o lado esquerdo é '{left_type}'",
                 ctx
             )
         
         if right_type != "boolean" and right_type != "unknown":
             self.add_error(
-                f"Operador '{op}' requer operandos do tipo 'boolean', "
+                f"Operador '&&' requer operandos do tipo 'boolean', "
                 f"mas o lado direito é '{right_type}'",
                 ctx
             )
+        
+        return "boolean"
+    
+    def visitOrExpr(self, ctx: TypeScriptSimplificadoParser.OrExprContext):
+        """Visita operador ||"""
+        left_type = self.get_type(ctx.logicalOrExpr())
+        right_type = self.get_type(ctx.logicalAndExpr())
+        
+        if left_type != "boolean" and left_type != "unknown":
+            self.add_error(
+                f"Operador '||' requer operandos do tipo 'boolean', "
+                f"mas o lado esquerdo é '{left_type}'",
+                ctx
+            )
+        
+        if right_type != "boolean" and right_type != "unknown":
+            self.add_error(
+                f"Operador '||' requer operandos do tipo 'boolean', "
+                f"mas o lado direito é '{right_type}'",
+                ctx
+            )
+        
+        return "boolean"
+    
+    def visitNotExpr(self, ctx: TypeScriptSimplificadoParser.NotExprContext):
+        """Visita operador !"""
+        operand_type = self.get_type(ctx.unaryExpr())
+        if operand_type != "boolean" and operand_type != "unknown":
+            self.add_error(
+                f"Operador '!' requer operando do tipo 'boolean', mas recebeu '{operand_type}'",
+                ctx
+            )
+        return "boolean"
+    
+    # ========================================================================
+    # VISITOR - Expressões - Operadores de Comparação
+    # ========================================================================
+    
+    def visitEqExpr(self, ctx: TypeScriptSimplificadoParser.EqExprContext):
+        """Visita operador =="""
+        # Comparação de igualdade permite qualquer tipo, mas devem ser compatíveis
+        return "boolean"
+    
+    def visitNeqExpr(self, ctx: TypeScriptSimplificadoParser.NeqExprContext):
+        """Visita operador !="""
+        return "boolean"
+    
+    def visitGtExpr(self, ctx: TypeScriptSimplificadoParser.GtExprContext):
+        """Visita operador >"""
+        left_type = self.get_type(ctx.relationalExpr())
+        right_type = self.get_type(ctx.additiveExpr())
+        
+        if left_type != "number" and left_type != "unknown":
+            self.add_error(
+                f"Operador '>' requer operandos do tipo 'number', "
+                f"mas o lado esquerdo é '{left_type}'",
+                ctx
+            )
+        
+        if right_type != "number" and right_type != "unknown":
+            self.add_error(
+                f"Operador '>' requer operandos do tipo 'number', "
+                f"mas o lado direito é '{right_type}'",
+                ctx
+            )
+        
+        return "boolean"
+    
+    def visitLtExpr(self, ctx: TypeScriptSimplificadoParser.LtExprContext):
+        """Visita operador <"""
+        left_type = self.get_type(ctx.relationalExpr())
+        right_type = self.get_type(ctx.additiveExpr())
+        
+        if left_type != "number" and left_type != "unknown":
+            self.add_error(
+                f"Operador '<' requer operandos do tipo 'number', "
+                f"mas o lado esquerdo é '{left_type}'",
+                ctx
+            )
+        
+        if right_type != "number" and right_type != "unknown":
+            self.add_error(
+                f"Operador '<' requer operandos do tipo 'number', "
+                f"mas o lado direito é '{right_type}'",
+                ctx
+            )
+        
+        return "boolean"
+    
+    def visitGeExpr(self, ctx: TypeScriptSimplificadoParser.GeExprContext):
+        """Visita operador >="""
+        left_type = self.get_type(ctx.relationalExpr())
+        right_type = self.get_type(ctx.additiveExpr())
+        
+        if left_type != "number" and left_type != "unknown":
+            self.add_error(
+                f"Operador '>=' requer operandos do tipo 'number', "
+                f"mas o lado esquerdo é '{left_type}'",
+                ctx
+            )
+        
+        if right_type != "number" and right_type != "unknown":
+            self.add_error(
+                f"Operador '>=' requer operandos do tipo 'number', "
+                f"mas o lado direito é '{right_type}'",
+                ctx
+            )
+        
+        return "boolean"
+    
+    def visitLeExpr(self, ctx: TypeScriptSimplificadoParser.LeExprContext):
+        """Visita operador <="""
+        left_type = self.get_type(ctx.relationalExpr())
+        right_type = self.get_type(ctx.additiveExpr())
+        
+        if left_type != "number" and left_type != "unknown":
+            self.add_error(
+                f"Operador '<=' requer operandos do tipo 'number', "
+                f"mas o lado esquerdo é '{left_type}'",
+                ctx
+            )
+        
+        if right_type != "number" and right_type != "unknown":
+            self.add_error(
+                f"Operador '<=' requer operandos do tipo 'number', "
+                f"mas o lado direito é '{right_type}'",
+                ctx
+            )
+        
+        return "boolean"
+    
+    # ========================================================================
+    # VISITOR - Expressões - Pass-through (contextos intermediários)
+    # ========================================================================
+    
+    def visitParenExpr(self, ctx: TypeScriptSimplificadoParser.ParenExprContext):
+        """Visita expressão entre parênteses"""
+        return self.get_type(ctx.expression())
+    
+    def visitExpression(self, ctx: TypeScriptSimplificadoParser.ExpressionContext):
+        """Pass-through para logicalOrExpr"""
+        return self.get_type(ctx.logicalOrExpr())
+    
+    def visitOrPass(self, ctx: TypeScriptSimplificadoParser.OrPassContext):
+        """Pass-through para logicalAndExpr"""
+        return self.get_type(ctx.logicalAndExpr())
+    
+    def visitAndPass(self, ctx: TypeScriptSimplificadoParser.AndPassContext):
+        """Pass-through para equalityExpr"""
+        return self.get_type(ctx.equalityExpr())
+    
+    def visitEqPass(self, ctx: TypeScriptSimplificadoParser.EqPassContext):
+        """Pass-through para relationalExpr"""
+        return self.get_type(ctx.relationalExpr())
+    
+    def visitRelPass(self, ctx: TypeScriptSimplificadoParser.RelPassContext):
+        """Pass-through para additiveExpr"""
+        return self.get_type(ctx.additiveExpr())
+    
+    def visitAddPass(self, ctx: TypeScriptSimplificadoParser.AddPassContext):
+        """Pass-through para multiplicativeExpr"""
+        return self.get_type(ctx.multiplicativeExpr())
+    
+    def visitMulPass(self, ctx: TypeScriptSimplificadoParser.MulPassContext):
+        """Pass-through para powerExpr"""
+        return self.get_type(ctx.powerExpr())
+    
+    def visitPowPass(self, ctx: TypeScriptSimplificadoParser.PowPassContext):
+        """Pass-through para unaryExpr"""
+        return self.get_type(ctx.unaryExpr())
+    
+    def visitUnaryPass(self, ctx: TypeScriptSimplificadoParser.UnaryPassContext):
+        """Pass-through para primaryExpr"""
+        return self.get_type(ctx.primaryExpr())
+    
+    def visitLiteralExpr(self, ctx: TypeScriptSimplificadoParser.LiteralExprContext):
+        """Pass-through para literal"""
+        return self.get_type(ctx.literal())
     
     # ========================================================================
     # MÉTODOS PÚBLICOS

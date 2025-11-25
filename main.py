@@ -129,9 +129,8 @@ def compile_file(file_path):
         print("=== Análise Semântica ===")
         semantic_analyzer = SemanticAnalyzer()
         
-        # Percorre a árvore com o Walker
-        walker = ParseTreeWalker()
-        walker.walk(semantic_analyzer, tree)
+        # Percorre a árvore com o Visitor
+        semantic_analyzer.visit(tree)
         
         # Verifica erros semânticos
         if semantic_analyzer.has_errors():
