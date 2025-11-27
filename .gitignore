@@ -2,3 +2,4 @@ docs/*
 gen/__pycache__/*
 __pycache__/*
 old_files/*
+.DS_Store
