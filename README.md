@@ -4,6 +4,18 @@ Compilador completo para a linguagem TypeScript Simplificado, desenvolvido com A
 
 O código está completo na plataforma GitHub: https://github.com/PedroEmanuelMoreiraCarvalho/Compilador-Typescript-Simplicado
 
+## Especificação da Linguagem
+
+Para detalhes completos sobre a sintaxe e semântica da linguagem, consulte:
+
+```
+Trabalho Final - Especificação.pdf
+```
+
+A especificação da linguagem foi modificada:
+- Anteriormente foi pensado em verificar todos os fluxos de uma função para garantir que pelo menos um caminho retornasse um valor. 
+- Agora, a verificação é feita apenas na declaração direta de retorno (deve obrigatoriamente ter retorno no final), simplificando a análise semântica.
+
 ## Características
 
 ### Análise Léxica
@@ -353,14 +365,6 @@ Escopo: global
 - `semantic_19_array_access_on_non_array.ts` - Acessar índice em não-array
 - `semantic_20_array_return_type_mismatch.ts` - Retornar array de tipo errado
 
-## Especificação da Linguagem
-
-Para detalhes completos sobre a sintaxe e semântica da linguagem, consulte:
-
-```
-docs/typescript-simplificado-spec.md
-```
-
 ## Uso Didático
 
 Este compilador foi desenvolvido para fins educacionais na disciplina de **Compiladores**. A estrutura do código é **didática e bem comentada**, facilitando o entendimento de:
@@ -374,6 +378,10 @@ Este compilador foi desenvolvido para fins educacionais na disciplina de **Compi
 - Inferência e propagação de tipos através da árvore sintática
 
 ## Autores
+
+[Gabriel Lopes](https://github.com/G4brielLB)
+[José Victor](https://github.com/vickminari)
+[Pedro Emanuel](https://github.com/PedroEmanuelMoreiraCarvalho)
 
 Desenvolvido como parte do Trabalho Final da disciplina de Compiladores - UFPI
 
