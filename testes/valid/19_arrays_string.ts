@@ -4,11 +4,11 @@ let nomes: string[] = ["Ana", "Bruno", "Carlos"];
 let frutas: string[] = ["maçã", "banana", "laranja", "uva"];
 
 // Acesso por índice
-let primeiroNome: string = nomes[0];
-let segundaFruta: string = frutas[1];
+let segundoNome: string = nomes[1];
+let primeiraFruta: string = frutas[0];
 
-console.log("Segundo nome:", nomes[1]);
-console.log("Primeira fruta:", frutas[0]);
+console.log("Segundo nome:", segundoNome);
+console.log("Primeira fruta:", primeiraFruta);
 
 // Atribuição de elementos
 nomes[1] = "Beatriz";
@@ -18,7 +18,7 @@ frutas[0] = "abacaxi";
 let totalNomes: number = nomes.length;
 let totalFrutas: number = frutas.length;
 
-console.log("Segundo nome atualizado:", primeiroNome[1]);
-console.log("Primeira fruta atualizada:", frutas[0])
+console.log("Segundo nome atualizado:", nomes[1]);
+console.log("Primeira fruta atualizada:", frutas[0]);
 console.log("Total de nomes:", totalNomes);
 console.log("Total de frutas:", totalFrutas);

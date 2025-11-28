@@ -24,13 +24,12 @@ declare i8* @"malloc"(i64 %".1")
 define i32 @"main"()
 {
 entry:
-  %"x" = alloca double
   %".2" = call double @"soma"(double 0x4024000000000000, double 0x4034000000000000)
-  store double %".2", double* %"x"
+  store double %".2", double* @"x"
   %".4" = getelementptr inbounds [11 x i8], [11 x i8]* @"str_0", i32 0, i32 0
   %".5" = getelementptr [4 x i8], [4 x i8]* @"fmt_string", i32 0, i32 0
   %".6" = call i32 (i8*, ...) @"printf"(i8* %".5", i8* %".4")
-  %".7" = load double, double* %"x"
+  %".7" = load double, double* @"x"
   %".8" = getelementptr [4 x i8], [4 x i8]* @"fmt_number", i32 0, i32 0
   %".9" = call i32 (i8*, ...) @"printf"(i8* %".8", double %".7")
   ret i32 0
@@ -52,4 +51,5 @@ entry:
   ret double %".10"
 }
 
+@"x" = internal global double              0x0
 @"str_0" = internal constant [11 x i8] c"Resultado:\00"

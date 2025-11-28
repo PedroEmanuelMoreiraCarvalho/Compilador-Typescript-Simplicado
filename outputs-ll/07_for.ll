@@ -25,25 +25,24 @@ define i32 @"main"()
 {
 entry:
   %"j" = alloca double
-  %"i" = alloca double
-  store double              0x0, double* %"i"
+  store double              0x0, double* @"i"
   br label %"for_cond_0"
 for_cond_0:
-  %".4" = load double, double* %"i"
+  %".4" = load double, double* @"i"
   %".5" = fcmp olt double %".4", 0x4014000000000000
   br i1 %".5", label %"for_body_1", label %"for_end_3"
 for_body_1:
   %".7" = getelementptr inbounds [3 x i8], [3 x i8]* @"str_4", i32 0, i32 0
   %".8" = getelementptr [4 x i8], [4 x i8]* @"fmt_string", i32 0, i32 0
   %".9" = call i32 (i8*, ...) @"printf"(i8* %".8", i8* %".7")
-  %".10" = load double, double* %"i"
+  %".10" = load double, double* @"i"
   %".11" = getelementptr [4 x i8], [4 x i8]* @"fmt_number", i32 0, i32 0
   %".12" = call i32 (i8*, ...) @"printf"(i8* %".11", double %".10")
   br label %"for_update_2"
 for_update_2:
-  %".14" = load double, double* %"i"
+  %".14" = load double, double* @"i"
   %".15" = fadd double %".14", 0x3ff0000000000000
-  store double %".15", double* %"i"
+  store double %".15", double* @"i"
   br label %"for_cond_0"
 for_end_3:
   store double 0x4024000000000000, double* %"j"
@@ -69,5 +68,6 @@ for_end_8:
   ret i32 0
 }
 
+@"i" = internal global double              0x0
 @"str_4" = internal constant [3 x i8] c"i:\00"
 @"str_9" = internal constant [3 x i8] c"j:\00"

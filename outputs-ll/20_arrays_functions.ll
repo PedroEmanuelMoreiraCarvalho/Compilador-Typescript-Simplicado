@@ -24,10 +24,6 @@ declare i8* @"malloc"(i64 %".1")
 define i32 @"main"()
 {
 entry:
-  %"soma" = alloca double
-  %"novoArray" = alloca {i64, double*}
-  %"resultado" = alloca double
-  %"meuArray" = alloca {i64, double*}
   %".2" = mul i64 4, 8
   %".3" = call i8* @"malloc"(i64 %".2")
   %".4" = bitcast i8* %".3" to double*
@@ -41,25 +37,25 @@ entry:
   store double 0x4034000000000000, double* %".11"
   %".13" = insertvalue {i64, double*} undef, i64 4, 0
   %".14" = insertvalue {i64, double*} %".13", double* %".4", 1
-  store {i64, double*} %".14", {i64, double*}* %"meuArray"
-  %".16" = load {i64, double*}, {i64, double*}* %"meuArray"
+  store {i64, double*} %".14", {i64, double*}* @"meuArray"
+  %".16" = load {i64, double*}, {i64, double*}* @"meuArray"
   %".17" = call double @"somarArray"({i64, double*} %".16")
-  store double %".17", double* %"resultado"
+  store double %".17", double* @"resultado"
   %".19" = call {i64, double*} @"criarArray"()
-  store {i64, double*} %".19", {i64, double*}* %"novoArray"
-  %".21" = load {i64, double*}, {i64, double*}* %"novoArray"
+  store {i64, double*} %".19", {i64, double*}* @"novoArray"
+  %".21" = load {i64, double*}, {i64, double*}* @"novoArray"
   %".22" = call double @"somarArray"({i64, double*} %".21")
-  store double %".22", double* %"soma"
+  store double %".22", double* @"soma"
   %".24" = getelementptr inbounds [11 x i8], [11 x i8]* @"str_4", i32 0, i32 0
   %".25" = getelementptr [4 x i8], [4 x i8]* @"fmt_string", i32 0, i32 0
   %".26" = call i32 (i8*, ...) @"printf"(i8* %".25", i8* %".24")
-  %".27" = load double, double* %"resultado"
+  %".27" = load double, double* @"resultado"
   %".28" = getelementptr [4 x i8], [4 x i8]* @"fmt_number", i32 0, i32 0
   %".29" = call i32 (i8*, ...) @"printf"(i8* %".28", double %".27")
   %".30" = getelementptr inbounds [20 x i8], [20 x i8]* @"str_5", i32 0, i32 0
   %".31" = getelementptr [4 x i8], [4 x i8]* @"fmt_string", i32 0, i32 0
   %".32" = call i32 (i8*, ...) @"printf"(i8* %".31", i8* %".30")
-  %".33" = load double, double* %"soma"
+  %".33" = load double, double* @"soma"
   %".34" = getelementptr [4 x i8], [4 x i8]* @"fmt_number", i32 0, i32 0
   %".35" = call i32 (i8*, ...) @"printf"(i8* %".34", double %".33")
   ret i32 0
@@ -123,5 +119,9 @@ entry:
   ret {i64, double*} %".14"
 }
 
+@"meuArray" = internal global {i64, double*} zeroinitializer
+@"resultado" = internal global double              0x0
+@"novoArray" = internal global {i64, double*} zeroinitializer
+@"soma" = internal global double              0x0
 @"str_4" = internal constant [11 x i8] c"Resultado:\00"
 @"str_5" = internal constant [20 x i8] c"Soma do novo array:\00"

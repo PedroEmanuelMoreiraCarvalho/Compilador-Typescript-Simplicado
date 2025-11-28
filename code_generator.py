@@ -238,13 +238,41 @@ class LLVMCodeGenerator(TypeScriptSimplificadoVisitor):
             value: Valor inicial (opcional)
         """
         llvm_ty = self._llvm_type(type_str)
-        alloca = self._create_entry_block_alloca(name, llvm_ty)
         
-        # Inicializa se houver valor
-        if value is not None:
-            self.builder.store(value, alloca)
-        
-        self.symbol_table[-1][name] = alloca
+        # Se estamos no escopo global (apenas um escopo na tabela), criar variável global
+        if len(self.symbol_table) == 1:
+            # Criar variável global
+            global_var = ir.GlobalVariable(self.module, llvm_ty, name=name)
+            global_var.linkage = 'internal'
+            
+            # Inicializar com zero ou valor fornecido
+            if value is not None and isinstance(value, ir.Constant):
+                global_var.initializer = value
+            else:
+                # Inicializar com zero
+                if llvm_ty == self.double:
+                    global_var.initializer = ir.Constant(self.double, 0.0)
+                elif llvm_ty == self.i1:
+                    global_var.initializer = ir.Constant(self.i1, 0)
+                elif llvm_ty == self.i8_ptr:
+                    global_var.initializer = ir.Constant(self.i8_ptr, None)
+                else:
+                    global_var.initializer = ir.Constant(llvm_ty, None)
+            
+            # Se o valor não é constante, precisa ser armazenado no main
+            if value is not None and not isinstance(value, ir.Constant):
+                self.builder.store(value, global_var)
+            
+            self.symbol_table[-1][name] = global_var
+        else:
+            # Variável local - usar alloca
+            alloca = self._create_entry_block_alloca(name, llvm_ty)
+            
+            # Inicializa se houver valor
+            if value is not None:
+                self.builder.store(value, alloca)
+            
+            self.symbol_table[-1][name] = alloca
     
     def lookup_variable(self, name: str) -> Optional[Any]:
         """

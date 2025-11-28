@@ -24,13 +24,13 @@ declare i8* @"malloc"(i64 %".1")
 define i32 @"main"()
 {
 entry:
-  %"mensagem" = alloca i8*
   %".2" = getelementptr inbounds [32 x i8], [32 x i8]* @"str_0", i32 0, i32 0
-  store i8* %".2", i8** %"mensagem"
-  %".4" = load i8*, i8** %"mensagem"
+  store i8* %".2", i8** @"mensagem"
+  %".4" = load i8*, i8** @"mensagem"
   %".5" = getelementptr [4 x i8], [4 x i8]* @"fmt_string", i32 0, i32 0
   %".6" = call i32 (i8*, ...) @"printf"(i8* %".5", i8* %".4")
   ret i32 0
 }
 
 @"str_0" = internal constant [32 x i8] c"Hello, TypeScript Simplificado!\00"
+@"mensagem" = internal global i8* null

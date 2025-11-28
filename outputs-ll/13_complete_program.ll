@@ -24,20 +24,13 @@ declare i8* @"malloc"(i64 %".1")
 define i32 @"main"()
 {
 entry:
-  %"mediaFinal" = alloca double
-  %"nota3" = alloca double
-  %"nota2" = alloca double
-  %"nota1" = alloca double
-  store double 0x4021000000000000, double* %"nota1"
-  store double 0x401c000000000000, double* %"nota2"
-  store double 0x4022000000000000, double* %"nota3"
-  %".5" = load double, double* %"nota1"
-  %".6" = load double, double* %"nota2"
-  %".7" = load double, double* %"nota3"
-  %".8" = call double @"calcularMedia"(double %".5", double %".6", double %".7")
-  store double %".8", double* %"mediaFinal"
-  %".10" = load double, double* %"mediaFinal"
-  call void @"verificarAprovacao"(double %".10")
+  %".2" = load double, double* @"nota1"
+  %".3" = load double, double* @"nota2"
+  %".4" = load double, double* @"nota3"
+  %".5" = call double @"calcularMedia"(double %".2", double %".3", double %".4")
+  store double %".5", double* @"mediaFinal"
+  %".7" = load double, double* @"mediaFinal"
+  call void @"verificarAprovacao"(double %".7")
   ret i32 0
 }
 
@@ -110,3 +103,7 @@ if_merge_6:
 @"str_3" = internal constant [18 x i8] c"Aprovado! M\c3\a9dia:\00"
 @"str_7" = internal constant [23 x i8] c"Recupera\c3\a7\c3\a3o! M\c3\a9dia:\00"
 @"str_8" = internal constant [19 x i8] c"Reprovado! M\c3\a9dia:\00"
+@"nota1" = internal global double 0x4021000000000000
+@"nota2" = internal global double 0x401c000000000000
+@"nota3" = internal global double 0x4022000000000000
+@"mediaFinal" = internal global double              0x0

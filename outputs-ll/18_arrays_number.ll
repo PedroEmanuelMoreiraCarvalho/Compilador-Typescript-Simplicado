@@ -25,10 +25,6 @@ define i32 @"main"()
 {
 entry:
   %"i" = alloca double
-  %"ultimo" = alloca double
-  %"primeiro" = alloca double
-  %"soma" = alloca double
-  %"numeros" = alloca {i64, double*}
   %".2" = mul i64 5, 8
   %".3" = call i8* @"malloc"(i64 %".2")
   %".4" = bitcast i8* %".3" to double*
@@ -44,67 +40,70 @@ entry:
   store double 0x4014000000000000, double* %".13"
   %".15" = insertvalue {i64, double*} undef, i64 5, 0
   %".16" = insertvalue {i64, double*} %".15", double* %".4", 1
-  store {i64, double*} %".16", {i64, double*}* %"numeros"
-  store double              0x0, double* %"soma"
-  %".19" = load {i64, double*}, {i64, double*}* %"numeros"
-  %".20" = extractvalue {i64, double*} %".19", 1
-  %".21" = fptosi double              0x0 to i64
-  %".22" = getelementptr double, double* %".20", i64 %".21"
-  %".23" = load double, double* %".22"
-  store double %".23", double* %"primeiro"
-  %".25" = load {i64, double*}, {i64, double*}* %"numeros"
-  %".26" = extractvalue {i64, double*} %".25", 1
-  %".27" = fptosi double 0x4010000000000000 to i64
-  %".28" = getelementptr double, double* %".26", i64 %".27"
-  %".29" = load double, double* %".28"
-  store double %".29", double* %"ultimo"
-  %".31" = load {i64, double*}, {i64, double*}* %"numeros"
-  %".32" = extractvalue {i64, double*} %".31", 1
-  %".33" = fptosi double 0x4000000000000000 to i64
-  %".34" = getelementptr double, double* %".32", i64 %".33"
-  store double 0x4024000000000000, double* %".34"
+  store {i64, double*} %".16", {i64, double*}* @"numeros"
+  %".18" = load {i64, double*}, {i64, double*}* @"numeros"
+  %".19" = extractvalue {i64, double*} %".18", 1
+  %".20" = fptosi double              0x0 to i64
+  %".21" = getelementptr double, double* %".19", i64 %".20"
+  %".22" = load double, double* %".21"
+  store double %".22", double* @"primeiro"
+  %".24" = load {i64, double*}, {i64, double*}* @"numeros"
+  %".25" = extractvalue {i64, double*} %".24", 1
+  %".26" = fptosi double 0x4010000000000000 to i64
+  %".27" = getelementptr double, double* %".25", i64 %".26"
+  %".28" = load double, double* %".27"
+  store double %".28", double* @"ultimo"
+  %".30" = load {i64, double*}, {i64, double*}* @"numeros"
+  %".31" = extractvalue {i64, double*} %".30", 1
+  %".32" = fptosi double 0x4000000000000000 to i64
+  %".33" = getelementptr double, double* %".31", i64 %".32"
+  store double 0x4024000000000000, double* %".33"
   store double              0x0, double* %"i"
   br label %"for_cond_0"
 for_cond_0:
-  %".38" = load double, double* %"i"
-  %".39" = load {i64, double*}, {i64, double*}* %"numeros"
-  %".40" = extractvalue {i64, double*} %".39", 0
-  %".41" = sitofp i64 %".40" to double
-  %".42" = fcmp olt double %".38", %".41"
-  br i1 %".42", label %"for_body_1", label %"for_end_3"
+  %".37" = load double, double* %"i"
+  %".38" = load {i64, double*}, {i64, double*}* @"numeros"
+  %".39" = extractvalue {i64, double*} %".38", 0
+  %".40" = sitofp i64 %".39" to double
+  %".41" = fcmp olt double %".37", %".40"
+  br i1 %".41", label %"for_body_1", label %"for_end_3"
 for_body_1:
-  %".44" = load double, double* %"soma"
-  %".45" = load {i64, double*}, {i64, double*}* %"numeros"
-  %".46" = extractvalue {i64, double*} %".45", 1
-  %".47" = load double, double* %"i"
-  %".48" = fptosi double %".47" to i64
-  %".49" = getelementptr double, double* %".46", i64 %".48"
-  %".50" = load double, double* %".49"
-  %".51" = fadd double %".44", %".50"
-  store double %".51", double* %"soma"
+  %".43" = load double, double* @"soma"
+  %".44" = load {i64, double*}, {i64, double*}* @"numeros"
+  %".45" = extractvalue {i64, double*} %".44", 1
+  %".46" = load double, double* %"i"
+  %".47" = fptosi double %".46" to i64
+  %".48" = getelementptr double, double* %".45", i64 %".47"
+  %".49" = load double, double* %".48"
+  %".50" = fadd double %".43", %".49"
+  store double %".50", double* @"soma"
   br label %"for_update_2"
 for_update_2:
-  %".54" = load double, double* %"i"
-  %".55" = fadd double %".54", 0x3ff0000000000000
-  store double %".55", double* %"i"
+  %".53" = load double, double* %"i"
+  %".54" = fadd double %".53", 0x3ff0000000000000
+  store double %".54", double* %"i"
   br label %"for_cond_0"
 for_end_3:
-  %".58" = getelementptr inbounds [20 x i8], [20 x i8]* @"str_4", i32 0, i32 0
-  %".59" = getelementptr [4 x i8], [4 x i8]* @"fmt_string", i32 0, i32 0
-  %".60" = call i32 (i8*, ...) @"printf"(i8* %".59", i8* %".58")
-  %".61" = load double, double* %"soma"
-  %".62" = getelementptr [4 x i8], [4 x i8]* @"fmt_number", i32 0, i32 0
-  %".63" = call i32 (i8*, ...) @"printf"(i8* %".62", double %".61")
-  %".64" = getelementptr inbounds [18 x i8], [18 x i8]* @"str_5", i32 0, i32 0
-  %".65" = getelementptr [4 x i8], [4 x i8]* @"fmt_string", i32 0, i32 0
-  %".66" = call i32 (i8*, ...) @"printf"(i8* %".65", i8* %".64")
-  %".67" = load {i64, double*}, {i64, double*}* %"numeros"
-  %".68" = extractvalue {i64, double*} %".67", 0
-  %".69" = sitofp i64 %".68" to double
-  %".70" = getelementptr [4 x i8], [4 x i8]* @"fmt_number", i32 0, i32 0
-  %".71" = call i32 (i8*, ...) @"printf"(i8* %".70", double %".69")
+  %".57" = getelementptr inbounds [20 x i8], [20 x i8]* @"str_4", i32 0, i32 0
+  %".58" = getelementptr [4 x i8], [4 x i8]* @"fmt_string", i32 0, i32 0
+  %".59" = call i32 (i8*, ...) @"printf"(i8* %".58", i8* %".57")
+  %".60" = load double, double* @"soma"
+  %".61" = getelementptr [4 x i8], [4 x i8]* @"fmt_number", i32 0, i32 0
+  %".62" = call i32 (i8*, ...) @"printf"(i8* %".61", double %".60")
+  %".63" = getelementptr inbounds [18 x i8], [18 x i8]* @"str_5", i32 0, i32 0
+  %".64" = getelementptr [4 x i8], [4 x i8]* @"fmt_string", i32 0, i32 0
+  %".65" = call i32 (i8*, ...) @"printf"(i8* %".64", i8* %".63")
+  %".66" = load {i64, double*}, {i64, double*}* @"numeros"
+  %".67" = extractvalue {i64, double*} %".66", 0
+  %".68" = sitofp i64 %".67" to double
+  %".69" = getelementptr [4 x i8], [4 x i8]* @"fmt_number", i32 0, i32 0
+  %".70" = call i32 (i8*, ...) @"printf"(i8* %".69", double %".68")
   ret i32 0
 }
 
+@"numeros" = internal global {i64, double*} zeroinitializer
+@"soma" = internal global double              0x0
+@"primeiro" = internal global double              0x0
+@"ultimo" = internal global double              0x0
 @"str_4" = internal constant [20 x i8] c"Soma dos elementos:\00"
 @"str_5" = internal constant [18 x i8] c"Tamanho do array:\00"

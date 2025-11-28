@@ -24,14 +24,15 @@ declare i8* @"malloc"(i64 %".1")
 define i32 @"main"()
 {
 entry:
-  %"y" = alloca double
-  %"x" = alloca double
-  store double 0x4024000000000000, double* %"x"
-  %".3" = load double, double* %"x"
+  store double 0x4024000000000000, double* @"x"
+  %".3" = load double, double* @"x"
   %".4" = fadd double %".3", 0x4014000000000000
-  store double %".4", double* %"y"
-  %".6" = load double, double* %"y"
+  store double %".4", double* @"y"
+  %".6" = load double, double* @"y"
   %".7" = getelementptr [4 x i8], [4 x i8]* @"fmt_number", i32 0, i32 0
   %".8" = call i32 (i8*, ...) @"printf"(i8* %".7", double %".6")
   ret i32 0
 }
+
+@"x" = internal global double              0x0
+@"y" = internal global double              0x0

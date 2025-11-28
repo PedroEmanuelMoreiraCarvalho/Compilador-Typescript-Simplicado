@@ -24,20 +24,18 @@ declare i8* @"malloc"(i64 %".1")
 define i32 @"main"()
 {
 entry:
-  %"valor" = alloca double
-  %"global" = alloca double
-  store double 0x4059000000000000, double* %"global"
-  %".3" = call double @"teste"(double 0x4014000000000000)
-  store double %".3", double* %"valor"
-  %".5" = load double, double* %"valor"
-  %".6" = getelementptr [4 x i8], [4 x i8]* @"fmt_number", i32 0, i32 0
-  %".7" = call i32 (i8*, ...) @"printf"(i8* %".6", double %".5")
-  %".8" = load double, double* %"global"
-  %".9" = getelementptr [4 x i8], [4 x i8]* @"fmt_number", i32 0, i32 0
-  %".10" = call i32 (i8*, ...) @"printf"(i8* %".9", double %".8")
+  %".2" = call double @"teste"(double 0x4014000000000000)
+  store double %".2", double* @"valor"
+  %".4" = load double, double* @"valor"
+  %".5" = getelementptr [4 x i8], [4 x i8]* @"fmt_number", i32 0, i32 0
+  %".6" = call i32 (i8*, ...) @"printf"(i8* %".5", double %".4")
+  %".7" = load double, double* @"global"
+  %".8" = getelementptr [4 x i8], [4 x i8]* @"fmt_number", i32 0, i32 0
+  %".9" = call i32 (i8*, ...) @"printf"(i8* %".8", double %".7")
   ret i32 0
 }
 
+@"global" = internal global double 0x4059000000000000
 define double @"teste"(double %".1")
 {
 entry:
@@ -46,7 +44,7 @@ entry:
   %"parametro" = alloca double
   store double %".1", double* %"parametro"
   store double 0x4024000000000000, double* %"local"
-  %".5" = load double, double* %"global"
+  %".5" = load double, double* @"global"
   %".6" = load double, double* %"local"
   %".7" = fadd double %".5", %".6"
   %".8" = load double, double* %"parametro"
@@ -55,3 +53,5 @@ entry:
   %".11" = load double, double* %"resultado"
   ret double %".11"
 }
+
+@"valor" = internal global double              0x0
