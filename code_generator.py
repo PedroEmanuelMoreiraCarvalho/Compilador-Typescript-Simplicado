@@ -116,7 +116,7 @@ class LLVMCodeGenerator(TypeScriptSimplificadoVisitor):
         """
         Cria strings de formato globais para printf.
         """
-        # String de formato para números: "%g\n"
+        # String de formato para números com newline: "%g\n"
         fmt_str = "%g\n\0"
         c_fmt = ir.Constant(ir.ArrayType(self.i8, len(fmt_str)),
                            bytearray(fmt_str.encode("utf8")))
@@ -125,7 +125,16 @@ class LLVMCodeGenerator(TypeScriptSimplificadoVisitor):
         self.fmt_number.global_constant = True
         self.fmt_number.initializer = c_fmt
         
-        # String de formato para strings: "%s\n"
+        # String de formato para números SEM newline (console.log com múltiplos args): "%g"
+        fmt_str = "%g\0"
+        c_fmt = ir.Constant(ir.ArrayType(self.i8, len(fmt_str)),
+                           bytearray(fmt_str.encode("utf8")))
+        self.fmt_number_no_nl = ir.GlobalVariable(self.module, c_fmt.type, name="fmt_number_no_nl")
+        self.fmt_number_no_nl.linkage = 'internal'
+        self.fmt_number_no_nl.global_constant = True
+        self.fmt_number_no_nl.initializer = c_fmt
+        
+        # String de formato para strings com newline: "%s\n"
         fmt_str = "%s\n\0"
         c_fmt = ir.Constant(ir.ArrayType(self.i8, len(fmt_str)),
                            bytearray(fmt_str.encode("utf8")))
@@ -134,7 +143,16 @@ class LLVMCodeGenerator(TypeScriptSimplificadoVisitor):
         self.fmt_string.global_constant = True
         self.fmt_string.initializer = c_fmt
         
-        # String de formato para booleanos: "%s\n"
+        # String de formato para strings SEM newline (console.log com múltiplos args): "%s"
+        fmt_str = "%s\0"
+        c_fmt = ir.Constant(ir.ArrayType(self.i8, len(fmt_str)),
+                           bytearray(fmt_str.encode("utf8")))
+        self.fmt_string_no_nl = ir.GlobalVariable(self.module, c_fmt.type, name="fmt_string_no_nl")
+        self.fmt_string_no_nl.linkage = 'internal'
+        self.fmt_string_no_nl.global_constant = True
+        self.fmt_string_no_nl.initializer = c_fmt
+        
+        # String de formato para booleanos com newline: "%s\n"
         fmt_str = "%s\n\0"
         c_fmt = ir.Constant(ir.ArrayType(self.i8, len(fmt_str)),
                            bytearray(fmt_str.encode("utf8")))
@@ -142,6 +160,33 @@ class LLVMCodeGenerator(TypeScriptSimplificadoVisitor):
         self.fmt_bool.linkage = 'internal'
         self.fmt_bool.global_constant = True
         self.fmt_bool.initializer = c_fmt
+        
+        # String de formato para booleanos SEM newline (console.log com múltiplos args): "%s"
+        fmt_str = "%s\0"
+        c_fmt = ir.Constant(ir.ArrayType(self.i8, len(fmt_str)),
+                           bytearray(fmt_str.encode("utf8")))
+        self.fmt_bool_no_nl = ir.GlobalVariable(self.module, c_fmt.type, name="fmt_bool_no_nl")
+        self.fmt_bool_no_nl.linkage = 'internal'
+        self.fmt_bool_no_nl.global_constant = True
+        self.fmt_bool_no_nl.initializer = c_fmt
+        
+        # String para espaço: " "
+        fmt_str = " \0"
+        c_fmt = ir.Constant(ir.ArrayType(self.i8, len(fmt_str)),
+                           bytearray(fmt_str.encode("utf8")))
+        self.fmt_space = ir.GlobalVariable(self.module, c_fmt.type, name="fmt_space")
+        self.fmt_space.linkage = 'internal'
+        self.fmt_space.global_constant = True
+        self.fmt_space.initializer = c_fmt
+        
+        # String para newline: "\n"
+        fmt_str = "\n\0"
+        c_fmt = ir.Constant(ir.ArrayType(self.i8, len(fmt_str)),
+                           bytearray(fmt_str.encode("utf8")))
+        self.fmt_newline = ir.GlobalVariable(self.module, c_fmt.type, name="fmt_newline")
+        self.fmt_newline.linkage = 'internal'
+        self.fmt_newline.global_constant = True
+        self.fmt_newline.initializer = c_fmt
         
         # Strings "true" e "false"
         true_str = "true\0"
@@ -701,36 +746,58 @@ class LLVMCodeGenerator(TypeScriptSimplificadoVisitor):
     def visitConsoleLogStmt(self, ctx: TypeScriptSimplificadoParser.ConsoleLogStmtContext):
         """
         Visita console.log().
+        Imprime múltiplos valores separados por espaço e termina com newline.
         """
         expr_list = ctx.expressionList()
         
         if expr_list:
-            for expr in expr_list.expression():
+            expressions = expr_list.expression()
+            num_expressions = len(expressions)
+            
+            for i, expr in enumerate(expressions):
                 value = self.visit(expr)
+                is_last = (i == num_expressions - 1)
                 
                 # Determinar tipo e formatar saída
                 if value.type == self.double:
-                    # number
-                    fmt_ptr = self.builder.gep(self.fmt_number, 
-                                              [ir.Constant(self.i32, 0), ir.Constant(self.i32, 0)])
+                    # number - usa formato sem newline, exceto se for o último
+                    fmt_ptr = self.builder.gep(
+                        self.fmt_number if is_last else self.fmt_number_no_nl,
+                        [ir.Constant(self.i32, 0), ir.Constant(self.i32, 0)]
+                    )
                     self.builder.call(self.printf, [fmt_ptr, value])
                 
                 elif value.type == self.i8_ptr:
-                    # string
-                    fmt_ptr = self.builder.gep(self.fmt_string,
-                                              [ir.Constant(self.i32, 0), ir.Constant(self.i32, 0)])
+                    # string - usa formato sem newline, exceto se for o último
+                    fmt_ptr = self.builder.gep(
+                        self.fmt_string if is_last else self.fmt_string_no_nl,
+                        [ir.Constant(self.i32, 0), ir.Constant(self.i32, 0)]
+                    )
                     self.builder.call(self.printf, [fmt_ptr, value])
                 
                 elif value.type == self.i1:
-                    # boolean
+                    # boolean - usa formato sem newline, exceto se for o último
                     true_ptr = self.builder.gep(self.str_true,
                                                [ir.Constant(self.i32, 0), ir.Constant(self.i32, 0)])
                     false_ptr = self.builder.gep(self.str_false,
                                                 [ir.Constant(self.i32, 0), ir.Constant(self.i32, 0)])
                     str_ptr = self.builder.select(value, true_ptr, false_ptr)
-                    fmt_ptr = self.builder.gep(self.fmt_bool,
-                                              [ir.Constant(self.i32, 0), ir.Constant(self.i32, 0)])
+                    fmt_ptr = self.builder.gep(
+                        self.fmt_bool if is_last else self.fmt_bool_no_nl,
+                        [ir.Constant(self.i32, 0), ir.Constant(self.i32, 0)]
+                    )
                     self.builder.call(self.printf, [fmt_ptr, str_ptr])
+                
+                # Se não for o último, adiciona espaço
+                if not is_last:
+                    space_ptr = self.builder.gep(self.fmt_space,
+                                                [ir.Constant(self.i32, 0), ir.Constant(self.i32, 0)])
+                    self.builder.call(self.printf, [space_ptr])
+        else:
+            # console.log() sem argumentos - só imprime newline
+            newline_ptr = self.builder.gep(self.fmt_newline,
+                                          [ir.Constant(self.i32, 0), ir.Constant(self.i32, 0)])
+            self.builder.call(self.printf, [newline_ptr])
         
         return None
     
