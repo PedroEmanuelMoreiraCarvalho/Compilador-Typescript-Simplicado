@@ -29,30 +29,40 @@ declare i8* @"malloc"(i64 %".1")
 define i32 @"main"()
 {
 entry:
-  %"y" = alloca double
   %".2" = load double, double* @"x"
   %".3" = fcmp ogt double %".2", 0x4014000000000000
   br i1 %".3", label %"if_then_0", label %"if_else_1"
 if_then_0:
-  store double 0x4034000000000000, double* %"y"
-  %".6" = load double, double* @"x"
-  %".7" = getelementptr [4 x i8], [4 x i8]* @"fmt_number", i32 0, i32 0
-  %".8" = call i32 (i8*, ...) @"printf"(i8* %".7", double %".6")
-  %".9" = load double, double* %"y"
-  %".10" = getelementptr [4 x i8], [4 x i8]* @"fmt_number", i32 0, i32 0
-  %".11" = call i32 (i8*, ...) @"printf"(i8* %".10", double %".9")
-  br label %"if_merge_2"
+  %".5" = load double, double* @"x"
+  %".6" = fcmp olt double %".5", 0x402e000000000000
+  br i1 %".6", label %"if_then_3", label %"if_else_4"
 if_else_1:
   br label %"if_merge_2"
 if_merge_2:
-  %".14" = load double, double* @"x"
-  %".15" = getelementptr [4 x i8], [4 x i8]* @"fmt_number", i32 0, i32 0
-  %".16" = call i32 (i8*, ...) @"printf"(i8* %".15", double %".14")
-  %".17" = load double, double* @"y"
-  %".18" = getelementptr [4 x i8], [4 x i8]* @"fmt_number", i32 0, i32 0
-  %".19" = call i32 (i8*, ...) @"printf"(i8* %".18", double %".17")
+  %".23" = load double, double* @"x"
+  %".24" = getelementptr [4 x i8], [4 x i8]* @"fmt_number", i32 0, i32 0
+  %".25" = call i32 (i8*, ...) @"printf"(i8* %".24", double %".23")
   ret i32 0
+if_then_3:
+  %".8" = load double, double* @"x"
+  %".9" = fcmp olt double %".8", 0x4024000000000000
+  br i1 %".9", label %"if_then_6", label %"if_else_7"
+if_else_4:
+  br label %"if_merge_5"
+if_merge_5:
+  br label %"if_merge_2"
+if_then_6:
+  %".11" = load double, double* @"x"
+  %".12" = fadd double %".11", 0x3ff0000000000000
+  store double %".12", double* @"x"
+  br label %"if_merge_8"
+if_else_7:
+  %".15" = load double, double* @"x"
+  %".16" = fsub double %".15", 0x3ff0000000000000
+  store double %".16", double* @"x"
+  br label %"if_merge_8"
+if_merge_8:
+  br label %"if_merge_5"
 }
 
 @"x" = internal global double 0x4024000000000000
-@"y" = internal global double 0x403e000000000000

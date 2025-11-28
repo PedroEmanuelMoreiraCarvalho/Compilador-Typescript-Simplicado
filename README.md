@@ -40,13 +40,22 @@ A especificação da linguagem foi modificada:
   - Tipos de parâmetros e retorno
   - Número correto de argumentos
   - Compatibilidade de tipos em chamadas
+  - Validação de `parseInt`/`parseFloat` (apenas `string`)
 - **Verificação de arrays**:
   - Compatibilidade de tipos em `number[]` vs `string[]`
   - Verificação de tipo em atribuições a elementos
-  - Validação de índices (devem ser `number`)
+  - Validação de índices (devem ser inteiros, não floats)
   - Propriedade `.length` apenas em arrays
 - **Operadores tipados**: Verificação de tipos em operações aritméticas, lógicas e de comparação
 - **Estruturas de controle**: Verificação de tipos em condições (`if`, `while`)
+
+### Geração de Código (Backend - LLVM IR)
+- **Código intermediário LLVM**: Geração de LLVM IR otimizado
+- **Suporte a variáveis globais e locais**: Escopo correto no IR
+- **Funções nativas**: Integração com `printf`, `sqrt`, `pow`, `atoi`, `atof`
+- **Estruturas de controle**: `if/else`, `while`, `for` com labels adequados
+- **Arrays dinâmicos**: Alocação e acesso com `malloc`/`free`
+- **Compilação para executável**: Uso do `clang` para gerar binários nativos
 
 ## Tipos e Recursos Suportados
 
@@ -75,50 +84,96 @@ python --version
 
 # Instalar ANTLR4 runtime para Python
 pip install antlr4-python3-runtime
+
+# Para backend (geração de código):
+pip install llvmlite
+
+# Clang (para compilar IR para executável)
+# macOS: já vem instalado com Xcode Command Line Tools
+# Linux: sudo apt-get install clang
+# Windows: instale LLVM (https://releases.llvm.org/)
 ```
 
 ### Verificar instalação
 
 ```bash
 python -c "import antlr4; print('✓ ANTLR4 instalado com sucesso!')"
+python -c "import llvmlite; print('✓ llvmlite instalado com sucesso!')"
+clang --version  # Verifica se clang está disponível
 ```
 
 ## Como Usar
 
 ### Executando o Compilador
 
-**Sintaxe básica:**
+O projeto possui dois programas principais:
+
+#### `main-frontend.py` - Apenas Front-end
+Executa **apenas** as fases de análise léxica, sintática e semântica. Não gera código LLVM.
+
 ```bash
-python main.py <arquivo.ts>
+python main-frontend.py <arquivo.ts> [--debug]
 ```
 
-**Com modo debug (mostra tabela de símbolos e árvore sintática):**
+#### `main.py` - Compilador Completo
+Executa **todas** as fases: front-end + geração de código LLVM IR + compilação para executável.
+
+**Sintaxe:**
 ```bash
-python main.py <arquivo.ts> --debug
-# ou
-python main.py <arquivo.ts> -d
+python main.py <arquivo.ts> [opções]
 ```
+
+**Opções:**
+- `--debug, -d`: Ativa modo de depuração (mostra tabela de símbolos)
+- `--show-ir`: Exibe o código LLVM IR gerado no console
+- `--gen-llvm`: Salva o LLVM IR em arquivo `.ll`
+- `--compile, -c`: Compila para binário executável
+- `--run, -r`: Compila e executa o programa
+- `--output, -o <nome>`: Define nome do executável
 
 ### Exemplos de Uso
 
 ```bash
-# Compilar programa válido
+# Apenas análise (front-end)
+python main-frontend.py testes/valid/01_hello_world.ts
+
+# Análise completa (front-end + backend)
 python main.py testes/valid/01_hello_world.ts
 
-# Compilar programa com erro semântico
-python main.py testes/invalid/semantic_01_use_before_init.ts
+# Gerar e visualizar LLVM IR
+python main.py testes/valid/08_function.ts --show-ir
 
-# Compilar com informações de debug
-python main.py testes/valid/08_function.ts --debug
+# Compilar para executável
+python main.py testes/valid/08_function.ts --compile
+
+# Compilar e executar
+python main.py testes/valid/08_function.ts --run
+
+# Com modo debug
+python main.py testes/valid/15_scope_functions.ts --debug --run
 ```
 
-### Executando Todos os Testes
+### Executando Testes Automatizados
+
+O projeto possui dois scripts de teste:
+
+#### `run_tests.py` - Testes de Front-end
+Executa **todos** os testes (válidos e inválidos) verificando apenas análise léxica, sintática e semântica.
 
 ```bash
 python run_tests.py
 ```
 
-Este script executa automaticamente todos os casos de teste (válidos e inválidos) e gera um relatório completo de resultados.
+Testa 20 programas válidos + 33 programas inválidos = **53 testes**
+
+#### `run_tests_backend.py` - Testes de Backend
+Executa **apenas testes válidos** para verificar geração de código e compilação.
+
+```bash
+python run_tests_backend.py
+```
+
+Compila e executa os 20 programas válidos + 1 programa inválido (para verificar detecção de erros).
 
 ## Estrutura do Projeto
 
@@ -135,14 +190,19 @@ Este script executa automaticamente todos os casos de teste (válidos e inválid
 │   │   ├── 08_function.ts
 │   │   ├── 14_scope_blocks.ts
 │   │   └── ...
-│   └── invalid/                  # 32 programas com erros
+│   └── invalid/                  # 33 programas com erros
 │       ├── 01_lexical_error_char.ts         # Erro léxico
 │       ├── 03_syntax_error_semicolon.ts     # Erro sintático
 │       ├── semantic_01_use_before_init.ts   # Erro semântico
 │       └── ...
-├── main.py                       # Compilador principal
+├── outputs-ll/                   # LLVM IR gerado (.ll)
+├── outputs-o/                    # Executáveis compilados
+├── main-frontend.py              # Compilador front-end (análise apenas)
+├── main.py                       # Compilador completo (front + back)
 ├── semantic_analyzer.py          # Analisador semântico
-├── run_tests.py                  # Script de testes automatizado
+├── code_generator.py             # Gerador de código LLVM IR
+├── run_tests.py                  # Testes front-end (todos)
+├── run_tests_backend.py          # Testes backend (válidos)
 └── README.md                     # Esta documentação
 ```
 

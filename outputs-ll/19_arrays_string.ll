@@ -17,8 +17,13 @@ declare double @"atof"(i8* %".1")
 declare i8* @"malloc"(i64 %".1")
 
 @"fmt_number" = internal constant [4 x i8] c"%g\0a\00"
+@"fmt_number_no_nl" = internal constant [3 x i8] c"%g\00"
 @"fmt_string" = internal constant [4 x i8] c"%s\0a\00"
+@"fmt_string_no_nl" = internal constant [3 x i8] c"%s\00"
 @"fmt_bool" = internal constant [4 x i8] c"%s\0a\00"
+@"fmt_bool_no_nl" = internal constant [3 x i8] c"%s\00"
+@"fmt_space" = internal constant [2 x i8] c" \00"
+@"fmt_newline" = internal constant [2 x i8] c"\0a\00"
 @"str_true" = internal constant [5 x i8] c"true\00"
 @"str_false" = internal constant [6 x i8] c"false\00"
 define i32 @"main"()
@@ -72,69 +77,81 @@ entry:
   %".47" = load i8*, i8** %".46"
   store i8* %".47", i8** @"primeiraFruta"
   %".49" = getelementptr inbounds [14 x i8], [14 x i8]* @"str_9", i32 0, i32 0
-  %".50" = getelementptr [4 x i8], [4 x i8]* @"fmt_string", i32 0, i32 0
+  %".50" = getelementptr [3 x i8], [3 x i8]* @"fmt_string_no_nl", i32 0, i32 0
   %".51" = call i32 (i8*, ...) @"printf"(i8* %".50", i8* %".49")
-  %".52" = load i8*, i8** @"segundoNome"
-  %".53" = getelementptr [4 x i8], [4 x i8]* @"fmt_string", i32 0, i32 0
-  %".54" = call i32 (i8*, ...) @"printf"(i8* %".53", i8* %".52")
-  %".55" = getelementptr inbounds [16 x i8], [16 x i8]* @"str_10", i32 0, i32 0
-  %".56" = getelementptr [4 x i8], [4 x i8]* @"fmt_string", i32 0, i32 0
-  %".57" = call i32 (i8*, ...) @"printf"(i8* %".56", i8* %".55")
-  %".58" = load i8*, i8** @"primeiraFruta"
-  %".59" = getelementptr [4 x i8], [4 x i8]* @"fmt_string", i32 0, i32 0
-  %".60" = call i32 (i8*, ...) @"printf"(i8* %".59", i8* %".58")
-  %".61" = getelementptr inbounds [8 x i8], [8 x i8]* @"str_11", i32 0, i32 0
-  %".62" = load {i64, i8**}, {i64, i8**}* @"nomes"
-  %".63" = extractvalue {i64, i8**} %".62", 1
-  %".64" = fptosi double 0x3ff0000000000000 to i64
-  %".65" = getelementptr i8*, i8** %".63", i64 %".64"
-  store i8* %".61", i8** %".65"
-  %".67" = getelementptr inbounds [8 x i8], [8 x i8]* @"str_12", i32 0, i32 0
-  %".68" = load {i64, i8**}, {i64, i8**}* @"frutas"
-  %".69" = extractvalue {i64, i8**} %".68", 1
-  %".70" = fptosi double              0x0 to i64
-  %".71" = getelementptr i8*, i8** %".69", i64 %".70"
-  store i8* %".67", i8** %".71"
-  %".73" = load {i64, i8**}, {i64, i8**}* @"nomes"
-  %".74" = extractvalue {i64, i8**} %".73", 0
-  %".75" = sitofp i64 %".74" to double
-  store double %".75", double* @"totalNomes"
-  %".77" = load {i64, i8**}, {i64, i8**}* @"frutas"
+  %".52" = getelementptr [2 x i8], [2 x i8]* @"fmt_space", i32 0, i32 0
+  %".53" = call i32 (i8*, ...) @"printf"(i8* %".52")
+  %".54" = load i8*, i8** @"segundoNome"
+  %".55" = getelementptr [4 x i8], [4 x i8]* @"fmt_string", i32 0, i32 0
+  %".56" = call i32 (i8*, ...) @"printf"(i8* %".55", i8* %".54")
+  %".57" = getelementptr inbounds [16 x i8], [16 x i8]* @"str_10", i32 0, i32 0
+  %".58" = getelementptr [3 x i8], [3 x i8]* @"fmt_string_no_nl", i32 0, i32 0
+  %".59" = call i32 (i8*, ...) @"printf"(i8* %".58", i8* %".57")
+  %".60" = getelementptr [2 x i8], [2 x i8]* @"fmt_space", i32 0, i32 0
+  %".61" = call i32 (i8*, ...) @"printf"(i8* %".60")
+  %".62" = load i8*, i8** @"primeiraFruta"
+  %".63" = getelementptr [4 x i8], [4 x i8]* @"fmt_string", i32 0, i32 0
+  %".64" = call i32 (i8*, ...) @"printf"(i8* %".63", i8* %".62")
+  %".65" = getelementptr inbounds [8 x i8], [8 x i8]* @"str_11", i32 0, i32 0
+  %".66" = load {i64, i8**}, {i64, i8**}* @"nomes"
+  %".67" = extractvalue {i64, i8**} %".66", 1
+  %".68" = fptosi double 0x3ff0000000000000 to i64
+  %".69" = getelementptr i8*, i8** %".67", i64 %".68"
+  store i8* %".65", i8** %".69"
+  %".71" = getelementptr inbounds [8 x i8], [8 x i8]* @"str_12", i32 0, i32 0
+  %".72" = load {i64, i8**}, {i64, i8**}* @"frutas"
+  %".73" = extractvalue {i64, i8**} %".72", 1
+  %".74" = fptosi double              0x0 to i64
+  %".75" = getelementptr i8*, i8** %".73", i64 %".74"
+  store i8* %".71", i8** %".75"
+  %".77" = load {i64, i8**}, {i64, i8**}* @"nomes"
   %".78" = extractvalue {i64, i8**} %".77", 0
   %".79" = sitofp i64 %".78" to double
-  store double %".79", double* @"totalFrutas"
-  %".81" = getelementptr inbounds [25 x i8], [25 x i8]* @"str_13", i32 0, i32 0
-  %".82" = getelementptr [4 x i8], [4 x i8]* @"fmt_string", i32 0, i32 0
-  %".83" = call i32 (i8*, ...) @"printf"(i8* %".82", i8* %".81")
-  %".84" = load {i64, i8**}, {i64, i8**}* @"nomes"
-  %".85" = extractvalue {i64, i8**} %".84", 1
-  %".86" = fptosi double 0x3ff0000000000000 to i64
-  %".87" = getelementptr i8*, i8** %".85", i64 %".86"
-  %".88" = load i8*, i8** %".87"
-  %".89" = getelementptr [4 x i8], [4 x i8]* @"fmt_string", i32 0, i32 0
-  %".90" = call i32 (i8*, ...) @"printf"(i8* %".89", i8* %".88")
-  %".91" = getelementptr inbounds [27 x i8], [27 x i8]* @"str_14", i32 0, i32 0
-  %".92" = getelementptr [4 x i8], [4 x i8]* @"fmt_string", i32 0, i32 0
-  %".93" = call i32 (i8*, ...) @"printf"(i8* %".92", i8* %".91")
-  %".94" = load {i64, i8**}, {i64, i8**}* @"frutas"
-  %".95" = extractvalue {i64, i8**} %".94", 1
-  %".96" = fptosi double              0x0 to i64
-  %".97" = getelementptr i8*, i8** %".95", i64 %".96"
-  %".98" = load i8*, i8** %".97"
-  %".99" = getelementptr [4 x i8], [4 x i8]* @"fmt_string", i32 0, i32 0
-  %".100" = call i32 (i8*, ...) @"printf"(i8* %".99", i8* %".98")
-  %".101" = getelementptr inbounds [16 x i8], [16 x i8]* @"str_15", i32 0, i32 0
-  %".102" = getelementptr [4 x i8], [4 x i8]* @"fmt_string", i32 0, i32 0
-  %".103" = call i32 (i8*, ...) @"printf"(i8* %".102", i8* %".101")
-  %".104" = load double, double* @"totalNomes"
-  %".105" = getelementptr [4 x i8], [4 x i8]* @"fmt_number", i32 0, i32 0
-  %".106" = call i32 (i8*, ...) @"printf"(i8* %".105", double %".104")
-  %".107" = getelementptr inbounds [17 x i8], [17 x i8]* @"str_16", i32 0, i32 0
-  %".108" = getelementptr [4 x i8], [4 x i8]* @"fmt_string", i32 0, i32 0
-  %".109" = call i32 (i8*, ...) @"printf"(i8* %".108", i8* %".107")
-  %".110" = load double, double* @"totalFrutas"
-  %".111" = getelementptr [4 x i8], [4 x i8]* @"fmt_number", i32 0, i32 0
-  %".112" = call i32 (i8*, ...) @"printf"(i8* %".111", double %".110")
+  store double %".79", double* @"totalNomes"
+  %".81" = load {i64, i8**}, {i64, i8**}* @"frutas"
+  %".82" = extractvalue {i64, i8**} %".81", 0
+  %".83" = sitofp i64 %".82" to double
+  store double %".83", double* @"totalFrutas"
+  %".85" = getelementptr inbounds [25 x i8], [25 x i8]* @"str_13", i32 0, i32 0
+  %".86" = getelementptr [3 x i8], [3 x i8]* @"fmt_string_no_nl", i32 0, i32 0
+  %".87" = call i32 (i8*, ...) @"printf"(i8* %".86", i8* %".85")
+  %".88" = getelementptr [2 x i8], [2 x i8]* @"fmt_space", i32 0, i32 0
+  %".89" = call i32 (i8*, ...) @"printf"(i8* %".88")
+  %".90" = load {i64, i8**}, {i64, i8**}* @"nomes"
+  %".91" = extractvalue {i64, i8**} %".90", 1
+  %".92" = fptosi double 0x3ff0000000000000 to i64
+  %".93" = getelementptr i8*, i8** %".91", i64 %".92"
+  %".94" = load i8*, i8** %".93"
+  %".95" = getelementptr [4 x i8], [4 x i8]* @"fmt_string", i32 0, i32 0
+  %".96" = call i32 (i8*, ...) @"printf"(i8* %".95", i8* %".94")
+  %".97" = getelementptr inbounds [27 x i8], [27 x i8]* @"str_14", i32 0, i32 0
+  %".98" = getelementptr [3 x i8], [3 x i8]* @"fmt_string_no_nl", i32 0, i32 0
+  %".99" = call i32 (i8*, ...) @"printf"(i8* %".98", i8* %".97")
+  %".100" = getelementptr [2 x i8], [2 x i8]* @"fmt_space", i32 0, i32 0
+  %".101" = call i32 (i8*, ...) @"printf"(i8* %".100")
+  %".102" = load {i64, i8**}, {i64, i8**}* @"frutas"
+  %".103" = extractvalue {i64, i8**} %".102", 1
+  %".104" = fptosi double              0x0 to i64
+  %".105" = getelementptr i8*, i8** %".103", i64 %".104"
+  %".106" = load i8*, i8** %".105"
+  %".107" = getelementptr [4 x i8], [4 x i8]* @"fmt_string", i32 0, i32 0
+  %".108" = call i32 (i8*, ...) @"printf"(i8* %".107", i8* %".106")
+  %".109" = getelementptr inbounds [16 x i8], [16 x i8]* @"str_15", i32 0, i32 0
+  %".110" = getelementptr [3 x i8], [3 x i8]* @"fmt_string_no_nl", i32 0, i32 0
+  %".111" = call i32 (i8*, ...) @"printf"(i8* %".110", i8* %".109")
+  %".112" = getelementptr [2 x i8], [2 x i8]* @"fmt_space", i32 0, i32 0
+  %".113" = call i32 (i8*, ...) @"printf"(i8* %".112")
+  %".114" = load double, double* @"totalNomes"
+  %".115" = getelementptr [4 x i8], [4 x i8]* @"fmt_number", i32 0, i32 0
+  %".116" = call i32 (i8*, ...) @"printf"(i8* %".115", double %".114")
+  %".117" = getelementptr inbounds [17 x i8], [17 x i8]* @"str_16", i32 0, i32 0
+  %".118" = getelementptr [3 x i8], [3 x i8]* @"fmt_string_no_nl", i32 0, i32 0
+  %".119" = call i32 (i8*, ...) @"printf"(i8* %".118", i8* %".117")
+  %".120" = getelementptr [2 x i8], [2 x i8]* @"fmt_space", i32 0, i32 0
+  %".121" = call i32 (i8*, ...) @"printf"(i8* %".120")
+  %".122" = load double, double* @"totalFrutas"
+  %".123" = getelementptr [4 x i8], [4 x i8]* @"fmt_number", i32 0, i32 0
+  %".124" = call i32 (i8*, ...) @"printf"(i8* %".123", double %".122")
   ret i32 0
 }
 

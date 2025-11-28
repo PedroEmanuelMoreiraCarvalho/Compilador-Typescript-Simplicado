@@ -223,6 +223,89 @@ class SemanticAnalyzer(TypeScriptSimplificadoVisitor):
             return True  # Não verifica tipos desconhecidos
         return type1 == type2
     
+    def _is_integer_expression(self, ctx):
+        """
+        Verifica se uma expressão é certamente um valor inteiro.
+        
+        Retorna False se a expressão contém:
+        - Literais decimais (1.5, 2.3, etc)
+        - Divisões (que podem resultar em float)
+        - Outras operações com floats
+        
+        Retorna True para:
+        - Literais inteiros (1, 2, 100)
+        - Variáveis (não podemos garantir, mas permitimos)
+        - Operações +, -, *, %, ** entre inteiros
+        """
+        # Caso base: literal numérico
+        if isinstance(ctx, TypeScriptSimplificadoParser.NumberLiteralContext):
+            num_text = ctx.NUMBER_LITERAL().getText()
+            # Verifica se tem ponto decimal
+            return '.' not in num_text
+        
+        # Literal inteiro direto dentro de primaryExpr
+        if hasattr(ctx, 'literal'):
+            literal_ctx = ctx.literal()
+            if literal_ctx and isinstance(literal_ctx, TypeScriptSimplificadoParser.NumberLiteralContext):
+                num_text = literal_ctx.NUMBER_LITERAL().getText()
+                return '.' not in num_text
+        
+        # Variáveis e identificadores: assumimos que podem ser inteiros
+        if isinstance(ctx, TypeScriptSimplificadoParser.IdExprContext):
+            return True
+        
+        # Divisão sempre pode resultar em float
+        if isinstance(ctx, TypeScriptSimplificadoParser.DivExprContext):
+            return False
+        
+        # Operações aritméticas: recursivamente verifica operandos
+        if isinstance(ctx, (TypeScriptSimplificadoParser.AddExprContext,
+                           TypeScriptSimplificadoParser.SubExprContext,
+                           TypeScriptSimplificadoParser.MulExprContext,
+                           TypeScriptSimplificadoParser.ModExprContext)):
+            # Obtém os dois operandos
+            left = ctx.getChild(0)
+            right = ctx.getChild(2) if ctx.getChildCount() > 2 else ctx.getChild(1)
+            return self._is_integer_expression(left) and self._is_integer_expression(right)
+        
+        # Expressão entre parênteses
+        if isinstance(ctx, TypeScriptSimplificadoParser.ParenExprContext):
+            return self._is_integer_expression(ctx.expression())
+        
+        # Expressões pass-through
+        if isinstance(ctx, TypeScriptSimplificadoParser.ExpressionContext):
+            return self._is_integer_expression(ctx.logicalOrExpr())
+        
+        if isinstance(ctx, TypeScriptSimplificadoParser.OrPassContext):
+            return self._is_integer_expression(ctx.logicalAndExpr())
+        
+        if isinstance(ctx, TypeScriptSimplificadoParser.AndPassContext):
+            return self._is_integer_expression(ctx.equalityExpr())
+        
+        if isinstance(ctx, TypeScriptSimplificadoParser.EqPassContext):
+            return self._is_integer_expression(ctx.relationalExpr())
+        
+        if isinstance(ctx, TypeScriptSimplificadoParser.RelPassContext):
+            return self._is_integer_expression(ctx.additiveExpr())
+        
+        if isinstance(ctx, TypeScriptSimplificadoParser.AddPassContext):
+            return self._is_integer_expression(ctx.multiplicativeExpr())
+        
+        if isinstance(ctx, TypeScriptSimplificadoParser.MulPassContext):
+            return self._is_integer_expression(ctx.powerExpr())
+        
+        if isinstance(ctx, TypeScriptSimplificadoParser.PowPassContext):
+            return self._is_integer_expression(ctx.unaryExpr())
+        
+        if isinstance(ctx, TypeScriptSimplificadoParser.UnaryPassContext):
+            return self._is_integer_expression(ctx.primaryExpr())
+        
+        if isinstance(ctx, TypeScriptSimplificadoParser.LiteralExprContext):
+            return self._is_integer_expression(ctx.literal())
+        
+        # Chamadas de função, arrays, etc: não podemos garantir
+        return True  # Assume que pode ser inteiro
+    
     def get_type_annotation(self, ctx):
         """
         Extrai o tipo de uma anotação de tipo
@@ -461,6 +544,23 @@ class SemanticAnalyzer(TypeScriptSimplificadoVisitor):
                 self.add_error(f"'{var_name}' não é um array", ctx)
                 return None
             
+            # Verifica tipo do índice
+            index_expr = lvalue.expression()
+            index_type = self.get_type(index_expr)
+            if index_type != "number" and index_type != "unknown":
+                self.add_error(
+                    f"Índice de array deve ser do tipo 'number', mas é '{index_type}'",
+                    ctx
+                )
+            
+            # Verifica se o índice é uma expressão que pode resultar em float
+            if not self._is_integer_expression(index_expr):
+                self.add_error(
+                    f"Índice de array deve ser um valor inteiro. "
+                    f"Evite usar operações com decimais como índice",
+                    ctx
+                )
+            
             # Verifica tipo do elemento
             element_type = symbol.symbol_type[:-2]  # Remove []
             expr_type = self.get_type(ctx.expression())
@@ -673,6 +773,15 @@ class SemanticAnalyzer(TypeScriptSimplificadoVisitor):
                 ctx
             )
         
+        # Verifica se o índice é uma expressão que pode resultar em float
+        index_expr = ctx.expression()
+        if not self._is_integer_expression(index_expr):
+            self.add_error(
+                f"Índice de array deve ser um valor inteiro. "
+                f"Evite usar operações com decimais como índice",
+                ctx
+            )
+        
         # Retorna tipo do elemento
         return symbol.symbol_type[:-2]  # Remove []
     
@@ -777,6 +886,26 @@ class SemanticAnalyzer(TypeScriptSimplificadoVisitor):
         """
         Visita chamada de função de conversão
         """
+        # Verifica o tipo de função de conversão
+        conv_call = ctx.conversionFunctionCall()
+        
+        if isinstance(conv_call, TypeScriptSimplificadoParser.ParseIntCallContext):
+            # parseInt(string) -> number
+            arg_type = self.get_type(conv_call.expression())
+            if arg_type != "string" and arg_type != "unknown":
+                self.add_error(
+                    f"parseInt() espera argumento do tipo 'string', mas recebeu '{arg_type}'",
+                    ctx
+                )
+        elif isinstance(conv_call, TypeScriptSimplificadoParser.ParseFloatCallContext):
+            # parseFloat(string) -> number
+            arg_type = self.get_type(conv_call.expression())
+            if arg_type != "string" and arg_type != "unknown":
+                self.add_error(
+                    f"parseFloat() espera argumento do tipo 'string', mas recebeu '{arg_type}'",
+                    ctx
+                )
+        
         # parseInt e parseFloat sempre retornam number
         return "number"
     

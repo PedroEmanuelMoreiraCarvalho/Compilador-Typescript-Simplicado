@@ -17,8 +17,13 @@ declare double @"atof"(i8* %".1")
 declare i8* @"malloc"(i64 %".1")
 
 @"fmt_number" = internal constant [4 x i8] c"%g\0a\00"
+@"fmt_number_no_nl" = internal constant [3 x i8] c"%g\00"
 @"fmt_string" = internal constant [4 x i8] c"%s\0a\00"
+@"fmt_string_no_nl" = internal constant [3 x i8] c"%s\00"
 @"fmt_bool" = internal constant [4 x i8] c"%s\0a\00"
+@"fmt_bool_no_nl" = internal constant [3 x i8] c"%s\00"
+@"fmt_space" = internal constant [2 x i8] c" \00"
+@"fmt_newline" = internal constant [2 x i8] c"\0a\00"
 @"str_true" = internal constant [5 x i8] c"true\00"
 @"str_false" = internal constant [6 x i8] c"false\00"
 define i32 @"main"()
@@ -85,19 +90,23 @@ for_update_2:
   br label %"for_cond_0"
 for_end_3:
   %".57" = getelementptr inbounds [20 x i8], [20 x i8]* @"str_4", i32 0, i32 0
-  %".58" = getelementptr [4 x i8], [4 x i8]* @"fmt_string", i32 0, i32 0
+  %".58" = getelementptr [3 x i8], [3 x i8]* @"fmt_string_no_nl", i32 0, i32 0
   %".59" = call i32 (i8*, ...) @"printf"(i8* %".58", i8* %".57")
-  %".60" = load double, double* @"soma"
-  %".61" = getelementptr [4 x i8], [4 x i8]* @"fmt_number", i32 0, i32 0
-  %".62" = call i32 (i8*, ...) @"printf"(i8* %".61", double %".60")
-  %".63" = getelementptr inbounds [18 x i8], [18 x i8]* @"str_5", i32 0, i32 0
-  %".64" = getelementptr [4 x i8], [4 x i8]* @"fmt_string", i32 0, i32 0
-  %".65" = call i32 (i8*, ...) @"printf"(i8* %".64", i8* %".63")
-  %".66" = load {i64, double*}, {i64, double*}* @"numeros"
-  %".67" = extractvalue {i64, double*} %".66", 0
-  %".68" = sitofp i64 %".67" to double
-  %".69" = getelementptr [4 x i8], [4 x i8]* @"fmt_number", i32 0, i32 0
-  %".70" = call i32 (i8*, ...) @"printf"(i8* %".69", double %".68")
+  %".60" = getelementptr [2 x i8], [2 x i8]* @"fmt_space", i32 0, i32 0
+  %".61" = call i32 (i8*, ...) @"printf"(i8* %".60")
+  %".62" = load double, double* @"soma"
+  %".63" = getelementptr [4 x i8], [4 x i8]* @"fmt_number", i32 0, i32 0
+  %".64" = call i32 (i8*, ...) @"printf"(i8* %".63", double %".62")
+  %".65" = getelementptr inbounds [18 x i8], [18 x i8]* @"str_5", i32 0, i32 0
+  %".66" = getelementptr [3 x i8], [3 x i8]* @"fmt_string_no_nl", i32 0, i32 0
+  %".67" = call i32 (i8*, ...) @"printf"(i8* %".66", i8* %".65")
+  %".68" = getelementptr [2 x i8], [2 x i8]* @"fmt_space", i32 0, i32 0
+  %".69" = call i32 (i8*, ...) @"printf"(i8* %".68")
+  %".70" = load {i64, double*}, {i64, double*}* @"numeros"
+  %".71" = extractvalue {i64, double*} %".70", 0
+  %".72" = sitofp i64 %".71" to double
+  %".73" = getelementptr [4 x i8], [4 x i8]* @"fmt_number", i32 0, i32 0
+  %".74" = call i32 (i8*, ...) @"printf"(i8* %".73", double %".72")
   ret i32 0
 }
 

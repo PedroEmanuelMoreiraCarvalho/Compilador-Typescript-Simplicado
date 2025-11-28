@@ -17,8 +17,13 @@ declare double @"atof"(i8* %".1")
 declare i8* @"malloc"(i64 %".1")
 
 @"fmt_number" = internal constant [4 x i8] c"%g\0a\00"
+@"fmt_number_no_nl" = internal constant [3 x i8] c"%g\00"
 @"fmt_string" = internal constant [4 x i8] c"%s\0a\00"
+@"fmt_string_no_nl" = internal constant [3 x i8] c"%s\00"
 @"fmt_bool" = internal constant [4 x i8] c"%s\0a\00"
+@"fmt_bool_no_nl" = internal constant [3 x i8] c"%s\00"
+@"fmt_space" = internal constant [2 x i8] c" \00"
+@"fmt_newline" = internal constant [2 x i8] c"\0a\00"
 @"str_true" = internal constant [5 x i8] c"true\00"
 @"str_false" = internal constant [6 x i8] c"false\00"
 define i32 @"main"()
